@@ -6,7 +6,7 @@
   "main": "./dist/index.js",
   "typings": "./dist/index",
   "scripts": {
-    "build": "gulp tsc"
+    "build": "npm install && gulp tsc"
   },
   "bugs": {
     "url": "https://github.com/koltyakov/sp-build-tasks/issues"
