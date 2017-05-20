@@ -14,7 +14,7 @@ declare var global: any;
 export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
     const Watcher = function(configs: IGulpConfigs) {
-        console.log(`\n${colors.yellow('===')} ${colors.green('Watcher is watching')} ${colors.yellow('===')}\n`);
+        // console.log(`\n${colors.yellow('===')} ${colors.green('Watcher is watching')} ${colors.yellow('===')}\n`);
 
         watch('./src/masterpage/' + configs.appConfig.masterpageCodeName + '.hbs', () => {
             gulp.start('build:masterpage');
