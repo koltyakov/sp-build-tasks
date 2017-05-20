@@ -5,4 +5,4 @@
 [![npm version](https://badge.fury.io/js/sp-build-tasks.svg)](https://badge.fury.io/js/sp-build-tasks)
 [![Downloads](https://img.shields.io/npm/dm/sp-build-tasks.svg)](https://www.npmjs.com/package/sp-build-tasks)
 
-
+> SharePoint front-end projects automation and tasks tool-belt
