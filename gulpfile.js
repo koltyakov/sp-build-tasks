@@ -12,7 +12,7 @@ gulp.task('clean', () => {
 });
 
 // Compile TypeScript files
-gulp.task('tsc', () => {
+gulp.task('tsc', [ 'clean' ], () => {
     return gulp
         .src(['./src/**/*.ts'])
         .pipe(tsc.createProject('tsconfig.json')())
