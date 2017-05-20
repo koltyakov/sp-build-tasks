@@ -7,6 +7,77 @@
 
 > SharePoint front-end projects automation and tasks tool-belt
 
+The library was desined for usage with [SharePoint Push-n-Pull](https://github.com/koltyakov/generator-sppp) Yeoman generator, but can be used as a stand-along package as well.
+
+# Install
+
+## Dependency
+
+```bash
+yarn add sp-build-tasks --save-dev
+```
+
+or
+
+```bash
+npm install sp-build-tasks --save-dev
+```
+
+## Integration to the code
+
+```javascript
+// gulpfile.js
+
+const gulp = require('gulp');
+
+new (require('sp-build-tasks'))(gulp, {
+    privateConf: './config/private.json',
+    appConfig: './config/app.json',
+    taskPath: './build/tasks'
+});
+```
+
+**Settings**
+
+- `privateConf` - path to [credentials](https://github.com/koltyakov/node-sp-auth-config) config file
+- `appConfig` - path to application config file
+- `taskPath` - path to custom gulp tasks folder
+
+### App config
+
+```javascript
+export interface IAppConfig {
+    spFolder: string; // SharePoint relative target folder (e.i. `_catalogs/masterpage/contoso`)
+    distFolder: string; // Local distribution folder path
+    masterpagePath?: string; // Path to masterpage .hbs in `./src` structure
+    masterpage?: any; // masterpage custom properties passed to hbs template
+    masterpageCodeName?: string; // masterpage code name (used for renaming output file)
+    logoPath?: string; // Path to logo image
+    bundleJSLibsFiles?: string[]; // Paths to .js files to bundle together in a single vendor.js
+    bundleCSSLibsFiles?: string[]; // Paths to .css files to bundle together in a single vendor.css
+    copyAssetsMap?: IAssetMap[]; // Custom static files copy configuration
+}
+```
+
+### Custom Gulp tasks
+
+```javascript
+// `./build/tasks/example.js`
+module.exports = (gulp, $) => {
+
+    // $ - gulp plugins dynamic loader
+
+    gulp.task('example', (cb) => {
+        console.log('Example Gulp Task');
+        cb();
+    });
+
+    // ...
+};
+```
+
+# Gulp tasks
+
 ## Authentication config setup initiation
 
 ```bash
