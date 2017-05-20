@@ -9,7 +9,7 @@
         "noImplicitAny": false,
         "removeComments": true,
         "types": [
-            "node"
+            "node", "bluebird"
         ]
     }
 }
