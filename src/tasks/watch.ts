@@ -1,7 +1,6 @@
 import * as colors from 'colors';
 import * as path from 'path';
 const LiveReload = require('sp-live-reload');
-import * as watch from 'gulp-watch';
 
 import Build from '../utils/build';
 import { getBuildInstance } from './build';
@@ -16,19 +15,19 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     const Watcher = function(configs: IGulpConfigs) {
         // console.log(`\n${colors.yellow('===')} ${colors.green('Watcher is watching')} ${colors.yellow('===')}\n`);
 
-        watch('./src/masterpage/' + configs.appConfig.masterpageCodeName + '.hbs', () => {
+        $.watch('./src/masterpage/' + configs.appConfig.masterpageCodeName + '.hbs', () => {
             gulp.start('build:masterpage');
         });
-        watch('./src/masterpage/layouts/*.hbs', () => {
+        $.watch('./src/masterpage/layouts/*.hbs', () => {
             gulp.start('build:layouts');
         });
-        watch('./src/styles/frankfurt/**/*.scss', () => {
+        $.watch('./src/styles/**/*.scss', () => {
             gulp.start('build:css-custom');
         });
-        watch('./src/scripts/frankfurt/**/*.ts', () => {
+        $.watch([ './src/scripts/**/*.ts', '!./src/scripts/**/*.d.ts' ], () => {
             gulp.start('build:webpack');
         });
-        watch('./src/webparts/**/*.hbs', (vinyl) => {
+        $.watch('./src/webparts/**/*.hbs', (vinyl) => {
             const build = getBuildInstance(configs);
 
             let packageData = require(path.join(process.cwd(), 'package.json'));
@@ -60,12 +59,12 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         });
     };
 
-    gulp.task('watch', [ 'config' ], () => {
+    gulp.task('watch', [ 'config' ], (cb) => {
         console.log(`\n${colors.yellow('===')} ${colors.green('Watch Assets')} ${colors.yellow('===')}\n`);
 
         let configs: IGulpConfigs = global.gulpConfigs;
 
-        watch(configs.watch.assets, function (event) {
+        $.watch(configs.watch.assets, (event) => {
             console.log(event.path);
             gulp
                 .src(event.path, {
@@ -82,7 +81,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         new Watcher(configs);
     });
 
-    gulp.task('live', [ 'config' ], () => {
+    gulp.task('live', [ 'config' ], (cb) => {
         console.log(`\n${colors.yellow('===')} ${colors.green('Watch with reload is initiated')} ${colors.yellow('===')}\n`);
 
         let configs: IGulpConfigs = global.gulpConfigs;
@@ -90,7 +89,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
         let liveReload = new LiveReload(configs.liveReload);
         liveReload.runServer();
-        watch(configs.watch.assets, function (event) {
+        $.watch(configs.watch.assets, (event) => {
             console.log(event.path);
             gulp
                 .src(event.path, {

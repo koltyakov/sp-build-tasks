@@ -47,15 +47,21 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     });
 
     gulp.task('build:webpack', (cb) => {
-        let webpackConfig = require(path.join(process.cwd(), 'webpack.config.js'));
+        let webpackConfig: any;
+        try {
+            webpackConfig = require(path.join(process.cwd(), 'webpack.config.js'));
+        } catch (ex) {
+            webpackConfig = require(path.join(__dirname, 'webpack/config.js'));
+        }
         webpack(webpackConfig, (err, stats) => {
             if (err) {
                 cb(err);
+            } else {
+                console.log(stats.toString({
+                    colors: true
+                }));
+                cb();
             }
-            console.log(stats.toString({
-                colors: true
-            }));
-            cb();
         });
     });
 
@@ -134,15 +140,15 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
             target: target,
             data: data
         })
-            .then(function(res) {
+            .then((res) => {
                 cb();
             })
-            .catch(function(err) {
+            .catch((err) => {
                 cb(err);
             });
     });
 
-    gulp.task('build:layouts', [ 'config' ], function(cb) {
+    gulp.task('build:layouts', [ 'config' ], (cb) => {
         let configs: IGulpConfigs = global.gulpConfigs;
         const build = getBuildInstance(configs);
 
@@ -162,7 +168,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         }
 
         let files = fs.readdirSync(source)
-            .map(function(file) {
+            .map((file) => {
                 let res = null;
                 let fileName = path.join(source, file);
                 let stat = fs.lstatSync(fileName);
@@ -177,7 +183,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
                 }
                 return res;
             })
-            .filter(function(obj) {
+            .filter((obj) => {
                 return obj !== null;
             });
 
@@ -186,10 +192,10 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
                 files: files,
                 data: data
             })
-                .then(function(res) {
+                .then((res) => {
                     cb();
                 })
-                .catch(function(err) {
+                .catch((err) => {
                     cb(err);
                 });
         } else {
@@ -197,7 +203,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         }
     });
 
-    gulp.task('build:webparts', [ 'config' ], function(cb) {
+    gulp.task('build:webparts', [ 'config' ], (cb) => {
         let configs: IGulpConfigs = global.gulpConfigs;
         const build = getBuildInstance(configs);
 
@@ -209,15 +215,15 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
             assetsVersion: packageData.version + '_' + (new Date()).getTime(),
             ...(configs.appConfig.masterpage || {})
         };
-        let source = './src/webparts/mockups';
-        let target = configs.appConfig.distFolder + '/webparts/mockups';
+        let source = './src/webparts';
+        let target = configs.appConfig.distFolder + '/webparts';
 
         if (!fs.existsSync(source)) {
             return cb();
         }
 
         let files = fs.readdirSync(source)
-            .map(function(file) {
+            .map((file) => {
                 let res = null;
                 let fileName = path.join(source, file);
                 let stat = fs.lstatSync(fileName);
@@ -232,7 +238,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
                 }
                 return res;
             })
-            .filter(function(obj) {
+            .filter((obj) => {
                 return obj !== null;
             });
 
@@ -241,10 +247,10 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
                 files: files,
                 data: data
             })
-                .then(function(res) {
+                .then((res) => {
                     cb();
                 })
-                .catch(function(err) {
+                .catch((err) => {
                     cb(err);
                 });
         } else {

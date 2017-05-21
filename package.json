@@ -33,6 +33,7 @@
     "gulp": "^3.9.1",
     "gulp-load-plugins": "^1.5.0",
     "gulp-spsave": "^3.0.0",
+    "gulp-tslint": "^8.0.0",
     "gulp-typescript": "^3.1.6",
     "gulp-watch": "^4.3.11",
     "handlebars": "^4.0.8",
@@ -49,7 +50,8 @@
     "sppurge": "^1.0.1",
     "tslint": "^5.2.0",
     "typescript": "^2.3.2",
-    "webpack": "^2.5.1"
+    "webpack": "^2.5.1",
+    "yargs": "^8.0.1"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.4",

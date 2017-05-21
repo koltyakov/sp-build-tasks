@@ -10,6 +10,8 @@ import { syncTasks } from './tasks/sync';
 import { deployTasks } from './tasks/deploy';
 import { buildTasks } from './tasks/build';
 import { watchTasks } from './tasks/watch';
+import { typescriptTasks } from './tasks/typescript';
+import { cleanTasks } from './tasks/clean';
 
 class SPBuildTasks {
 
@@ -43,6 +45,8 @@ class SPBuildTasks {
         deployTasks(this.gulp, plugins, this.settings);
         buildTasks(this.gulp, plugins, this.settings);
         watchTasks(this.gulp, plugins, this.settings);
+        typescriptTasks(this.gulp, plugins, this.settings);
+        cleanTasks(this.gulp, plugins, this.settings);
     }
 
     private loadCustomGulpTasks(taskPath: string, plugins?: IGulpPlugins) {
