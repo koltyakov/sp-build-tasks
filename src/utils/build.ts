@@ -34,7 +34,7 @@ export default class Build {
     }
 
     public buildBootstrap() {
-        let bootstrapRoot = path.join(__dirname, './../node_modules/bootstrap/less');
+        let bootstrapRoot = path.join(process.cwd(), '/node_modules/bootstrap/less');
         let bootstrapFiles = [
             // Core variables and mixins
             'variables',
@@ -190,6 +190,7 @@ export default class Build {
         if (target.indexOf(dist) !== 0) {
             target = path.join(dist, target);
         }
+
         return new Promise((resolve, reject) => {
             fs.readFile(source, this.settings.fileEncoding, (err, sourceBody) => {
                 if (err) {

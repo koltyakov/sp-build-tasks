@@ -132,8 +132,8 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
             assetsVersion: packageData.version + '_' + (new Date()).getTime(),
             ...(configs.appConfig.masterpage || {})
         };
-        let source = './src/masterpage/' + configs.appConfig.masterpageCodeName + '.hbs';
-        let target = configs.appConfig.distFolder + '/masterpage/' + configs.appConfig.masterpageCodeName + '.master';
+        let source = `./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.');
+        let target = `${configs.appConfig.distFolder}/masterpage/${configs.appConfig.masterpageCodeName}.master`;
 
         build.compileHbsTemplate({
             source: source,

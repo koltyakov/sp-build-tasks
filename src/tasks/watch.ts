@@ -15,7 +15,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     const Watcher = function(configs: IGulpConfigs) {
         // console.log(`\n${colors.yellow('===')} ${colors.green('Watcher is watching')} ${colors.yellow('===')}\n`);
 
-        $.watch('./src/masterpage/' + configs.appConfig.masterpageCodeName + '.hbs', () => {
+        $.watch(`./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.'), () => {
             gulp.start('build:masterpage');
         });
         $.watch('./src/masterpage/layouts/*.hbs', () => {

@@ -20,6 +20,7 @@ export interface IAppConfig {
     masterpagePath?: string;
     masterpage?: any;
     masterpageCodeName?: string;
+    platformVersion?: string;
     logoPath?: string;
     bundleJSLibsFiles?: string[];
     bundleCSSLibsFiles?: string[];
