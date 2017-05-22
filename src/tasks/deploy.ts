@@ -21,7 +21,8 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
                 cb();
             })
             .catch((err) => {
-                cb(err.message);
+                console.log(err.message);
+                cb();
             });
 
     });
@@ -37,7 +38,8 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
                 cb();
             })
             .catch((err) => {
-                cb(err.message);
+                console.log(err.message);
+                cb();
             });
 
     });
