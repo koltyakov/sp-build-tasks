@@ -65,12 +65,13 @@ class SPBuildTasks {
             pattern: [
                 'gulp-*', 'gulp.*',
                 'run-sequence', 'merge-stream',
-                'yargs', 'del'
+                'yargs', 'del', 'through2'
             ],
             rename: {
                 'gulp-typescript': 'tsc',
                 'run-sequence': 'rns',
-                'merge-stream': 'merge'
+                'merge-stream': 'merge',
+                'through2': 'through'
             }
         });
     }

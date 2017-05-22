@@ -89,6 +89,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
         let liveReload = new LiveReload(configs.liveReload);
         liveReload.runServer();
+
         $.watch(configs.watch.assets, (event) => {
             console.log(event.path);
             gulp
