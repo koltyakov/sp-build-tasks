@@ -101,10 +101,10 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
                         configs.privateConf.creds
                     )
                 )
-                .pipe($.through.obj((chunk, enc, cb) => {
+                .pipe($.through.obj((chunk, enc, callback) => {
                     let chunkPath = chunk.path;
                     liveReload.emitUpdatedPath(chunkPath);
-                    cb(null, chunk);
+                    callback(null, chunk);
                 }));
         });
         // tslint:disable-next-line:no-unused-expression

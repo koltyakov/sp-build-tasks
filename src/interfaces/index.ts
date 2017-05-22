@@ -25,10 +25,11 @@ export interface IAppConfig {
     bundleJSLibsFiles?: string[];
     bundleCSSLibsFiles?: string[];
     copyAssetsMap?: IAssetMap[];
+    customStyles?: IAssetMap;
 }
 
 export interface IAssetMap {
-    src: string;
+    src: string | string[];
     dist: string;
 }
 

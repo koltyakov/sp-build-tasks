@@ -89,8 +89,8 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         let configs: IGulpConfigs = global.gulpConfigs;
         const build = getBuildInstance(configs);
 
-        let srcPath = path.join(process.cwd(), 'src/styles/index.scss');
-        let distPath = path.join(process.cwd(), configs.appConfig.distFolder, 'styles/app.css');
+        let srcPath = path.join(process.cwd(), 'src', (configs.appConfig.customStyles && configs.appConfig.customStyles.src as string) || 'styles/index.scss');
+        let distPath = path.join(process.cwd(), configs.appConfig.distFolder, (configs.appConfig.customStyles && configs.appConfig.customStyles.dist) || 'styles/app.css');
         let sourceMapPath = distPath + '.map';
         let sourceMapFile = sourceMapPath.split('\\').pop();
 
