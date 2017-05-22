@@ -1,8 +1,14 @@
 !/dist
-node_modules
+/test
+/config/private.json
 /src
 /docs
+/node_modules
+.vscode
+npm-debug.log
 gulpfile.js
-README.md 
 tsconfig.json
 tslint.json
+yarn.lock
+jsconfig.json
+.npmignore
