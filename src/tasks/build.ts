@@ -5,6 +5,7 @@ import * as mkdirp from 'mkdirp';
 import * as webpack from 'webpack';
 
 import Build from '../utils/build';
+import { walkFolders } from '../utils/misc';
 
 import { Gulp } from '@types/gulp';
 import { ISPBuildSettings, IGulpConfigs, IBuildSettings } from '../interfaces';
@@ -222,19 +223,17 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
             return cb();
         }
 
-        let files = fs.readdirSync(source)
+        let files = walkFolders(source)
             .map((file) => {
                 let res = null;
-                let fileName = path.join(source, file);
-                let stat = fs.lstatSync(fileName);
-                if (!stat.isDirectory()) {
-                    let fileParse = path.parse(fileName);
-                    if (fileParse.ext === '.hbs') {
-                        res = {
-                            source: fileName,
-                            target: path.join(target, fileParse.name + '.html')
-                        };
-                    }
+                let fileParse = path.parse(file);
+                let relativeFolder = fileParse.dir.replace(source, '');
+
+                if (fileParse.ext === '.hbs') {
+                    res = {
+                        source: file,
+                        target: path.join(target, relativeFolder, fileParse.name + '.html')
+                    };
                 }
                 return res;
             })
