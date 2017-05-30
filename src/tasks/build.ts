@@ -51,7 +51,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         try {
             webpackConfig = require(path.join(process.cwd(), 'webpack.config.js'));
         } catch (ex) {
-            webpackConfig = require(path.join(__dirname, 'webpack/config.js'));
+            webpackConfig = require(path.join(__dirname, '../webpack/config.js'));
         }
         webpack(webpackConfig, (err, stats) => {
             if (err) {
