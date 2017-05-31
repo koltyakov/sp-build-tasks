@@ -1,4 +1,3 @@
-import * as  Promise from 'bluebird';
 import * as spRequest from 'sp-request';
 
 import {

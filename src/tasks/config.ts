@@ -1,4 +1,3 @@
-import * as Promise from 'bluebird';
 import * as path from 'path';
 import { AuthConfig } from 'node-sp-auth-config';
 import { IAuthOptions } from 'node-sp-auth';
@@ -9,10 +8,6 @@ import {
 } from '../interfaces';
 
 declare var global: any;
-
-Promise.config({
-    warnings: false
-});
 
 export const getConfigs = (settings: ISPBuildSettings): Promise<any> => {
     const mapGulpConfigs = (appConfig: IAppConfig, privateConfig: any): IGulpConfigs => {

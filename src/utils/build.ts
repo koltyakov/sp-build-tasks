@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as Handlebars from 'handlebars';
-import * as Promise from 'bluebird';
 import * as path from 'path';
 import * as mkdirp from 'mkdirp';
 import * as uglifyJS from 'uglify-js';
