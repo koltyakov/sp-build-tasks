@@ -37,10 +37,12 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
             let concatedContent = build.concatFilesContent({
                 filesArr: filesArr
             });
-            let minifiedContent = build.minifyJsContent({
-                content: concatedContent,
-                distPath: distPath
-            });
+            if (concatedContent) {
+                let minifiedContent = build.minifyJsContent({
+                    content: concatedContent,
+                    distPath: distPath
+                });
+            }
             cb();
         } catch (ex) {
             cb(ex);
@@ -76,10 +78,12 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
             let concatedContent = build.concatFilesContent({
                 filesArr: filesArr
             });
-            let minifiedContent = build.minifyCssContent({
-                content: concatedContent,
-                distPath: distPath
-            });
+            if (concatedContent) {
+                let minifiedContent = build.minifyCssContent({
+                    content: concatedContent,
+                    distPath: distPath
+                });
+            }
             cb();
         } catch (ex) {
             cb(ex);
