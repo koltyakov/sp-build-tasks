@@ -140,17 +140,21 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         let source = `./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.');
         let target = `${configs.appConfig.distFolder}/masterpage/${configs.appConfig.masterpageCodeName}.master`;
 
-        build.compileHbsTemplate({
-            source: source,
-            target: target,
-            data: data
-        })
-            .then((res) => {
-                cb();
+        if (fs.existsSync(source)) {
+            build.compileHbsTemplate({
+                source: source,
+                target: target,
+                data: data
             })
-            .catch((err) => {
-                cb(err);
-            });
+                .then((res) => {
+                    cb();
+                })
+                .catch((err) => {
+                    cb(err);
+                });
+        } else {
+            cb();
+        }
     });
 
     gulp.task('build:layouts', [ 'config' ], (cb) => {
