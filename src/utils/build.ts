@@ -125,7 +125,7 @@ export default class Build {
 
     public concatFilesContent(params: IConcatFilesContent) {
         let { filesArr, distPath } = params;
-        let concatedContent = filesArr.map(filePath => {
+        let concatedContent = (filesArr || []).map(filePath => {
             let content = '';
             if (filePath === 'bootstrap') {
                 content = this.buildBootstrap();
