@@ -56,6 +56,7 @@ export interface IAppConfig {
     bundleJSLibsFiles?: string[]; // Paths to .js files to bundle together in a single vendor.js
     bundleCSSLibsFiles?: string[]; // Paths to .css files to bundle together in a single vendor.css
     copyAssetsMap?: IAssetMap[]; // Custom static files copy configuration
+    customStyles?: IAssetMap | IAssetMap[]; // Custom styles
 }
 ```
 
