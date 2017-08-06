@@ -3,7 +3,7 @@ import * as loadGulpPlugins from 'gulp-load-plugins';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { Gulp } from '@types/gulp';
+import { Gulp } from 'gulp';
 
 import { configTasks } from './tasks/config';
 import { syncTasks } from './tasks/sync';

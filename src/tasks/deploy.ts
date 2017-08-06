@@ -3,7 +3,7 @@ const LiveReload = require('sp-live-reload');
 
 import Deploy from '../utils/deploy';
 
-import { Gulp } from '@types/gulp';
+import { Gulp } from 'gulp';
 import { ISPBuildSettings, IGulpConfigs, IDeploySettings } from '../interfaces';
 
 declare var global: any;

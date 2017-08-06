@@ -5,7 +5,7 @@ const LiveReload = require('sp-live-reload');
 import Build from '../utils/build';
 import { getBuildInstance } from './build';
 
-import { Gulp } from '@types/gulp';
+import { Gulp } from 'gulp';
 import { ISPBuildSettings, IGulpConfigs } from '../interfaces';
 
 declare var global: any;

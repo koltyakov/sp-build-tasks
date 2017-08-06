@@ -1,7 +1,20 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { IBuildSettings } from '../interfaces';
+
 export default class Copy {
+
+    private settings: IBuildSettings;
+
+    constructor(settings: IBuildSettings = {}) {
+        this.settings = {
+            ...settings,
+            src: settings.src || './src',
+            dist: settings.dist || './dist',
+            fileEncoding: settings.fileEncoding || 'utf-8'
+        };
+    }
 
     public copyFileOrFolderSync(source: string, target: string) {
         if (fs.existsSync(source)) {
@@ -20,7 +33,9 @@ export default class Copy {
                 targetFile = path.join(target, path.basename(source));
             }
         }
-        fs.writeFileSync(targetFile, fs.readFileSync(source));
+        fs.writeFileSync(targetFile, fs.readFileSync(source), {
+            encoding: this.settings.fileEncoding
+        });
     }
 
     public copyFolderRecursiveSync(source: string, target: string) {

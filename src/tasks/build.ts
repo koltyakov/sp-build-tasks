@@ -7,8 +7,8 @@ import * as webpack from 'webpack';
 import Build from '../utils/build';
 import { walkFolders } from '../utils/misc';
 
-import { Gulp } from '@types/gulp';
-import { ISPBuildSettings, IGulpConfigs, IBuildSettings } from '../interfaces';
+import { Gulp } from 'gulp';
+import { ISPBuildSettings, IGulpConfigs, IBuildSettings, IAssetMap } from '../interfaces';
 
 declare var global: any;
 
@@ -94,17 +94,39 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         let configs: IGulpConfigs = global.gulpConfigs;
         const build = getBuildInstance(configs);
 
-        let srcPath = path.join(process.cwd(), 'src', (configs.appConfig.customStyles && configs.appConfig.customStyles.src as string) || 'styles/index.scss');
-        let distPath = path.join(process.cwd(), configs.appConfig.distFolder, (configs.appConfig.customStyles && configs.appConfig.customStyles.dist) || 'styles/app.css');
-        let sourceMapPath = distPath + '.map';
-        let sourceMapFile = sourceMapPath.split('\\').pop();
+        let assetsArr: IAssetMap[] = [];
+        let defaultMap: IAssetMap = {
+            src: 'styles/index.scss',
+            dist: 'styles/app.css'
+        };
+        if (!configs.appConfig.customStyles) {
+            assetsArr.push({
+                ...defaultMap
+            });
+        } else if (!Array.isArray(configs.appConfig.customStyles)) {
+            assetsArr.push({
+                src: (configs.appConfig.customStyles as IAssetMap).src || defaultMap.src,
+                dist: (configs.appConfig.customStyles as IAssetMap).dist || defaultMap.dist
+            });
+        } else {
+            assetsArr = configs.appConfig.customStyles;
+        }
 
         try {
-            let result = build.buildCustomCssFromScss({ file: srcPath, sourceMap: sourceMapFile, sourceMapContents: true });
-            mkdirp.sync(path.dirname(distPath));
-            fs.writeFileSync(distPath, result.css.toString()
-                .replace('/*# sourceMappingURL=../../../', '/*# sourceMappingURL='), 'utf-8');
-            fs.writeFileSync(sourceMapPath, result.map.toString(), 'utf-8');
+            for (let assets of assetsArr) {
+                let srcPath = path.join(process.cwd(), 'src', (assets as any).src);
+                let distPath = path.join(process.cwd(), configs.appConfig.distFolder, assets.dist);
+                let sourceMapPath = distPath + '.map';
+                let sourceMapFile = sourceMapPath.split('\\').pop();
+                let result = build.buildCustomCssFromScss({ file: srcPath, sourceMap: sourceMapFile, sourceMapContents: true });
+                mkdirp.sync(path.dirname(distPath));
+                fs.writeFileSync(
+                    distPath,
+                    result.css.toString().replace('/*# sourceMappingURL=../../../', '/*# sourceMappingURL='),
+                    { encoding: 'utf-8' }
+                );
+                fs.writeFileSync(sourceMapPath, result.map.toString(), { encoding: 'utf-8' });
+            }
             cb();
         } catch (ex) {
             cb(ex);
