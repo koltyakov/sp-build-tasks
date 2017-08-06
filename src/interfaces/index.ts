@@ -1,5 +1,5 @@
 import { IAuthOptions } from 'node-sp-auth';
-import { Gulp } from '@types/gulp';
+import { Gulp } from 'gulp';
 
 export interface IGulpConfigs {
     appConfig: IAppConfig;
@@ -25,7 +25,7 @@ export interface IAppConfig {
     bundleJSLibsFiles?: string[];
     bundleCSSLibsFiles?: string[];
     copyAssetsMap?: IAssetMap[];
-    customStyles?: IAssetMap;
+    customStyles?: IAssetMap | IAssetMap[];
 }
 
 export interface IAssetMap {

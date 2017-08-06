@@ -1,7 +1,7 @@
 import * as colors from 'colors';
 const sppull = require('sppull').sppull;
 
-import { Gulp } from '@types/gulp';
+import { Gulp } from 'gulp';
 import { ISPBuildSettings, IGulpConfigs } from '../interfaces';
 
 declare var global: any;

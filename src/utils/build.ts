@@ -20,7 +20,7 @@ import {
 export default class Build {
 
     private settings: IBuildSettings;
-    private copy: Copy = new Copy();
+    private copy: Copy;
     private EOL: string = '\n';
 
     constructor(settings: IBuildSettings = {}) {
@@ -30,6 +30,7 @@ export default class Build {
             dist: settings.dist || './dist',
             fileEncoding: settings.fileEncoding || 'utf-8'
         };
+        this.copy = new Copy(this.settings);
     }
 
     public buildBootstrap() {
@@ -136,7 +137,9 @@ export default class Build {
         });
         if (distPath) {
             mkdirp.sync(path.dirname(distPath));
-            fs.writeFileSync(distPath, concatedContent.join(this.EOL), this.settings.fileEncoding);
+            fs.writeFileSync(distPath, concatedContent.join(this.EOL), {
+                encoding: this.settings.fileEncoding
+            });
         }
         return concatedContent.join(this.EOL);
     }
@@ -149,7 +152,9 @@ export default class Build {
         });
         if (distPath) {
             mkdirp.sync(path.dirname(distPath));
-            fs.writeFileSync(distPath, minifiedContent.code, this.settings.fileEncoding);
+            fs.writeFileSync(distPath, minifiedContent.code, {
+                encoding: this.settings.fileEncoding
+            });
         }
         return minifiedContent;
     }
@@ -160,7 +165,9 @@ export default class Build {
         let minifiedContent = new CleanCSS({ level: { 1: { specialComments: 0 } } }).minify(content);
         if (distPath) {
             mkdirp.sync(path.dirname(distPath));
-            fs.writeFileSync(distPath, minifiedContent.styles, this.settings.fileEncoding);
+            fs.writeFileSync(distPath, minifiedContent.styles, {
+                encoding: this.settings.fileEncoding
+            });
         }
         return minifiedContent;
     }
@@ -198,8 +205,10 @@ export default class Build {
                 let template = Handlebars.compile(sourceBody.toString());
                 let targetBody = template(data);
                 mkdirp.sync(path.dirname(target));
+                fs.writeFile(target, targetBody, {
+                    encoding: this.settings.fileEncoding
                 // tslint:disable-next-line:no-shadowed-variable
-                fs.writeFile(target, targetBody, this.settings.fileEncoding, (err) => {
+                }, (err) => {
                     if (err) {
                         reject(err);
                     }

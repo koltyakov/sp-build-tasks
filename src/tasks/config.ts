@@ -2,7 +2,7 @@ import * as path from 'path';
 import { AuthConfig } from 'node-sp-auth-config';
 import { IAuthOptions } from 'node-sp-auth';
 
-import { Gulp } from '@types/gulp';
+import { Gulp } from 'gulp';
 import {
     ISPBuildSettings, IAppConfig, IPrivateConfig, IGulpConfigs
 } from '../interfaces';
