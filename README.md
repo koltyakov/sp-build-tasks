@@ -5,6 +5,10 @@
 [![npm version](https://badge.fury.io/js/sp-build-tasks.svg)](https://badge.fury.io/js/sp-build-tasks)
 [![Downloads](https://img.shields.io/npm/dm/sp-build-tasks.svg)](https://www.npmjs.com/package/sp-build-tasks)
 
+---
+### Need help on SharePoint with Node.js? Join our gitter chat and ask question! [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/sharepoint-node/Lobby)
+---
+
 > SharePoint front-end projects automation and tasks tool-belt
 
 The library was desined for usage with [SharePoint Push-n-Pull](https://github.com/koltyakov/generator-sppp) Yeoman generator, but can be used as a stand-along package as well.
