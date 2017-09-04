@@ -151,7 +151,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         const build = getBuildInstance(configs);
 
         let serverPath: string = configs.privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
-        let publishPath: string = `${configs.privateConf.siteUrl}'/'${configs.appConfig.spFolder}`.replace(serverPath, '');
+        let publishPath: string = `${configs.privateConf.siteUrl}/${configs.appConfig.spFolder}`.replace(serverPath, '');
 
         let packageData = require(path.join(process.cwd(), 'package.json'));
         let data = {
@@ -189,7 +189,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         const build = getBuildInstance(configs);
 
         let serverPath: string = configs.privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
-        let publishPath: string = `${configs.privateConf.siteUrl}'/'${configs.appConfig.spFolder}`.replace(serverPath, '');
+        let publishPath: string = `${configs.privateConf.siteUrl}/${configs.appConfig.spFolder}`.replace(serverPath, '');
 
         let packageData = require(path.join(process.cwd(), 'package.json'));
         let data = {
@@ -249,7 +249,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         const build = getBuildInstance(configs);
 
         let serverPath: string = configs.privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
-        let publishPath: string = `${configs.privateConf.siteUrl}'/'${configs.appConfig.spFolder}`.replace(serverPath, '');
+        let publishPath: string = `${configs.privateConf.siteUrl}/${configs.appConfig.spFolder}`.replace(serverPath, '');
 
         let packageData = require(path.join(process.cwd(), 'package.json'));
         let data = {
