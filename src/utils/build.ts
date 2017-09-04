@@ -221,10 +221,15 @@ export default class Build {
     public compileHbsTemplates(params: ICompileHbsTemplates) {
         let { files, data } = params;
         let compilePromises = files.map(file => {
+            let fileParse = path.parse(file.target);
+            let fileData = {
+                ...data,
+                fileName: `${fileParse.name}${fileParse.ext}`
+            };
             return this.compileHbsTemplate({
                 source: file.source,
                 target: file.target,
-                data
+                data: fileData
             });
         });
         return Promise.all(compilePromises);

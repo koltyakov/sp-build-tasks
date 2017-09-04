@@ -150,9 +150,14 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         let configs: IGulpConfigs = global.gulpConfigs;
         const build = getBuildInstance(configs);
 
+        let serverPath: string = configs.privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
+        let publishPath: string = `${configs.privateConf.siteUrl}'/'${configs.appConfig.spFolder}`.replace(serverPath, '');
+
         let packageData = require(path.join(process.cwd(), 'package.json'));
         let data = {
-            publishPath: configs.privateConf.siteUrl + '/' + configs.appConfig.spFolder,
+            serverPath,
+            publishPath,
+            absolutePublishPath: `${serverPath}${publishPath}`,
             masterpageName: configs.appConfig.masterpageCodeName,
             siteUrl: configs.privateConf.siteUrl,
             spRootFolder: configs.appConfig.spFolder,
@@ -183,9 +188,14 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         let configs: IGulpConfigs = global.gulpConfigs;
         const build = getBuildInstance(configs);
 
+        let serverPath: string = configs.privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
+        let publishPath: string = `${configs.privateConf.siteUrl}'/'${configs.appConfig.spFolder}`.replace(serverPath, '');
+
         let packageData = require(path.join(process.cwd(), 'package.json'));
         let data = {
-            publishPath: configs.privateConf.siteUrl + '/' + configs.appConfig.spFolder,
+            serverPath,
+            publishPath,
+            absolutePublishPath: `${serverPath}${publishPath}`,
             masterpageName: configs.appConfig.masterpageCodeName,
             spRootFolder: configs.appConfig.spFolder,
             assetsVersion: packageData.version + '_' + (new Date()).getTime(),
@@ -238,9 +248,14 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         let configs: IGulpConfigs = global.gulpConfigs;
         const build = getBuildInstance(configs);
 
+        let serverPath: string = configs.privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
+        let publishPath: string = `${configs.privateConf.siteUrl}'/'${configs.appConfig.spFolder}`.replace(serverPath, '');
+
         let packageData = require(path.join(process.cwd(), 'package.json'));
         let data = {
-            publishPath: configs.privateConf.siteUrl + '/' + configs.appConfig.spFolder,
+            serverPath,
+            publishPath,
+            absolutePublishPath: `${serverPath}${publishPath}`,
             masterpageName: configs.appConfig.masterpageCodeName,
             spRootFolder: configs.appConfig.spFolder,
             assetsVersion: packageData.version + '_' + (new Date()).getTime(),
