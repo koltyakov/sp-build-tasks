@@ -30,9 +30,13 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         $.watch('./src/webparts/**/*.hbs', (vinyl) => {
             const build = getBuildInstance(configs);
 
+            let serverPath: string = configs.privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
+            let publishPath: string = `${configs.privateConf.siteUrl}/${configs.appConfig.spFolder}`.replace(serverPath, '');
+
             let packageData = require(path.join(process.cwd(), 'package.json'));
             let data = {
-                publishPath: configs.privateConf.siteUrl + '/' + configs.appConfig.spFolder,
+                serverPath,
+                publishPath,
                 masterpageName: configs.appConfig.masterpageCodeName,
                 spRootFolder: configs.appConfig.spFolder,
                 assetsVersion: packageData.version + '_' + (new Date()).getTime(),
