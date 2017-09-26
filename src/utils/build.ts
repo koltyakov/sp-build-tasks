@@ -185,19 +185,23 @@ export default class Build {
     }
 
     public compileHbsTemplate(params: ICompileHbsTemplate) {
-        let { source, target, data } = params;
-        let src = path.normalize(this.settings.src);
-        let dist = path.normalize(this.settings.dist);
-        source = path.normalize(source);
-        target = path.normalize(target);
-        if (source.indexOf(src) !== 0) {
-            source = path.join(src, source);
-        }
-        if (target.indexOf(dist) !== 0) {
-            target = path.join(dist, target);
-        }
-
         return new Promise((resolve, reject) => {
+            let { source, target, data } = params;
+            let src = path.normalize(this.settings.src);
+            let dist = path.normalize(this.settings.dist);
+            source = path.normalize(source);
+            target = path.normalize(target);
+            if (source.indexOf(src) !== 0) {
+                source = path.join(src, source);
+            }
+            if (target.indexOf(dist) !== 0) {
+                target = path.join(dist, target);
+            }
+            let fileParse = path.parse(target);
+            data = {
+                ...data,
+                fileName: `${fileParse.name}${fileParse.ext}`
+            };
             fs.readFile(source, this.settings.fileEncoding, (err, sourceBody) => {
                 if (err) {
                     reject(err);
@@ -221,15 +225,10 @@ export default class Build {
     public compileHbsTemplates(params: ICompileHbsTemplates) {
         let { files, data } = params;
         let compilePromises = files.map(file => {
-            let fileParse = path.parse(file.target);
-            let fileData = {
-                ...data,
-                fileName: `${fileParse.name}${fileParse.ext}`
-            };
             return this.compileHbsTemplate({
                 source: file.source,
                 target: file.target,
-                data: fileData
+                data
             });
         });
         return Promise.all(compilePromises);
