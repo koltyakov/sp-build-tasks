@@ -31,13 +31,12 @@ export default class Deploy {
             if (masterpagePath.length === 0) {
                 reject('Error: SharePoint masterpage path is not provided');
             }
+            let methodUri = `${webUrl}/_api/web`;
+            let webRelativeUrl = `/${webUrl.replace('https://', '').replace('http://', '').split('/').splice(1, 100).join('/')}`;
+            let masterpageFullPath = `/${webRelativeUrl}/${spFolder}/${masterpagePath}`.replace(/\/\//g, '/');
             request.requestDigest(webUrl)
                 .then(digest => {
-                    let methodUri = `${webUrl}/_api/web`;
-                    let webRelativeUrl = `/${webUrl.replace('https://', '').replace('http://', '').split('/').splice(1, 100).join('/')}`;
-                    let masterpageFullPath = `/${webRelativeUrl}/${spFolder}/${masterpagePath}`.replace(/\/\//g, '/');
-
-                    request.post(methodUri, {
+                    return request.post(methodUri, {
                         headers: {
                             'X-RequestDigest': digest,
                             'X-HTTP-Method': 'MERGE',
@@ -49,10 +48,10 @@ export default class Deploy {
                             'MasterUrl': masterpageFullPath,
                             'CustomMasterUrl': masterpageFullPath
                         }
-                    })
-                        .then(response => {
-                            resolve(masterpageFullPath);
-                        });
+                    });
+                })
+                .then(response => {
+                    resolve(masterpageFullPath);
                 })
                 .catch(err => {
                     reject(err);
@@ -77,12 +76,12 @@ export default class Deploy {
             if (logoPath.length === 0) {
                 reject('Error: SharePoint logotype path is not provided');
             }
+            let methodUri = `${webUrl}/_api/web`;
+            let webRelativeUrl = `/${webUrl.replace('https://', '').replace('http://', '').split('/').splice(1, 100).join('/')}`;
+            let logoFullPath = `/${webRelativeUrl}/${spFolder}/${logoPath}`.replace(/\/\//g, '/');
             request.requestDigest(webUrl)
                 .then(digest => {
-                    let methodUri = `${webUrl}/_api/web`;
-                    let webRelativeUrl = `/${webUrl.replace('https://', '').replace('http://', '').split('/').splice(1, 100).join('/')}`;
-                    let logoFullPath = `/${webRelativeUrl}/${spFolder}/${logoPath}`.replace(/\/\//g, '/');
-                    request.post(methodUri, {
+                    return request.post(methodUri, {
                         headers: {
                             'X-RequestDigest': digest,
                             'X-HTTP-Method': 'MERGE',
@@ -93,10 +92,10 @@ export default class Deploy {
                             '__metadata': { 'type': 'SP.Web' },
                             'SiteLogoUrl': logoFullPath
                         }
-                    })
-                        .then(response => {
-                            resolve(logoFullPath);
-                        });
+                    });
+                })
+                .then(response => {
+                    resolve(logoFullPath);
                 })
                 .catch(err => {
                     reject(err);
