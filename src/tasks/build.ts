@@ -49,7 +49,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         }
     });
 
-    gulp.task('build:webpack', (cb) => {
+    gulp.task('build:webpack', [ 'config' ], (cb) => {
         let webpackConfig: any;
         try {
             webpackConfig = require(path.join(process.cwd(), 'webpack.config.js'));

@@ -9,7 +9,7 @@ import {
 
 declare var global: any;
 
-export const getConfigs = (settings: ISPBuildSettings): Promise<any> => {
+export const getConfigs = (settings: ISPBuildSettings): Promise<IGulpConfigs> => {
     const mapGulpConfigs = (appConfig: IAppConfig, privateConfig: any): IGulpConfigs => {
         let gulpConfigs: IGulpConfigs = {
             appConfig: {
@@ -64,12 +64,14 @@ export const getConfigs = (settings: ISPBuildSettings): Promise<any> => {
                 .then((context: any) => {
                     global.spBuildContext = context;
                     global.gulpConfigs = mapGulpConfigs(global.spBuildAppConfig, global.spBuildContext);
-                    resolve();
+                    resolve(global.gulpConfigs);
                 })
                 .catch(reject);
         } else {
             global.gulpConfigs = mapGulpConfigs(global.spBuildAppConfig, global.spBuildContext);
-            resolve();
+            process.nextTick(() => {
+                resolve(global.gulpConfigs);
+            });
         }
     });
 };
