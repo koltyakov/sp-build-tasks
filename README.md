@@ -11,6 +11,8 @@
 
 > SharePoint front-end projects automation and tasks tool-belt
 
+![banner](https://raw.githubusercontent.com/koltyakov/sp-build-tasks/master/docs/sp-build-tasks.png)
+
 The library was designed for usage with [SharePoint Push-n-Pull](https://github.com/koltyakov/generator-sppp) Yeoman generator but can be used as a stand-alone package as well.
 
 # Install
