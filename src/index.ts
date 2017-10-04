@@ -50,14 +50,16 @@ class SPBuildTasks {
     }
 
     private loadCustomGulpTasks(taskPath: string, plugins?: IGulpPlugins) {
-        const taskList = fs.readdirSync(taskPath);
-        if (typeof plugins === 'undefined') {
-            plugins = this.loadGulpPlugins();
+        if (fs.existsSync(taskPath)) {
+            const taskList = fs.readdirSync(taskPath);
+            if (typeof plugins === 'undefined') {
+                plugins = this.loadGulpPlugins();
+            }
+            taskList.forEach((taskFile) => {
+                let task = require(path.resolve(path.join(taskPath, taskFile)));
+                task(this.gulp, plugins);
+            });
         }
-        taskList.forEach((taskFile) => {
-            let task = require(path.resolve(path.join(taskPath, taskFile)));
-            task(this.gulp, plugins);
-        });
     }
 
     private loadGulpPlugins(): IGulpPlugins {
