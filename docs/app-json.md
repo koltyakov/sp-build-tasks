@@ -4,7 +4,7 @@
 {
   "spFolder": "_catalogs/masterpage/spf",
   "distFolder": "./dist",
-  "srcFolder": "./src",
+
   "masterpagePath": "masterpage/frankfurt.master",
   "logoPath": "images/logo-horizontal.png",
   "masterpageCodeName": "frankfurt",
@@ -12,13 +12,6 @@
   "customStyles": {
     "src": "styles/frankfurt/frankfurt.scss",
     "dist": "styles/frankfurt.min.css"
-  },
-  "customScripts": {
-    "src": "scripts/frankfurt/**/*.ts",
-    "dist": "scripts",
-    "temp": "./tmp/scripts/frankfurt",
-    "entry": "frankfurt.js",
-    "minified": "frankfurt.min.js"
   },
   "bundleJSLibsFiles": [
     "./bower_components/es6-promise/es6-promise.min.js",
