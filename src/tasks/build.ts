@@ -50,12 +50,11 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     });
 
     gulp.task('build:webpack', [ 'config' ], (cb) => {
-        let webpackConfig: any;
-        try {
-            webpackConfig = require(path.join(process.cwd(), 'webpack.config.js'));
-        } catch (ex) {
-            webpackConfig = require(path.join(__dirname, '../webpack/config.js'));
+        let webpackConfigPath: string = path.join(process.cwd(), 'webpack.config.js');
+        if (!fs.existsSync(webpackConfigPath)) {
+            webpackConfigPath = path.join(__dirname, '../webpack/config.js');
         }
+        let webpackConfig: any = require(webpackConfigPath);
         webpack(webpackConfig, (err, stats) => {
             if (err) {
                 cb(err);
