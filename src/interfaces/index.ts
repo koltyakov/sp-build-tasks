@@ -1,9 +1,14 @@
 import { IAuthOptions } from 'node-sp-auth';
 import { Gulp } from 'gulp';
 
+export interface IWebpackConfig {
+    [key: string]: any;
+}
+
 export interface IWebpackMapItem {
     entry: string;
     target: string;
+    webpackConfig?: IWebpackConfig;
 }
 
 export interface IGulpConfigs {

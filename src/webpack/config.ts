@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as webpack from 'webpack';
 
-import { IWebpackMapItem } from '../interfaces';
+import { IWebpackMapItem, IWebpackConfig } from '../interfaces';
 
 const config = require(path.join(process.cwd(), 'config/app.json'));
 
@@ -10,7 +10,7 @@ const defaultItemMap: IWebpackMapItem = {
     target: 'app.js'
 };
 
-let webpackConfigDefaults: any = {
+let webpackConfigDefaults: IWebpackConfig = {
     cache: true,
     devtool: 'source-map',
     module: {
@@ -33,6 +33,7 @@ module.exports = webpackItemsMap.map(mapItem => {
     return {
         ...webpackConfigDefaults,
         ...(config.webpackConfig || {}),
+        ...(mapItem.webpackConfig || {}),
         entry: {
             index: mapItem.entry || defaultItemMap.entry
         },
