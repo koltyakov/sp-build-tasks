@@ -24,7 +24,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         $.watch('./src/styles/**/*.scss', () => {
             gulp.start('build:css-custom');
         });
-        $.watch([ './src/scripts/**/*.ts', '!./src/scripts/**/*.d.ts' ], () => {
+        $.watch([ './src/scripts/**/*.js', './src/scripts/**/*.ts', '!./src/scripts/**/*.d.ts' ], () => {
             gulp.start('build:webpack');
         });
         $.watch('./src/webparts/**/*.hbs', (vinyl) => {
