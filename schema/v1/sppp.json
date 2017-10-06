@@ -88,22 +88,25 @@
         },
         "webpackItemsMap": {
           "description": "Scripts build configuration. Array or entry/target script pairs.",
-          "type": "object",
-          "required": [ "entry", "target" ],
-          "properties": {
-            "entry": {
-              "description": "Relative path to .ts, .js file within the project's folder structure.\n\nE.g.: `./src/scripts/index.ts`",
-              "type": "string",
-              "default": "./src/scripts/index.ts"
-            },
-            "target": {
-              "description": "Relative path to output bundle script within `./dist/stripts` folder.\n\nE.g.: `myApp.js`",
-              "type": "string",
-              "default": "myApp.js"
-            },
-            "webpackConfig": {
-              "$ref": "#/definitions/webpackConfig",
-              "description": "Optional Webpack configuration which is added to webpack's configs for a specific entry point."
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [ "entry", "target" ],
+            "properties": {
+              "entry": {
+                "description": "Relative path to .ts, .js file within the project's folder structure.\n\nE.g.: `./src/scripts/index.ts`",
+                "type": "string",
+                "default": "./src/scripts/index.ts"
+              },
+              "target": {
+                "description": "Relative path to output bundle script within `./dist/stripts` folder.\n\nE.g.: `myApp.js`",
+                "type": "string",
+                "default": "myApp.js"
+              },
+              "webpackConfig": {
+                "$ref": "#/definitions/webpackConfig",
+                "description": "Optional Webpack configuration which is added to webpack's configs for a specific entry point."
+              }
             }
           }
         },
