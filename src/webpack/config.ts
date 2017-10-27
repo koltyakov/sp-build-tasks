@@ -38,7 +38,7 @@ module.exports = webpackItemsMap.map(mapItem => {
             index: mapItem.entry || defaultItemMap.entry
         },
         output: {
-            path: path.join(process.cwd(), config.distFolder, '/scripts'),
+            path: path.join(process.cwd(), config.distFolder, (config.modulePath || ''), '/scripts'),
             filename: mapItem.target || defaultItemMap.target
         }
     };

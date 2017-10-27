@@ -114,7 +114,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         try {
             for (let assets of assetsArr) {
                 let srcPath = path.join(process.cwd(), 'src', (assets as any).src);
-                let distPath = path.join(process.cwd(), configs.appConfig.distFolder, assets.dist);
+                let distPath = path.join(process.cwd(), configs.appConfig.distFolder, (configs.appConfig.modulePath || ''), assets.dist);
                 let sourceMapPath = distPath + '.map';
                 let sourceMapFile = sourceMapPath.split('\\').pop();
                 let result = build.buildCustomCssFromScss({ file: srcPath, sourceMap: sourceMapFile, sourceMapContents: true });
@@ -250,6 +250,10 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         let serverPath: string = configs.privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
         let publishPath: string = `${configs.privateConf.siteUrl}/${configs.appConfig.spFolder}`.replace(serverPath, '');
 
+        if ((configs.appConfig.modulePath || '').length > 0) {
+            publishPath += `/${configs.appConfig.modulePath}`.replace(/\/\//g, '/');
+        }
+
         let packageData = require(path.join(process.cwd(), 'package.json'));
         let data = {
             serverPath,
@@ -261,7 +265,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
             ...(configs.appConfig.masterpage || {})
         };
         let source = './src/webparts';
-        let target = configs.appConfig.distFolder + '/webparts';
+        let target = `${configs.appConfig.distFolder}/${(configs.appConfig.modulePath || '')}/webparts`.replace(/\/\//g, '/');
 
         if (!fs.existsSync(source)) {
             return cb();

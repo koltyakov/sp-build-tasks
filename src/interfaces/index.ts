@@ -36,6 +36,7 @@ export interface IAppConfig {
     bundleCSSLibsFiles?: string[];
     copyAssetsMap?: IAssetMap[];
     customStyles?: IAssetMap | IAssetMap[];
+    modulePath?: string;
 }
 
 export interface IAssetMap {

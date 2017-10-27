@@ -110,6 +110,11 @@
             }
           }
         },
+        "modulePath": {
+          "description": "Relative path for module inside dist structure, e.g. `modules/my-module`",
+          "type": "string",
+          "default": ""
+        },
         "webpackConfig": {
           "$ref": "#/definitions/webpackConfig",
           "description": "Optional Webpack configuration which is added to webpack's configs for all entry points."
