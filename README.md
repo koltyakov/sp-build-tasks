@@ -12,12 +12,12 @@
 
 The library was designed for usage with [SharePoint Push-n-Pull](https://github.com/koltyakov/generator-sppp) Yeoman generator but can be used as a stand-alone package as well.
 
-# Install
+## Install
 
-## Dependency
+### Dependency
 
 ```bash
-yarn add sp-build-tasks --save-dev
+yarn add sp-build-tasks --dev
 ```
 
 or
@@ -26,7 +26,7 @@ or
 npm install sp-build-tasks --save-dev
 ```
 
-## Integration to the code
+### Integration to the code
 
 ```javascript
 // gulpfile.js
@@ -34,13 +34,13 @@ npm install sp-build-tasks --save-dev
 const gulp = require('gulp');
 
 new (require('sp-build-tasks'))(gulp, {
-    privateConf: './config/private.json',
-    appConfig: './config/app.json',
-    taskPath: './build/tasks'
+  privateConf: './config/private.json',
+  appConfig: './config/app.json',
+  taskPath: './build/tasks'
 });
 ```
 
-**Settings**
+#### Settings
 
 - `privateConf` - path to [credentials](https://github.com/koltyakov/node-sp-auth-config) config file
 - `appConfig` - path to application config file
@@ -50,39 +50,39 @@ new (require('sp-build-tasks'))(gulp, {
 
 ```javascript
 export interface IAppConfig {
-    spFolder: string; // SharePoint relative target folder (e.i. `_catalogs/masterpage/contoso`)
-    distFolder: string; // Local distribution folder path
-    masterpagePath?: string; // Path to masterpage .hbs in `./src` structure
-    masterpage?: any; // masterpage custom properties passed to hbs template
-    masterpageCodeName?: string; // masterpage code name (used for renaming output file)
-    logoPath?: string; // Path to logo image
-    bundleJSLibsFiles?: string[]; // Paths to .js files to bundle together in a single vendor.js
-    bundleCSSLibsFiles?: string[]; // Paths to .css files to bundle together in a single vendor.css
-    copyAssetsMap?: IAssetMap[]; // Custom static files copy configuration
-    customStyles?: IAssetMap | IAssetMap[]; // Custom styles
+  spFolder: string; // SharePoint relative target folder (e.i. `_catalogs/masterpage/contoso`)
+  distFolder: string; // Local distribution folder path
+  masterpagePath?: string; // Path to masterpage .hbs in `./src` structure
+  masterpage?: any; // masterpage custom properties passed to hbs template
+  masterpageCodeName?: string; // masterpage code name (used for renaming output file)
+  logoPath?: string; // Path to logo image
+  bundleJSLibsFiles?: string[]; // Paths to .js files to bundle together in a single vendor.js
+  bundleCSSLibsFiles?: string[]; // Paths to .css files to bundle together in a single vendor.css
+  copyAssetsMap?: IAssetMap[]; // Custom static files copy configuration
+  customStyles?: IAssetMap | IAssetMap[]; // Custom styles
 }
 ```
 
-### Custom Gulp tasks
+#### Custom Gulp tasks
 
 ```javascript
 // `./build/tasks/example.js`
 module.exports = (gulp, $) => {
 
-    // $ - gulp plugins dynamic loader
+  // $ - gulp plugins dynamic loader
 
-    gulp.task('example', (cb) => {
-        console.log('Example Gulp Task');
-        cb();
-    });
+  gulp.task('example', (cb) => {
+    console.log('Example Gulp Task');
+    cb();
+  });
 
-    // ...
+  // ...
 };
 ```
 
-# Gulp tasks
+## Gulp tasks
 
-## Authentication config setup initiation
+### Authentication config setup initiation
 
 ```bash
 gulp config
@@ -90,9 +90,9 @@ gulp config
 
 Populates `./config/private.json` with credentials options.
 
-## Watch and live development
+### Watch and live development
 
-### Watch
+#### Watch
 
 ```bash
 gulp watch
@@ -101,7 +101,7 @@ gulp watch
 Watch for changes in `./src` folder, compiles .ts, .hbs and .scss to `./dist`.
 Watch for changes in `./dist` and uploads to target SharePoint folder.
 
-### Watch with SharePoint pages live reload
+#### Watch with SharePoint pages live reload
 
 ```bash
 gulp live
@@ -109,15 +109,16 @@ gulp live
 
 Does the same as the `watch` task.
 Emits files update to SharePoint live reload client which triggers live pages reload for:
+
 - JavaScript's updates
 - CSS's updates
 - CEWPs updates
 - Layouts updates
 - Masterpage updates
 
-## Syncronization
+### Syncronization
 
-### Publishing `./dist` to SharePoint
+#### Publishing `./dist` to SharePoint
 
 ```bash
 gulp push
@@ -125,7 +126,7 @@ gulp push
 
 Publishes all `./dist` folder content to SharePoint target folder.
 
-### Fetching files from SharePOint
+#### Fetching files from SharePOint
 
 ```bash
 gulp pull
@@ -133,7 +134,7 @@ gulp pull
 
 Downloads all files and folders from remote SharePoint target to `./dist` folder.
 
-## Build front-end
+### Build front-end
 
 ```bash
 gulp build
@@ -151,9 +152,9 @@ Compiles front-end to `./dist` folder.
   - build:layouts - .hbs to .aspx layouts
   - build:webparts - compiles .hbs CEWPs
 
-## Deployment
+### Deployment
 
-### Live reload
+#### Live reload
 
 ```bash
 gulp reload:install
@@ -167,7 +168,7 @@ gulp reload:retract
 
 Retracts live reload custom action client.
 
-### Masterpage
+#### Masterpage
 
 ```bash
 gulp masterpage:apply
@@ -181,7 +182,7 @@ gulp masterpage:restore
 
 Restores default (seattle.masterpage) masterpage.
 
-### Logotype
+#### Logotype
 
 ```bash
 gulp logo:apply
