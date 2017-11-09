@@ -35,11 +35,13 @@ module.exports = webpackItemsMap.map(mapItem => {
     ...(config.webpackConfig || {}),
     ...(mapItem.webpackConfig || {}),
     entry: {
-      index: mapItem.entry || defaultItemMap.entry
+      index: mapItem.entry || defaultItemMap.entry,
+      ...((mapItem.webpackConfig || {}).entry || {})
     },
     output: {
       path: path.join(process.cwd(), config.distFolder, (config.modulePath || ''), '/scripts'),
-      filename: mapItem.target || defaultItemMap.target
+      filename: mapItem.target || defaultItemMap.target,
+      ...((mapItem.webpackConfig || {}).output || {})
     }
   };
 });
