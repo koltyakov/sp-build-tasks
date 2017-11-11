@@ -12,3 +12,5 @@ tslint.json
 yarn.lock
 jsconfig.json
 .npmignore
+.editorconfig
+.github
