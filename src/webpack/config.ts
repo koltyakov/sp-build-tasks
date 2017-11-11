@@ -23,7 +23,7 @@ let webpackConfigDefaults: IWebpackConfig = {
   plugins: [
   ],
   resolve: {
-    extensions: ['.ts', '.tsx', '.js']
+    extensions: ['.ts', '.tsx', '.js', '.jsx']
   }
 };
 

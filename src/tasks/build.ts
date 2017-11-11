@@ -67,6 +67,32 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     });
   });
 
+  gulp.task('build:webpack-watch', ['config'], () => {
+    let webpackConfigPath: string = path.join(process.cwd(), 'webpack.config.js');
+    if (!fs.existsSync(webpackConfigPath)) {
+      webpackConfigPath = path.join(__dirname, '../webpack/config.js');
+    }
+    let webpackConfig: any = require(webpackConfigPath);
+    if (!Array.isArray(webpackConfig)) {
+      webpackConfig = [webpackConfig];
+    }
+    webpackConfig = webpackConfig.map(w => {
+      return {
+        ...w,
+        watch: true
+      };
+    });
+    webpack(webpackConfig, (err, stats) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(stats.toString({
+          colors: true
+        }));
+      }
+    });
+  });
+
   gulp.task('build:css-libs', ['config'], (cb) => {
     let configs: IGulpConfigs = global.gulpConfigs;
     const build = getBuildInstance(configs);
