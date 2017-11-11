@@ -18,7 +18,7 @@ class SPBuildTasks {
   private gulp: Gulp;
   private settings: ISPBuildSettings;
 
-  constructor(gulp: Gulp, settings: ISPBuildSettings = {}) {
+  constructor (gulp: Gulp, settings: ISPBuildSettings = {}) {
     this.settings = {
       ...settings,
       appConfig: settings.appConfig || './config/app.json',
@@ -29,13 +29,13 @@ class SPBuildTasks {
     this.initGulpTasks();
   }
 
-  private initGulpTasks() {
+  private initGulpTasks () {
     let plugins = this.loadGulpPlugins();
     this.loadSPBuildGulpPlugins(plugins);
     this.loadCustomGulpTasks(this.settings.taskPath, plugins);
   }
 
-  private loadSPBuildGulpPlugins(plugins?: IGulpPlugins) {
+  private loadSPBuildGulpPlugins (plugins?: IGulpPlugins) {
     if (typeof plugins === 'undefined') {
       plugins = this.loadGulpPlugins();
     }
@@ -49,7 +49,7 @@ class SPBuildTasks {
     cleanTasks(this.gulp, plugins, this.settings);
   }
 
-  private loadCustomGulpTasks(taskPath: string, plugins?: IGulpPlugins) {
+  private loadCustomGulpTasks (taskPath: string, plugins?: IGulpPlugins) {
     if (fs.existsSync(taskPath)) {
       const taskList = fs.readdirSync(taskPath);
       if (typeof plugins === 'undefined') {
@@ -62,7 +62,7 @@ class SPBuildTasks {
     }
   }
 
-  private loadGulpPlugins(): IGulpPlugins {
+  private loadGulpPlugins (): IGulpPlugins {
     return loadGulpPlugins({
       pattern: [
         'gulp-*', 'gulp.*',

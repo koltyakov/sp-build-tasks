@@ -23,7 +23,7 @@ export default class Build {
   private copy: Copy;
   private EOL: string = '\n';
 
-  constructor(settings: IBuildSettings = {}) {
+  constructor (settings: IBuildSettings = {}) {
     this.settings = {
       ...settings,
       src: settings.src || './src',
@@ -33,7 +33,7 @@ export default class Build {
     this.copy = new Copy(this.settings);
   }
 
-  public buildBootstrap() {
+  public buildBootstrap () {
     let bootstrapRoot = path.join(process.cwd(), '/node_modules/bootstrap/less');
     let bootstrapFiles = [
       // Core variables and mixins
@@ -109,7 +109,7 @@ export default class Build {
     return compiledCss;
   }
 
-  public buildCustomCssFromScss(params: IBuildCustomCssFromScss = {}) {
+  public buildCustomCssFromScss (params: IBuildCustomCssFromScss = {}) {
     let { file, data, outputStyle, outFile, sourceMap, sourceMapContents } = params;
     data = data || file ? fs.readFileSync(file, this.settings.fileEncoding).toString() : null;
     outputStyle = outputStyle || 'compressed';
@@ -124,7 +124,7 @@ export default class Build {
     return result; // .css
   }
 
-  public concatFilesContent(params: IConcatFilesContent) {
+  public concatFilesContent (params: IConcatFilesContent) {
     let { filesArr, distPath } = params;
     let concatedContent = (filesArr || []).map(filePath => {
       let content = '';
@@ -144,7 +144,7 @@ export default class Build {
     return concatedContent.join(this.EOL);
   }
 
-  public minifyJsContent(params: IMinifyContent) {
+  public minifyJsContent (params: IMinifyContent) {
     let { content, srcPath, distPath } = params;
     content = content || fs.readFileSync(srcPath, this.settings.fileEncoding);
     let minifiedContent = uglifyJS.minify(content, {
@@ -159,7 +159,7 @@ export default class Build {
     return minifiedContent;
   }
 
-  public minifyCssContent(params: IMinifyContent) {
+  public minifyCssContent (params: IMinifyContent) {
     let { content, srcPath, distPath } = params;
     content = content || fs.readFileSync(srcPath, this.settings.fileEncoding);
     let minifiedContent = new CleanCSS({ level: { 1: { specialComments: 0 } } }).minify(content);
@@ -172,7 +172,7 @@ export default class Build {
     return minifiedContent;
   }
 
-  public copyAssets(params: ICopyAssets) {
+  public copyAssets (params: ICopyAssets) {
     let { srcArrayOrPath, dist } = params;
     mkdirp.sync(dist);
     if (Array.isArray(srcArrayOrPath)) {
@@ -184,7 +184,7 @@ export default class Build {
     }
   }
 
-  public compileHbsTemplate(params: ICompileHbsTemplate) {
+  public compileHbsTemplate (params: ICompileHbsTemplate) {
     return new Promise((resolve, reject) => {
       let { source, target, data } = params;
       let src = path.normalize(this.settings.src);
@@ -222,7 +222,7 @@ export default class Build {
     });
   }
 
-  public compileHbsTemplates(params: ICompileHbsTemplates) {
+  public compileHbsTemplates (params: ICompileHbsTemplates) {
     let { files, data } = params;
     let compilePromises = files.map(file => {
       return this.compileHbsTemplate({

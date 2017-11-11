@@ -8,13 +8,13 @@ export default class Deploy {
 
   private settings: IDeploySettings;
 
-  constructor(settings: IDeploySettings) {
+  constructor (settings: IDeploySettings) {
     this.settings = {
       ...settings
     };
   }
 
-  public applyMasterpageToWeb(params: IApplyMasterpageToWeb = {}) {
+  public applyMasterpageToWeb (params: IApplyMasterpageToWeb = {}) {
     let { webUrl, dist, spFolder, masterpagePath } = params;
 
     dist = dist || this.settings.dist;
@@ -59,7 +59,7 @@ export default class Deploy {
     });
   }
 
-  public applyLogotypeToWeb(params: IApplyLogotypeToWeb = {}) {
+  public applyLogotypeToWeb (params: IApplyLogotypeToWeb = {}) {
     let { webUrl, dist, spFolder, logoPath } = params;
 
     dist = dist || this.settings.dist;

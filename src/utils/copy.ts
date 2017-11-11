@@ -7,7 +7,7 @@ export default class Copy {
 
   private settings: IBuildSettings;
 
-  constructor(settings: IBuildSettings = {}) {
+  constructor (settings: IBuildSettings = {}) {
     this.settings = {
       ...settings,
       src: settings.src || './src',
@@ -16,7 +16,7 @@ export default class Copy {
     };
   }
 
-  public copyFileOrFolderSync(source: string, target: string) {
+  public copyFileOrFolderSync (source: string, target: string) {
     let skipFolder: boolean = source.endsWith('/*');
     if (skipFolder) {
       source = source.replace('/*', '');
@@ -30,7 +30,7 @@ export default class Copy {
     }
   }
 
-  public copyFileSync(source: string, target: string) {
+  public copyFileSync (source: string, target: string) {
     let targetFile = target;
     if (fs.existsSync(target)) {
       if (fs.lstatSync(target).isDirectory()) {
@@ -42,7 +42,7 @@ export default class Copy {
     });
   }
 
-  public copyFolderRecursiveSync(source: string, target: string, skipFolder: boolean = false) {
+  public copyFolderRecursiveSync (source: string, target: string, skipFolder: boolean = false) {
     let files = [];
     let targetFolder = skipFolder ? path.resolve(target) : path.join(target, path.basename(source));
     if (!fs.existsSync(targetFolder)) {
