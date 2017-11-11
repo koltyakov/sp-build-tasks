@@ -31,10 +31,19 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     //   './src/scripts/**/*.ts',
     //   './src/scripts/**/*.tsx',
     //   '!./src/scripts/**/*.d.ts'
-    // ], () => {
+    // ], (...args) => {
     //   gulp.start('build:webpack');
     // });
-    gulp.start('build:webpack-watch'); // More effective watch using webpack
+
+    $.watch([
+      './src/scripts/**/*.js',
+      './src/scripts/**/*.jsx',
+      './src/scripts/**/*.ts',
+      './src/scripts/**/*.tsx',
+      '!./src/scripts/**/*.d.ts'
+    ]).once('data', () => {
+      gulp.start('build:webpack-watch'); // More effective watch using webpack
+    });
 
     $.watch('./src/webparts/**/*.hbs', (vinyl) => {
       const build = getBuildInstance(configs);
