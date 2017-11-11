@@ -81,6 +81,9 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     });
   };
 
+  gulp.task('watch:prod', ['env:prod', 'watch']);
+  gulp.task('watch:dev', ['env:dev', 'watch']);
+
   gulp.task('watch', ['config'], (cb) => {
     console.log(`\n${colors.yellow('===')} ${colors.green('Watch Assets')} ${colors.yellow('===')}\n`);
 

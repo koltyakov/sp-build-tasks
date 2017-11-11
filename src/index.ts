@@ -5,6 +5,7 @@ import * as path from 'path';
 
 import { Gulp } from 'gulp';
 
+import { envTasks } from './tasks/env';
 import { configTasks } from './tasks/config';
 import { syncTasks } from './tasks/sync';
 import { deployTasks } from './tasks/deploy';
@@ -40,6 +41,7 @@ class SPBuildTasks {
       plugins = this.loadGulpPlugins();
     }
 
+    envTasks(this.gulp, plugins, this.settings);
     configTasks(this.gulp, plugins, this.settings);
     syncTasks(this.gulp, plugins, this.settings);
     deployTasks(this.gulp, plugins, this.settings);

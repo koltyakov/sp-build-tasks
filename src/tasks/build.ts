@@ -21,6 +21,9 @@ export const getBuildInstance = (settings: IGulpConfigs): Build => {
 
 export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
+  gulp.task('build:prod', ['env:prod', 'build']);
+  gulp.task('build:dev', ['env:dev', 'build']);
+
   gulp.task('build', [
     'build:webpack', 'build:css-custom', 'build:copy-assets',
     'build:js-libs', 'build:css-libs', 'build:masterpage',
@@ -59,9 +62,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       if (err) {
         cb(err);
       } else {
-        console.log(stats.toString({
-          colors: true
-        }));
+        console.log(stats.toString({ colors: true }));
         cb();
       }
     });
@@ -83,13 +84,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       };
     });
     webpack(webpackConfig, (err, stats) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(stats.toString({
-          colors: true
-        }));
-      }
+      console.log(err || stats.toString({ colors: true }));
     });
   });
 
