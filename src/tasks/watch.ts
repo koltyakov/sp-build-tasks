@@ -1,20 +1,23 @@
 import * as colors from 'colors';
 import * as path from 'path';
+import * as fs from 'fs';
+import { Gulp } from 'gulp';
+import * as webpack from 'webpack';
 const LiveReload = require('sp-live-reload');
 
+import { Debounce } from '../utils/misc';
 import Build from '../utils/build';
 import { getBuildInstance } from './build';
 
-import { Gulp } from 'gulp';
 import { ISPBuildSettings, IGulpConfigs } from '../interfaces';
 
 declare var global: any;
 
 export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
-  const Watcher = function (configs: IGulpConfigs) {
-    // console.log(`\n${colors.yellow('===')} ${colors.green('Watcher is watching')} ${colors.yellow('===')}\n`);
+  const { run } = new Debounce(50);
 
+  const Watcher = function (configs: IGulpConfigs) {
     $.watch(`./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.'), () => {
       gulp.start('build:masterpage');
     });
@@ -24,17 +27,6 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     $.watch('./src/styles/**/*.scss', () => {
       gulp.start('build:css-custom');
     });
-
-    // $.watch([
-    //   './src/scripts/**/*.js',
-    //   './src/scripts/**/*.jsx',
-    //   './src/scripts/**/*.ts',
-    //   './src/scripts/**/*.tsx',
-    //   '!./src/scripts/**/*.d.ts'
-    // ], (...args) => {
-    //   gulp.start('build:webpack');
-    // });
-
     $.watch([
       './src/scripts/**/*.js',
       './src/scripts/**/*.jsx',
@@ -42,9 +34,8 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       './src/scripts/**/*.tsx',
       '!./src/scripts/**/*.d.ts'
     ]).once('data', () => {
-      gulp.start('build:webpack-watch'); // More effective watch using webpack
+      gulp.start('watch:webpack');
     });
-
     $.watch('./src/webparts/**/*.hbs', (vinyl) => {
       const build = getBuildInstance(configs);
 
@@ -84,23 +75,46 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   gulp.task('watch:prod', ['env:prod', 'watch']);
   gulp.task('watch:dev', ['env:dev', 'watch']);
 
+  gulp.task('watch:webpack', ['config'], () => {
+    let webpackConfigPath: string = path.join(process.cwd(), 'webpack.config.js');
+    if (!fs.existsSync(webpackConfigPath)) {
+      webpackConfigPath = path.join(__dirname, '../webpack/config.js');
+    }
+    let webpackConfig: any = require(webpackConfigPath);
+    if (!Array.isArray(webpackConfig)) {
+      webpackConfig = [webpackConfig];
+    }
+    webpackConfig = webpackConfig.map(w => {
+      return {
+        ...w,
+        watch: true,
+        watchOptions: {
+          watchDelay: 200
+        }
+      };
+    });
+    webpack(webpackConfig, (err, stats) => {
+      console.log(err || stats.toString({ colors: true }));
+    });
+  });
+
   gulp.task('watch', ['config'], (cb) => {
     console.log(`\n${colors.yellow('===')} ${colors.green('Watch Assets')} ${colors.yellow('===')}\n`);
 
     let configs: IGulpConfigs = global.gulpConfigs;
 
     $.watch(configs.watch.assets, (event) => {
-      console.log(event.path);
-      gulp
-        .src(event.path, {
-          base: configs.watch.base
-        })
-        .pipe(
-        $.spsave(
-          configs.spSaveCoreOptions,
-          configs.privateConf.creds
-        )
-        );
+      run(event.path, () => {
+        console.log('Watch:', path.relative('./', event.path), fs.statSync(event.path).size);
+        gulp
+          .src(event.path, {
+            base: configs.watch.base
+          })
+          .pipe($.spsave(
+            configs.spSaveCoreOptions,
+            configs.privateConf.creds
+          ));
+      });
     });
     // tslint:disable-next-line:no-unused-expression
     new Watcher(configs);
@@ -116,22 +130,22 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     liveReload.runServer();
 
     $.watch(configs.watch.assets, (event) => {
-      console.log(event.path);
-      gulp
-        .src(event.path, {
-          base: configs.watch.base
-        })
-        .pipe(
-        $.spsave(
-          configs.spSaveCoreOptions,
-          configs.privateConf.creds
-        )
-        )
-        .pipe($.through.obj((chunk, enc, callback) => {
-          let chunkPath = chunk.path;
-          liveReload.emitUpdatedPath(chunkPath);
-          callback(null, chunk);
-        }));
+      run(event.path, () => {
+        console.log('Watch:', path.relative('./', event.path), fs.statSync(event.path).size);
+        gulp
+          .src(event.path, {
+            base: configs.watch.base
+          })
+          .pipe($.spsave(
+            configs.spSaveCoreOptions,
+            configs.privateConf.creds
+          ))
+          .pipe($.through.obj((chunk, enc, callback) => {
+            let chunkPath = chunk.path;
+            liveReload.emitUpdatedPath(chunkPath);
+            callback(null, chunk);
+          }));
+      });
     });
     // tslint:disable-next-line:no-unused-expression
     new Watcher(configs);

@@ -14,3 +14,16 @@ export const walkFolders = (startFolder: string): string[] => {
   });
   return results;
 };
+
+export class Debounce {
+  private timers: {
+    [key: string]: NodeJS.Timer
+  } = {};
+
+  constructor (public delay: number = 100) {}
+
+  public run = (key: string, cb: (...args: any[]) => void) => {
+    clearTimeout(this.timers[key]);
+    this.timers[key] = setTimeout(cb, this.delay);
+  }
+}

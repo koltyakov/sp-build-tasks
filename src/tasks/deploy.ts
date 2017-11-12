@@ -1,7 +1,6 @@
 import * as colors from 'colors';
-const LiveReload = require('sp-live-reload');
-
 import Deploy from '../utils/deploy';
+const LiveReload = require('sp-live-reload');
 
 import { Gulp } from 'gulp';
 import { ISPBuildSettings, IGulpConfigs, IDeploySettings } from '../interfaces';

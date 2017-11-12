@@ -3,11 +3,11 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as mkdirp from 'mkdirp';
 import * as webpack from 'webpack';
+import { Gulp } from 'gulp';
 
 import Build from '../utils/build';
 import { walkFolders } from '../utils/misc';
 
-import { Gulp } from 'gulp';
 import { ISPBuildSettings, IGulpConfigs, IBuildSettings, IAssetMap } from '../interfaces';
 
 declare var global: any;
@@ -65,26 +65,6 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         console.log(stats.toString({ colors: true }));
         cb();
       }
-    });
-  });
-
-  gulp.task('build:webpack-watch', ['config'], () => {
-    let webpackConfigPath: string = path.join(process.cwd(), 'webpack.config.js');
-    if (!fs.existsSync(webpackConfigPath)) {
-      webpackConfigPath = path.join(__dirname, '../webpack/config.js');
-    }
-    let webpackConfig: any = require(webpackConfigPath);
-    if (!Array.isArray(webpackConfig)) {
-      webpackConfig = [webpackConfig];
-    }
-    webpackConfig = webpackConfig.map(w => {
-      return {
-        ...w,
-        watch: true
-      };
-    });
-    webpack(webpackConfig, (err, stats) => {
-      console.log(err || stats.toString({ colors: true }));
     });
   });
 

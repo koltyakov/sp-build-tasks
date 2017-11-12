@@ -13,19 +13,15 @@ const defaultItemMap: IWebpackMapItem = {
 
 const webpackConfigDevDefaults: IWebpackConfig = {
   cache: true,
-  devtool: 'source-map',
+  devtool: 'eval-source-map', // source-map
   module: {
     rules: [{
       test: /\.ts(x?)$/,
-      exclude: /(node_modules|bower_components)/,
+      exclude: /(node_modules|bower_components|dist)/,
       use: ['awesome-typescript-loader']
     }]
   },
-  plugins: [
-    new UglifyJSPlugin({
-      sourceMap: true
-    })
-  ],
+  plugins: [],
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx']
   }
@@ -37,14 +33,12 @@ const webpackConfigProdDefaults: IWebpackConfig = {
   module: {
     rules: [{
       test: /\.ts(x?)$/,
-      exclude: /(node_modules|bower_components)/,
+      exclude: /(node_modules|bower_components|dist)/,
       use: ['awesome-typescript-loader']
     }]
   },
   plugins: [
-    new UglifyJSPlugin({
-      sourceMap: true
-    }),
+    new UglifyJSPlugin({ sourceMap: true }),
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
