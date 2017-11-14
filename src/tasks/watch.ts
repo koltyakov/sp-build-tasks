@@ -5,7 +5,7 @@ import { Gulp } from 'gulp';
 import * as webpack from 'webpack';
 const LiveReload = require('sp-live-reload');
 
-import { Debounce } from '../utils/misc';
+import { Debounce, formatTime } from '../utils/misc';
 import Build from '../utils/build';
 import { getBuildInstance } from './build';
 
@@ -22,7 +22,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   const spsave = (filePath: string, throughCallback?: Function): void => {
     let configs: IGulpConfigs = global.gulpConfigs;
     saveQueue[filePath] = (saveQueue[filePath] || 0) + 1;
-    console.log('Watch:', path.relative('./', filePath), fs.statSync(filePath).size,
+    console.log(`[${formatTime(new Date())}]`, 'Watch:', path.relative('./', filePath), fs.statSync(filePath).size,
       saveQueue[filePath] > 1 ? '(delayed)' : '');
     if (saveQueue[filePath] === 1) {
       gulp
