@@ -40,7 +40,7 @@
     "handlebars": "^4.0.11",
     "less": "^2.7.3",
     "mkdirp": "^0.5.1",
-    "node-sass": "^4.6.0",
+    "node-sass": "^4.6.1",
     "node-sp-auth-config": "^2.1.1",
     "run-sequence": "^2.2.0",
     "sp-live-reload": "^2.0.10",
@@ -58,7 +58,7 @@
     "@types/gulp": "^3.8.33",
     "@types/gulp-load-plugins": "0.0.31",
     "@types/mkdirp": "^0.5.1",
-    "@types/node": "^8.0.51",
+    "@types/node": "^8.0.53",
     "tslint-config-standard": "^7.0.0"
   }
 }
