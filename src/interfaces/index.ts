@@ -27,6 +27,7 @@ export interface IWatchSettings {
 export interface IAppConfig {
   spFolder: string;
   distFolder: string;
+  deleteFiles: boolean;
   masterpagePath?: string;
   masterpage?: any;
   masterpageCodeName?: string;

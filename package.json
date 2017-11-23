@@ -46,6 +46,7 @@
     "sp-live-reload": "^2.0.10",
     "sp-request": "^2.1.2",
     "sppull": "^2.2.2",
+    "sppurge": "^1.1.1",
     "through2": "^2.0.3",
     "tslint": "^5.8.0",
     "typescript": "^2.6.1",

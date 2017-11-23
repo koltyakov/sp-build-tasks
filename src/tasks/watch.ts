@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { Gulp } from 'gulp';
 import * as webpack from 'webpack';
+import sppurge, { IOptions as IPurgeOptions } from 'sppurge';
 const LiveReload = require('sp-live-reload');
 
 import { Debounce, formatTime } from '../utils/misc';
@@ -41,6 +42,32 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
           callback(null, chunk);
         }));
     }
+  };
+
+  const purge = (filePath: string): void => {
+    let configs: IGulpConfigs = global.gulpConfigs;
+
+    let sppurgeOptions: IPurgeOptions = {
+      folder: configs.appConfig.spFolder,
+      localFilePath: filePath,
+      localBasePath: configs.appConfig.distFolder
+    };
+
+    sppurge(configs.privateConf as any, sppurgeOptions)
+      .then(res => {
+        if (res.statusCode) {
+          console.log('File has been deleted:', res.statusMessage);
+        } else {
+          console.log(res.statusCode, res.statusMessage);
+        }
+      })
+      .catch(err => {
+        if ((err.error || { error: { code: '' } }).error.code.split(',')[0] === '-2146232832') {
+          console.log('File has not been removed as it was not there in SharePoint.');
+        } else {
+          console.log('Error:', err.message);
+        }
+      });
   };
 
   const Watcher = function (configs: IGulpConfigs) {
@@ -142,6 +169,8 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         run(event.path, () => {
           spsave(event.path);
         });
+      } else if (configs.appConfig.deleteFiles) {
+        purge(event.path);
       }
     });
     // tslint:disable-next-line:no-unused-expression
@@ -164,6 +193,8 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
             liveReload.emitUpdatedPath(chunkPath);
           });
         });
+      } else if (configs.appConfig.deleteFiles) {
+        purge(event.path);
       }
     });
     // tslint:disable-next-line:no-unused-expression

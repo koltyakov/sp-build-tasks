@@ -14,7 +14,8 @@ export const getConfigs = (settings: ISPBuildSettings): Promise<IGulpConfigs> =>
     let gulpConfigs: IGulpConfigs = {
       appConfig: {
         ...appConfig,
-        masterpageCodeName: appConfig.masterpageCodeName || 'Frankfurt'
+        masterpageCodeName: appConfig.masterpageCodeName || 'Frankfurt',
+        deleteFiles: typeof appConfig.deleteFiles !== 'undefined' ? appConfig.deleteFiles : false
       },
       privateConf: {
         siteUrl: privateConfig.siteUrl,
