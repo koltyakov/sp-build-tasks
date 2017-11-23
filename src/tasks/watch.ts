@@ -41,17 +41,23 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
           callback(null, chunk);
         }));
     }
-  }
+  };
 
   const Watcher = function (configs: IGulpConfigs) {
-    $.watch(`./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.'), () => {
-      gulp.start('build:masterpage');
+    $.watch(`./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.'), (event) => {
+      if (event.event !== 'unlink') {
+        gulp.start('build:masterpage');
+      }
     });
-    $.watch('./src/masterpage/layouts/*.hbs', () => {
-      gulp.start('build:layouts');
+    $.watch('./src/masterpage/layouts/*.hbs', (event) => {
+      if (event.event !== 'unlink') {
+        gulp.start('build:layouts');
+      }
     });
-    $.watch('./src/styles/**/*.scss', () => {
-      gulp.start('build:css-custom');
+    $.watch('./src/styles/**/*.scss', (event) => {
+      if (event.event !== 'unlink') {
+        gulp.start('build:css-custom');
+      }
     });
     $.watch([
       './src/scripts/**/*.js',
@@ -63,38 +69,40 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       gulp.start('watch:webpack');
     });
     $.watch('./src/webparts/**/*.hbs', (vinyl) => {
-      const build = getBuildInstance(configs);
+      if (vinyl.event !== 'unlink') {
+        const build = getBuildInstance(configs);
 
-      let serverPath: string = configs.privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
-      let publishPath: string = `${configs.privateConf.siteUrl}/${configs.appConfig.spFolder}`.replace(serverPath, '');
+        let serverPath: string = configs.privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
+        let publishPath: string = `${configs.privateConf.siteUrl}/${configs.appConfig.spFolder}`.replace(serverPath, '');
 
-      let packageData = require(path.join(process.cwd(), 'package.json'));
-      let data = {
-        serverPath,
-        publishPath,
-        masterpageName: configs.appConfig.masterpageCodeName,
-        spRootFolder: configs.appConfig.spFolder,
-        assetsVersion: packageData.version + '_' + (new Date()).getTime(),
-        ...(configs.appConfig.masterpage || {})
-      };
-      let targetFolder = configs.appConfig.distFolder + '/webparts';
+        let packageData = require(path.join(process.cwd(), 'package.json'));
+        let data = {
+          serverPath,
+          publishPath,
+          masterpageName: configs.appConfig.masterpageCodeName,
+          spRootFolder: configs.appConfig.spFolder,
+          assetsVersion: packageData.version + '_' + (new Date()).getTime(),
+          ...(configs.appConfig.masterpage || {})
+        };
+        let targetFolder = configs.appConfig.distFolder + '/webparts';
 
-      let srcPath = path.relative('./src', vinyl.path);
-      let relPath = path.relative(path.join('./src', 'webparts'), vinyl.path);
-      let fileParse = path.parse(relPath);
-      let trgPath = path.join(targetFolder, path.dirname(relPath), fileParse.name + '.html');
+        let srcPath = path.relative('./src', vinyl.path);
+        let relPath = path.relative(path.join('./src', 'webparts'), vinyl.path);
+        let fileParse = path.parse(relPath);
+        let trgPath = path.join(targetFolder, path.dirname(relPath), fileParse.name + '.html');
 
-      build.compileHbsTemplate({
-        source: srcPath,
-        target: trgPath,
-        data: data
-      })
-        .then((res) => {
-          console.log('Webpart is compiled', trgPath);
+        build.compileHbsTemplate({
+          source: srcPath,
+          target: trgPath,
+          data: data
         })
-        .catch((err) => {
-          console.log('Error', err);
-        });
+          .then((res) => {
+            console.log('Webpart is compiled', trgPath);
+          })
+          .catch((err) => {
+            console.log('Error', err);
+          });
+      }
     });
   };
 
@@ -130,10 +138,13 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     const configs: IGulpConfigs = global.gulpConfigs;
 
     $.watch(configs.watch.assets, (event) => {
-      run(event.path, () => {
-        spsave(event.path);
-      });
+      if (event.event !== 'unlink') {
+        run(event.path, () => {
+          spsave(event.path);
+        });
+      }
     });
+    // tslint:disable-next-line:no-unused-expression
     new Watcher(configs);
   });
 
@@ -147,12 +158,15 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     liveReload.runServer();
 
     $.watch(configs.watch.assets, (event) => {
-      run(event.path, () => {
-        spsave(event.path, (chunkPath) => {
-          liveReload.emitUpdatedPath(chunkPath);
+      if (event.event !== 'unlink') {
+        run(event.path, () => {
+          spsave(event.path, (chunkPath) => {
+            liveReload.emitUpdatedPath(chunkPath);
+          });
         });
-      });
+      }
     });
+    // tslint:disable-next-line:no-unused-expression
     new Watcher(configs);
   });
 
