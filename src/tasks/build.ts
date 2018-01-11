@@ -115,17 +115,19 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     try {
       for (let assets of assetsArr) {
         let srcPath = path.join(process.cwd(), 'src', (assets as any).src);
-        let distPath = path.join(process.cwd(), configs.appConfig.distFolder, (configs.appConfig.modulePath || ''), assets.dist);
-        let sourceMapPath = distPath + '.map';
-        let sourceMapFile = sourceMapPath.split('\\').pop();
-        let result = build.buildCustomCssFromScss({ file: srcPath, sourceMap: sourceMapFile, sourceMapContents: true });
-        mkdirp.sync(path.dirname(distPath));
-        fs.writeFileSync(
-          distPath,
-          result.css.toString().replace('/*# sourceMappingURL=../../../', '/*# sourceMappingURL='),
-          { encoding: 'utf-8' }
-        );
-        fs.writeFileSync(sourceMapPath, result.map.toString(), { encoding: 'utf-8' });
+        if (fs.existsSync(srcPath)) {
+          let distPath = path.join(process.cwd(), configs.appConfig.distFolder, (configs.appConfig.modulePath || ''), assets.dist);
+          let sourceMapPath = distPath + '.map';
+          let sourceMapFile = sourceMapPath.split('\\').pop();
+          let result = build.buildCustomCssFromScss({ file: srcPath, sourceMap: sourceMapFile, sourceMapContents: true });
+          mkdirp.sync(path.dirname(distPath));
+          fs.writeFileSync(
+            distPath,
+            result.css.toString().replace('/*# sourceMappingURL=../../../', '/*# sourceMappingURL='),
+            { encoding: 'utf-8' }
+          );
+          fs.writeFileSync(sourceMapPath, result.map.toString(), { encoding: 'utf-8' });
+        }
       }
       cb();
     } catch (ex) {
