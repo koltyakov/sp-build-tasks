@@ -14,7 +14,7 @@ declare var global: any;
 
 export const getBuildInstance = (settings: IGulpConfigs): Build => {
   global.build = global.build || new Build({
-
+    dist: settings.appConfig.distFolder
   });
   return global.build;
 };
