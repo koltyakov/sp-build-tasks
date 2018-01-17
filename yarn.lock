@@ -4486,9 +4486,9 @@ sp-live-reload@^2.0.10:
     spsave "^3.1.0"
     yargs "^10.0.3"
 
-sp-request@^2.1.0, sp-request@^2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/sp-request/-/sp-request-2.1.2.tgz#89b4a1c4fcd9dd4468f276039b66ac0a284ea443"
+sp-request@^2.1.0, sp-request@^2.1.2, sp-request@^2.1.3:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/sp-request/-/sp-request-2.1.3.tgz#1d975d3994051a616d6bb64e2d15b226226a24b2"
   dependencies:
     "@types/bluebird" "^3.5.8"
     "@types/core-js" "^0.9.34"
@@ -4537,9 +4537,9 @@ sppull@^2.2.2:
     request "^2.83.0"
     sp-request "^2.1.0"
 
-sppurge@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/sppurge/-/sppurge-1.1.1.tgz#8da5d71e4d587a96315aaf46802e3e242fab434b"
+sppurge@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/sppurge/-/sppurge-1.1.3.tgz#c4c8a1ee0fae7ee2ad6859be7938fe0d44ce70f4"
   dependencies:
     path "^0.12.7"
     sp-request "^2.1.2"

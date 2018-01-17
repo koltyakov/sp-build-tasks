@@ -9,7 +9,7 @@ import {
 
 declare var global: any;
 
-export const getConfigs = (settings: ISPBuildSettings): Promise<IGulpConfigs> => {
+export const getConfigs = (settings: ISPBuildSettings, forcePrompts: boolean = false): Promise<IGulpConfigs> => {
   const mapGulpConfigs = (appConfig: IAppConfig, privateConfig: any): IGulpConfigs => {
     let gulpConfigs: IGulpConfigs = {
       appConfig: {
@@ -58,7 +58,8 @@ export const getConfigs = (settings: ISPBuildSettings): Promise<IGulpConfigs> =>
     const authConfig = new AuthConfig({
       configPath: path.resolve(settings.privateConf),
       encryptPassword: true,
-      saveConfigOnDisk: true
+      saveConfigOnDisk: true,
+      forcePrompts: forcePrompts
     });
     if (typeof global.spBuildContext === 'undefined') {
       authConfig.getContext()
@@ -81,6 +82,16 @@ export const configTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   gulp.task('config', (cb) => {
     getConfigs(settings)
+      .then(() => {
+        cb();
+      })
+      .catch((err) => {
+        cb(err.message);
+      });
+  });
+
+  gulp.task('config:force', (cb) => {
+    getConfigs(settings, true)
       .then(() => {
         cb();
       })
