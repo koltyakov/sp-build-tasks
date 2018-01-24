@@ -34,78 +34,79 @@ export default class Build {
   }
 
   public buildBootstrap () {
-    let bootstrapRoot = path.join(process.cwd(), '/node_modules/bootstrap/less');
-    let bootstrapFiles = [
-      // Core variables and mixins
-      'variables',
-      'mixins',
-
-      // Reset and dependencies
-      // "normalize", // Not-Compatible
-      'print',
-      'glyphicons',
-
-      // Core CSS
-      // "scaffolding", // Not-Compatible
-      // "type", // Not-Compatible
-      'code',
-      'grid',
-      'tables',
-      'forms', // Fixes needed
-      'buttons',
-
-      // Components
-      'component-animations',
-      'dropdowns',
-      'button-groups',
-      'input-groups',
-      'navs',
-      'navbar',
-      'breadcrumbs',
-      'pagination',
-      'pager',
-      'labels',
-      'badges',
-      'jumbotron',
-      'thumbnails',
-      'alerts',
-      'progress-bars',
-      'media',
-      'list-group',
-      'panels',
-      'responsive-embed',
-      'wells',
-      'close',
-
-      // Components w/ JavaScript
-      'modals',
-      'tooltip',
-      'popovers',
-      'carousel',
-
-      // Utility classes
-      'utilities',
-      'responsive-utilities',
-      'theme'
-    ];
-    let bootstrapPaths = bootstrapFiles.map(fileName => {
-      return path.join(bootstrapRoot, '/', fileName + '.less');
-    });
-    let content = this.concatFilesContent({ filesArr: bootstrapPaths });
     let compiledCss = '';
+    let bootstrapRoot = path.join(process.cwd(), '/node_modules/bootstrap/less');
+    if (fs.existsSync(bootstrapRoot)) {
+      let bootstrapFiles = [
+        // Core variables and mixins
+        'variables',
+        'mixins',
 
-    let bootstrapIsReady = false;
-    less.render(content, {
-      filename: path.resolve(path.join(bootstrapRoot, '/_.less'))
-    }, (err, output) => {
-      if (err) {
-        console.log('Less compilation error:', err.message);
-      } else {
-        compiledCss = output.css;
-      }
-      bootstrapIsReady = true;
-    });
-    deasync.loopWhile(() => !bootstrapIsReady);
+        // Reset and dependencies
+        // "normalize", // Not-Compatible
+        'print',
+        'glyphicons',
+
+        // Core CSS
+        // "scaffolding", // Not-Compatible
+        // "type", // Not-Compatible
+        'code',
+        'grid',
+        'tables',
+        'forms', // Fixes needed
+        'buttons',
+
+        // Components
+        'component-animations',
+        'dropdowns',
+        'button-groups',
+        'input-groups',
+        'navs',
+        'navbar',
+        'breadcrumbs',
+        'pagination',
+        'pager',
+        // 'labels',
+        'badges',
+        'jumbotron',
+        'thumbnails',
+        'alerts',
+        'progress-bars',
+        'media',
+        'list-group',
+        'panels',
+        'responsive-embed',
+        'wells',
+        'close',
+
+        // Components w/ JavaScript
+        'modals',
+        'tooltip',
+        'popovers',
+        'carousel',
+
+        // Utility classes
+        'utilities',
+        'responsive-utilities',
+        'theme'
+      ];
+      let bootstrapPaths = bootstrapFiles.map(fileName => {
+        return path.join(bootstrapRoot, '/', fileName + '.less');
+      });
+      let content = this.concatFilesContent({ filesArr: bootstrapPaths });
+      let bootstrapIsReady = false;
+      less.render(content, {
+        filename: path.resolve(path.join(bootstrapRoot, '/_.less'))
+      }, (err, output) => {
+        if (err) {
+          console.log('Less compilation error:', err.message);
+        } else {
+          compiledCss = output.css;
+        }
+        bootstrapIsReady = true;
+      });
+      deasync.loopWhile(() => !bootstrapIsReady);
+    }
     return compiledCss;
   }
 
