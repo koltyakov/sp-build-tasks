@@ -164,7 +164,10 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       siteUrl: configs.privateConf.siteUrl,
       spRootFolder: configs.appConfig.spFolder,
       assetsVersion: packageData.version + '_' + (new Date()).getTime(),
-      ...(configs.appConfig.masterpage || {})
+      ...(configs.appConfig.masterpage || {}),
+      customData: {
+        ...(configs.appConfig.customData || {})
+      }
     };
     let source = `./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.');
     let target = `${configs.appConfig.distFolder}/masterpage/${configs.appConfig.masterpageCodeName}.master`;
@@ -201,7 +204,10 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       masterpageName: configs.appConfig.masterpageCodeName,
       spRootFolder: configs.appConfig.spFolder,
       assetsVersion: packageData.version + '_' + (new Date()).getTime(),
-      ...(configs.appConfig.masterpage || {})
+      ...(configs.appConfig.masterpage || {}),
+      customData: {
+        ...(configs.appConfig.customData || {})
+      }
     };
     let source = './src/masterpage/layouts';
     let target = configs.appConfig.distFolder + '/masterpage/layouts';
@@ -265,7 +271,10 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       masterpageName: configs.appConfig.masterpageCodeName,
       spRootFolder: configs.appConfig.spFolder,
       assetsVersion: packageData.version + '_' + (new Date()).getTime(),
-      ...(configs.appConfig.masterpage || {})
+      ...(configs.appConfig.masterpage || {}),
+      customData: {
+        ...(configs.appConfig.customData || {})
+      }
     };
     let source = './src/webparts';
     let target = `${configs.appConfig.distFolder}/${(configs.appConfig.modulePath || '')}/webparts`.replace(/\/\//g, '/');

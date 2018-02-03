@@ -87,13 +87,17 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@^9.3.0":
+"@types/node@*":
   version "9.4.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.4.0.tgz#b85a0bcf1e1cc84eb4901b7e96966aedc6f078d1"
 
 "@types/node@^6.0.45":
   version "6.0.96"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.96.tgz#7bf0bf40d6ce51e93762cc47d010c8cc5ebb2179"
+
+"@types/node@^8.0.53":
+  version "8.5.9"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.5.9.tgz#7155cfb4ae405bca4dd8df1a214c339e939109bf"
 
 "@types/orchestrator@*":
   version "0.3.2"
@@ -3658,8 +3662,8 @@ node-sass@^4.7.2:
     "true-case-path" "^1.0.2"
 
 node-sp-auth-config@^2.0.2, node-sp-auth-config@^2.3.1, node-sp-auth-config@^2.4.2:
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/node-sp-auth-config/-/node-sp-auth-config-2.4.2.tgz#dab2ef77c4e55d8e450dfd110830e38ee32d7284"
+  version "2.4.3"
+  resolved "https://registry.yarnpkg.com/node-sp-auth-config/-/node-sp-auth-config-2.4.3.tgz#8b09121cb9b00976c83fd41b4afa9ce36be0a160"
   dependencies:
     colors "^1.1.2"
     commander "^2.12.2"

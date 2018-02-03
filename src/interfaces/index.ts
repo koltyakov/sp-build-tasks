@@ -39,6 +39,7 @@ export interface IAppConfig {
   copyAssetsMap?: IAssetMap[];
   customStyles?: IAssetMap | IAssetMap[];
   modulePath?: string;
+  customData?: any;
 }
 
 export interface IAssetMap {

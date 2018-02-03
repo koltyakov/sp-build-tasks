@@ -59,7 +59,7 @@
     "@types/gulp": "^3.8.33",
     "@types/gulp-load-plugins": "0.0.31",
     "@types/mkdirp": "^0.5.2",
-    "@types/node": "^9.3.0",
+    "@types/node": "^8.0.53",
     "@types/webpack": "^3.8.1",
     "tslint-config-standard": "^7.0.0"
   }
