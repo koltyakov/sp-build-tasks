@@ -22,6 +22,11 @@
           "type": "string",
           "default": "./dist"
         },
+        "deleteFiles": {
+          "description": "Delete remote files on local files unlink event",
+          "type": "boolean",
+          "default": false
+        },
         "customStyles": {
           "description": "Custom styles bundle configuration. Array or a single object element src/dist pair of source style entry point and output bundle file",
           "type": "array",

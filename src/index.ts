@@ -33,7 +33,7 @@ class SPBuildTasks {
   private initGulpTasks () {
     let plugins = this.loadGulpPlugins();
     this.loadSPBuildGulpPlugins(plugins);
-    this.loadCustomGulpTasks(this.settings.taskPath, plugins);
+    this.loadCustomGulpTasks(this.settings.taskPath, plugins, this.settings);
   }
 
   private loadSPBuildGulpPlugins (plugins?: IGulpPlugins) {
@@ -51,7 +51,7 @@ class SPBuildTasks {
     cleanTasks(this.gulp, plugins, this.settings);
   }
 
-  private loadCustomGulpTasks (taskPath: string, plugins?: IGulpPlugins) {
+  private loadCustomGulpTasks (taskPath: string, plugins?: IGulpPlugins, settings?: ISPBuildSettings) {
     if (fs.existsSync(taskPath)) {
       const taskList = fs.readdirSync(taskPath);
       if (typeof plugins === 'undefined') {
@@ -59,7 +59,9 @@ class SPBuildTasks {
       }
       taskList.forEach((taskFile) => {
         let task = require(path.resolve(path.join(taskPath, taskFile)));
-        task(this.gulp, plugins);
+        if (task && typeof task === 'function') {
+          task(this.gulp, plugins, settings);
+        }
       });
     }
   }

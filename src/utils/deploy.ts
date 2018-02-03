@@ -1,4 +1,4 @@
-import * as spRequest from 'sp-request';
+import { create as createRequest } from 'sp-request';
 
 import {
   IDeploySettings, IApplyMasterpageToWeb, IApplyLogotypeToWeb
@@ -22,7 +22,7 @@ export default class Deploy {
     spFolder = spFolder || this.settings.spFolder || '';
     masterpagePath = masterpagePath || '';
 
-    const request = spRequest.create(this.settings.creds);
+    const request = createRequest(this.settings.creds);
 
     return new Promise((resolve, reject) => {
       if (spFolder.length === 0) {
@@ -67,7 +67,7 @@ export default class Deploy {
     spFolder = spFolder || this.settings.spFolder || '';
     logoPath = logoPath || '';
 
-    const request = spRequest.create(this.settings.creds);
+    const request = createRequest(this.settings.creds);
 
     return new Promise((resolve, reject) => {
       if (spFolder.length === 0) {

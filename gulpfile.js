@@ -18,3 +18,6 @@ gulp.task('tsc', ['clean'], () => {
     .pipe(tsc.createProject('tsconfig.json')())
     .js.pipe(gulp.dest('./dist'));
 });
+
+// TSC alias
+gulp.task('prepublish', ['tsc']);
