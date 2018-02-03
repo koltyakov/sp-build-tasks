@@ -43,8 +43,6 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         }));
     }
   };
-<<<<<<< HEAD
-=======
 
   const purge = (filePath: string): void => {
     let configs: IGulpConfigs = global.gulpConfigs;
@@ -71,7 +69,6 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         }
       });
   };
->>>>>>> 39a4c000f54465d9cfa3046c9fb37765108e228f
 
   const Watcher = function (configs: IGulpConfigs) {
     $.watch(`./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.'), (event) => {

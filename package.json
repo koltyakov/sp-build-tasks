@@ -58,14 +58,9 @@
     "@types/colors": "^1.1.3",
     "@types/gulp": "^3.8.33",
     "@types/gulp-load-plugins": "0.0.31",
-<<<<<<< HEAD
-    "@types/mkdirp": "^0.5.1",
-    "@types/node": "^8.0.53",
     "@types/webpack": "^3.8.1",
-=======
     "@types/mkdirp": "^0.5.2",
     "@types/node": "^9.3.0",
->>>>>>> 39a4c000f54465d9cfa3046c9fb37765108e228f
     "tslint-config-standard": "^7.0.0"
   }
 }
