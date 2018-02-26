@@ -1,17 +1,32 @@
-import * as path from 'path';
 import * as webpack from 'webpack';
 import * as UglifyJSPlugin from 'uglifyjs-webpack-plugin';
+import * as path from 'path';
+import * as fs from 'fs';
 
-import { IWebpackMapItem, IWebpackConfig } from '../interfaces';
+import { IWebpackMapItem, IWebpackConfig as IWebpackConfigOld } from '../interfaces';
+
+interface IWebpackConfig extends IWebpackConfigOld {
+  mode: 'development' | 'production';
+}
 
 const config = require(path.join(process.cwd(), 'config/app.json'));
 
+let defaultEntryExt = 'ts';
+const defEntryRoot = './src/scripts';
+
+[ 'js', 'jsx', 'ts', 'tsx' ].forEach(ext => {
+  if (fs.existsSync(path.join(process.cwd(), defEntryRoot, `index.${ext}`))) {
+    defaultEntryExt = ext;
+  }
+});
+
 const defaultItemMap: IWebpackMapItem = {
-  entry: './src/scripts/index.ts',
+  entry: `${defEntryRoot}/index.${defaultEntryExt}`,
   target: 'app.js'
 };
 
 const webpackConfigDevDefaults: IWebpackConfig = {
+  mode: 'development',
   cache: true,
   devtool: 'eval-source-map', // source-map
   module: {
@@ -28,6 +43,7 @@ const webpackConfigDevDefaults: IWebpackConfig = {
 };
 
 const webpackConfigProdDefaults: IWebpackConfig = {
+  mode: 'production',
   cache: true,
   devtool: 'cheap-module-source-map',
   module: {
