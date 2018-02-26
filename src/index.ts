@@ -58,9 +58,11 @@ class SPBuildTasks {
         plugins = this.loadGulpPlugins();
       }
       taskList.forEach((taskFile) => {
-        let task = require(path.resolve(path.join(taskPath, taskFile)));
-        if (task && typeof task === 'function') {
-          task(this.gulp, plugins, settings);
+        if (taskFile !== 'customDataLoader.js') {
+          let task = require(path.resolve(path.join(taskPath, taskFile)));
+          if (task && typeof task === 'function') {
+            task(this.gulp, plugins, settings);
+          }
         }
       });
     }

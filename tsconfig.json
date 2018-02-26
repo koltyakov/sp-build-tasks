@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es5",
     "module": "commonjs",
-    "lib": ["es2015"],
+    "lib": ["es2017"],
     "sourceMap": true,
     "declaration": true,
     "moduleResolution": "node",
     "noImplicitAny": false,
     "removeComments": true,
+    "newLine": "LF",
+    "skipLibCheck": true,
     "types": [
       "node"
     ]

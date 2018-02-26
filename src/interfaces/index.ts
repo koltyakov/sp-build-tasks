@@ -1,8 +1,9 @@
 import { IAuthOptions } from 'node-sp-auth';
 import { Gulp } from 'gulp';
+import { Configuration } from 'webpack';
 
-export interface IWebpackConfig {
-  [key: string]: any;
+export interface IWebpackConfig extends Configuration {
+  // [key: string]: any;
 }
 
 export interface IWebpackMapItem {
@@ -38,6 +39,7 @@ export interface IAppConfig {
   copyAssetsMap?: IAssetMap[];
   customStyles?: IAssetMap | IAssetMap[];
   modulePath?: string;
+  customData?: any;
 }
 
 export interface IAssetMap {

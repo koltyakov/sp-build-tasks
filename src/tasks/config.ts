@@ -1,4 +1,5 @@
 import * as path from 'path';
+import * as fs from 'fs';
 import { AuthConfig } from 'node-sp-auth-config';
 import { IAuthOptions } from 'node-sp-auth';
 import { Gulp } from 'gulp';
@@ -78,10 +79,41 @@ export const getConfigs = (settings: ISPBuildSettings, forcePrompts: boolean = f
   });
 };
 
+export const getCustomData = (settings: ISPBuildSettings, gulpConfigs: IGulpConfigs): Promise<IGulpConfigs> => {
+  return new Promise(resolve => {
+    const customDataModulePath = path.join(process.cwd(), settings.taskPath, 'customDataLoader.js');
+    if (fs.existsSync(customDataModulePath)) {
+      const customDataLoader = require(customDataModulePath);
+      if (customDataLoader && typeof customDataLoader === 'function') {
+        customDataLoader(settings, gulpConfigs)
+          .then(customData => {
+            global.gulpConfigs = {
+              ...gulpConfigs,
+              appConfig: {
+                ...gulpConfigs.appConfig,
+                customData: {
+                  ...(customData || {})
+                }
+              }
+            };
+            resolve(global.gulpConfigs);
+          })
+          .catch(err => {
+            console.log(err);
+            resolve(gulpConfigs);
+          });
+      }
+    } else {
+      resolve(gulpConfigs);
+    }
+  });
+};
+
 export const configTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   gulp.task('config', (cb) => {
     getConfigs(settings)
+      .then(gulpConfigs => getCustomData(settings, gulpConfigs))
       .then(() => {
         cb();
       })
@@ -92,6 +124,7 @@ export const configTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   gulp.task('config:force', (cb) => {
     getConfigs(settings, true)
+      .then(gulpConfigs => getCustomData(settings, gulpConfigs))
       .then(() => {
         cb();
       })
