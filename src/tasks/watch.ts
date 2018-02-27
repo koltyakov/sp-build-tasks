@@ -149,9 +149,6 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       return {
         ...w,
         watch: true
-        // watchOptions: {
-        //   watchDelay: 200
-        // }
       };
     });
     webpack(webpackConfig, (err, stats) => {

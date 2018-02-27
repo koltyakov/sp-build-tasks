@@ -33,7 +33,8 @@ const webpackConfigDevDefaults: IWebpackConfig = {
     rules: [{
       test: /\.ts(x?)$/,
       exclude: /(node_modules|bower_components|dist)/,
-      use: ['awesome-typescript-loader']
+      // use: ['awesome-typescript-loader']
+      use: ['ts-loader']
     }]
   },
   plugins: [],
@@ -50,7 +51,8 @@ const webpackConfigProdDefaults: IWebpackConfig = {
     rules: [{
       test: /\.ts(x?)$/,
       exclude: /(node_modules|bower_components|dist)/,
-      use: ['awesome-typescript-loader']
+      // use: ['awesome-typescript-loader']
+      use: ['ts-loader']
     }]
   },
   plugins: [
