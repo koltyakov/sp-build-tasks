@@ -28,13 +28,13 @@ const defaultItemMap: IWebpackMapItem = {
 const webpackConfigDevDefaults: IWebpackConfig = {
   mode: 'development',
   cache: true,
-  devtool: 'eval-source-map', // source-map
+  // devtool: 'eval-source-map', // source-map
   module: {
     rules: [{
       test: /\.ts(x?)$/,
       exclude: /(node_modules|bower_components|dist)/,
-      // use: ['awesome-typescript-loader']
-      use: ['ts-loader']
+      use: ['awesome-typescript-loader']
+      // use: ['ts-loader']
     }]
   },
   plugins: [],
@@ -46,13 +46,13 @@ const webpackConfigDevDefaults: IWebpackConfig = {
 const webpackConfigProdDefaults: IWebpackConfig = {
   mode: 'production',
   cache: true,
-  devtool: 'cheap-module-source-map',
+  // devtool: 'cheap-module-source-map',
   module: {
     rules: [{
       test: /\.ts(x?)$/,
       exclude: /(node_modules|bower_components|dist)/,
-      // use: ['awesome-typescript-loader']
-      use: ['ts-loader']
+      use: ['awesome-typescript-loader']
+      // use: ['ts-loader']
     }]
   },
   plugins: [

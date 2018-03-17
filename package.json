@@ -25,6 +25,7 @@
   "license": "MIT",
   "homepage": "https://github.com/koltyakov/sp-build-tasks",
   "dependencies": {
+    "awesome-typescript-loader": "^4.0.1",
     "clean-css": "^4.1.11",
     "colors": "^1.2.1",
     "deasync": "^0.1.12",
@@ -47,7 +48,6 @@
     "sppull": "^2.2.6",
     "sppurge": "^1.1.4",
     "through2": "^2.0.3",
-    "ts-loader": "^4.0.1",
     "tslint": "^5.9.1",
     "typescript": "^2.7.2",
     "uglifyjs-webpack-plugin": "^1.2.3",
