@@ -29,6 +29,7 @@ export interface IAppConfig {
   spFolder: string;
   distFolder: string;
   deleteFiles: boolean;
+  useHashesInJS: boolean;
   masterpagePath?: string;
   masterpage?: any;
   masterpageCodeName?: string;
@@ -40,6 +41,11 @@ export interface IAppConfig {
   customStyles?: IAssetMap | IAssetMap[];
   modulePath?: string;
   customData?: any;
+  webpackItemsMap?: Array<{
+    entry: string;
+    target: string;
+    webpackConfig?: any;
+  }>
 }
 
 export interface IAssetMap {

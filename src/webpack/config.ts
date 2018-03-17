@@ -3,13 +3,25 @@ import * as UglifyJSPlugin from 'uglifyjs-webpack-plugin';
 import * as path from 'path';
 import * as fs from 'fs';
 
-import { IWebpackMapItem, IWebpackConfig as IWebpackConfigOld } from '../interfaces';
+declare var global: any;
+
+import {
+  IWebpackMapItem,
+  IWebpackConfig as IWebpackConfigOld,
+  IGulpConfigs,
+  IAppConfig
+} from '../interfaces';
 
 interface IWebpackConfig extends IWebpackConfigOld {
   mode: 'development' | 'production';
 }
 
-const config = require(path.join(process.cwd(), 'config/app.json'));
+const configs: IGulpConfigs = global.gulpConfigs;
+let appConfig: IAppConfig = (configs || { appConfig: null }).appConfig;
+
+if (!appConfig) {
+  appConfig = require(path.join(process.cwd(), 'config/app.json'));
+}
 
 let defaultEntryExt = 'ts';
 const defEntryRoot = './src/scripts';
@@ -73,18 +85,19 @@ const webpackConfigDefaults: IWebpackConfig =
     webpackConfigProdDefaults :
     webpackConfigDevDefaults;
 
-const webpackItemsMap: IWebpackMapItem[] = config.webpackItemsMap || [defaultItemMap];
+const webpackItemsMap: IWebpackMapItem[] = appConfig.webpackItemsMap || [defaultItemMap];
 
 module.exports = webpackItemsMap.map(mapItem => {
   return {
     ...webpackConfigDefaults,
-    ...(config.webpackConfig || {}),
+    // ...(appConfig.webpackConfig || {}),
     ...(mapItem.webpackConfig || {}),
     entry: mapItem.entry || defaultItemMap.entry,
     output: {
-      path: path.join(process.cwd(), config.distFolder, (config.modulePath || ''), '/scripts'),
+      path: path.join(process.cwd(), appConfig.distFolder, (appConfig.modulePath || ''), '/scripts'),
       filename: mapItem.target || defaultItemMap.target,
-      chunkFilename: '[name].chunk.js',
+      sourceMapFilename: appConfig.useHashesInJS ? '[name].[chunkhash:8].js.map' : '[name].js.map',
+      chunkFilename: appConfig.useHashesInJS ? '[name].[chunkhash:8].chunk.js' : '[name].chunk.js',
       ...((mapItem.webpackConfig || {}).output || {})
     }
   } as IWebpackConfig;
