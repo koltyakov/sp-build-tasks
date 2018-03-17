@@ -28,7 +28,7 @@ const defaultItemMap: IWebpackMapItem = {
 const webpackConfigDevDefaults: IWebpackConfig = {
   mode: 'development',
   cache: true,
-  // devtool: 'eval-source-map', // source-map
+  devtool: 'cheap-module-source-map',
   module: {
     rules: [{
       test: /\.ts(x?)$/,
@@ -37,7 +37,9 @@ const webpackConfigDevDefaults: IWebpackConfig = {
       // use: ['ts-loader']
     }]
   },
-  plugins: [],
+  plugins: [
+    new UglifyJSPlugin({ sourceMap: true })
+  ],
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx']
   }
@@ -46,7 +48,7 @@ const webpackConfigDevDefaults: IWebpackConfig = {
 const webpackConfigProdDefaults: IWebpackConfig = {
   mode: 'production',
   cache: true,
-  // devtool: 'cheap-module-source-map',
+  devtool: 'source-map',
   module: {
     rules: [{
       test: /\.ts(x?)$/,
@@ -84,6 +86,7 @@ module.exports = webpackItemsMap.map(mapItem => {
     output: {
       path: path.join(process.cwd(), config.distFolder, (config.modulePath || ''), '/scripts'),
       filename: mapItem.target || defaultItemMap.target,
+      chunkFilename: '[name].chunk.js',
       ...((mapItem.webpackConfig || {}).output || {})
     }
   } as IWebpackConfig;
