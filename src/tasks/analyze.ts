@@ -17,8 +17,8 @@ export const analyzeTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => 
       if (err) {
         return cb(err);
       }
-      console.log(`stdout: ${stdout}`);
-      console.log(`stderr: ${stderr}`);
+      console.log(`${stdout}`);
+      console.log(`${stderr}`);
       cb();
     });
   });
