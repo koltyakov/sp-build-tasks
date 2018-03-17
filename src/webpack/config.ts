@@ -32,9 +32,8 @@ const webpackConfigDevDefaults: IWebpackConfig = {
   module: {
     rules: [{
       test: /\.ts(x?)$/,
-      exclude: /(node_modules|bower_components|dist)/,
+      exclude: /(node_modules|dist)/,
       use: ['awesome-typescript-loader']
-      // use: ['ts-loader']
     }]
   },
   plugins: [
@@ -47,14 +46,13 @@ const webpackConfigDevDefaults: IWebpackConfig = {
 
 const webpackConfigProdDefaults: IWebpackConfig = {
   mode: 'production',
-  cache: true,
+  cache: false,
   devtool: 'source-map',
   module: {
     rules: [{
       test: /\.ts(x?)$/,
-      exclude: /(node_modules|bower_components|dist)/,
+      exclude: /(node_modules|dist)/,
       use: ['awesome-typescript-loader']
-      // use: ['ts-loader']
     }]
   },
   plugins: [
