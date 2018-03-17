@@ -9,10 +9,12 @@ export const envTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   gulp.task('env:prod', (cb) => {
     process.env.NODE_ENV = 'production';
+    cb();
   });
 
   gulp.task('env:dev', (cb) => {
     process.env.NODE_ENV = 'development';
+    cb();
   });
 
 };
