@@ -88,6 +88,8 @@ const webpackConfigDefaults: IWebpackConfig =
 const webpackItemsMap: IWebpackMapItem[] = appConfig.webpackItemsMap || [defaultItemMap];
 
 module.exports = webpackItemsMap.map(mapItem => {
+  const filename = mapItem.target || defaultItemMap.target;
+  const name = filename.split('.')[0];
   return {
     ...webpackConfigDefaults,
     // ...(appConfig.webpackConfig || {}),
@@ -95,9 +97,9 @@ module.exports = webpackItemsMap.map(mapItem => {
     entry: mapItem.entry || defaultItemMap.entry,
     output: {
       path: path.join(process.cwd(), appConfig.distFolder, (appConfig.modulePath || ''), '/scripts'),
-      filename: mapItem.target || defaultItemMap.target,
-      sourceMapFilename: appConfig.useHashesInJS ? '[name].[chunkhash:8].js.map' : '[name].js.map',
-      chunkFilename: appConfig.useHashesInJS ? '[name].[chunkhash:8].chunk.js' : '[name].chunk.js',
+      filename: filename,
+      sourceMapFilename: `${name}/[name].js.map?v=[chunkhash:8]`,
+      chunkFilename:  `${name}/[name].chunk.js?v=[chunkhash:8]`,
       ...((mapItem.webpackConfig || {}).output || {})
     }
   } as IWebpackConfig;

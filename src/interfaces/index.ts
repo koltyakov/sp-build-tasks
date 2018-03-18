@@ -29,7 +29,6 @@ export interface IAppConfig {
   spFolder: string;
   distFolder: string;
   deleteFiles: boolean;
-  useHashesInJS: boolean;
   masterpagePath?: string;
   masterpage?: any;
   masterpageCodeName?: string;
