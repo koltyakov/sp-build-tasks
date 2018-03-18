@@ -9,7 +9,8 @@ import {
   IWebpackMapItem,
   IWebpackConfig as IWebpackConfigOld,
   IGulpConfigs,
-  IAppConfig
+  IAppConfig,
+  IPrivateConfig
 } from '../interfaces';
 
 interface IWebpackConfig extends IWebpackConfigOld {
@@ -17,11 +18,18 @@ interface IWebpackConfig extends IWebpackConfigOld {
 }
 
 const configs: IGulpConfigs = global.gulpConfigs;
-let appConfig: IAppConfig = (configs || { appConfig: null }).appConfig;
+let appConf: IAppConfig = (configs || { appConfig: null }).appConfig;
+let privateConf: IPrivateConfig = (configs || { privateConf: null }).privateConf;
 
-if (!appConfig) {
-  appConfig = require(path.join(process.cwd(), 'config/app.json'));
+if (!appConf) {
+  appConf = require(path.join(process.cwd(), 'config/app.json'));
 }
+if (!privateConf) {
+  appConf = require(path.join(process.cwd(), 'config/private.json'));
+}
+
+const serverPath: string = privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
+const publishPath: string = `${privateConf.siteUrl}/${appConf.spFolder}`.replace(serverPath, '');
 
 let defaultEntryExt = 'ts';
 const defEntryRoot = './src/scripts';
@@ -85,7 +93,7 @@ const webpackConfigDefaults: IWebpackConfig =
     webpackConfigProdDefaults :
     webpackConfigDevDefaults;
 
-const webpackItemsMap: IWebpackMapItem[] = appConfig.webpackItemsMap || [defaultItemMap];
+const webpackItemsMap: IWebpackMapItem[] = appConf.webpackItemsMap || [defaultItemMap];
 
 module.exports = webpackItemsMap.map(mapItem => {
   const filename = mapItem.target || defaultItemMap.target;
@@ -96,11 +104,12 @@ module.exports = webpackItemsMap.map(mapItem => {
     ...(mapItem.webpackConfig || {}),
     entry: mapItem.entry || defaultItemMap.entry,
     output: {
-      path: path.join(process.cwd(), appConfig.distFolder, (appConfig.modulePath || ''), '/scripts'),
+      path: path.join(process.cwd(), appConf.distFolder, (appConf.modulePath || ''), '/scripts'),
       filename: filename,
-      sourceMapFilename: `${name}.js.map?v=[chunkhash:8]`,
-      chunkFilename:  `${name}-сhunks/[name].chunk.js?v=[chunkhash:8]`,
-      ...((mapItem.webpackConfig || {}).output || {})
+      sourceMapFilename: `${name}/[name].js.map?v=[chunkhash:8]&e=.js.map`,
+      chunkFilename:  `${name}/[name].chunk.js?v=[chunkhash:8]&e=.chunk.js`,
+      ...((mapItem.webpackConfig || {}).output || {}),
+      publicPath: `${publishPath}/scripts/`
     }
   } as IWebpackConfig;
 });
