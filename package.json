@@ -25,7 +25,7 @@
   "license": "MIT",
   "homepage": "https://github.com/koltyakov/sp-build-tasks",
   "dependencies": {
-    "awesome-typescript-loader": "^4.0.1",
+    "awesome-typescript-loader": "5.0.0-1",
     "clean-css": "^4.1.11",
     "colors": "^1.2.1",
     "deasync": "^0.1.12",

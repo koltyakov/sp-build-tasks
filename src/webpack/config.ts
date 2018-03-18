@@ -108,8 +108,8 @@ module.exports = webpackItemsMap.map(mapItem => {
       filename: filename,
       sourceMapFilename: `${name}/[name].js.map?v=[chunkhash:8]&e=.js.map`,
       chunkFilename:  `${name}/[name].chunk.js?v=[chunkhash:8]&e=.chunk.js`,
-      ...((mapItem.webpackConfig || {}).output || {}),
-      publicPath: `${publishPath}/scripts/`
+      publicPath: `${publishPath}/scripts/`,
+      ...((mapItem.webpackConfig || {}).output || {})
     }
   } as IWebpackConfig;
 });
