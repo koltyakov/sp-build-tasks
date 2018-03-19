@@ -119,17 +119,8 @@
           "description": "Relative path for module inside dist structure, e.g. `modules/my-module`",
           "type": "string",
           "default": ""
-        },
-        "webpackConfig": {
-          "$ref": "#/definitions/webpackConfig",
-          "description": "(Depricated) Optional Webpack configuration which is added to webpack's configs for all entry points."
         }
       }
-    },
-    "webpackConfig": {
-      "description": "Webpack build options",
-      "type": "object",
-      "additionalProperties": true
     },
     "brandingConfig": {
       "type": "object",

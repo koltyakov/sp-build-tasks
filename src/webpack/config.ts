@@ -100,9 +100,8 @@ module.exports = webpackItemsMap.map(mapItem => {
   const name = path.parse(filename).name;
   return {
     ...webpackConfigDefaults,
-    // ...(appConfig.webpackConfig || {}),
     ...(mapItem.webpackConfig || {}),
-    entry: mapItem.entry || defaultItemMap.entry,
+    entry: [ require.resolve('./polyfills'), mapItem.entry || defaultItemMap.entry ],
     output: {
       path: path.join(process.cwd(), appConf.distFolder, (appConf.modulePath || ''), '/scripts'),
       filename: filename,
