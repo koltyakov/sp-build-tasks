@@ -48,7 +48,8 @@ const defaultItemMap: IWebpackMapItem = {
 const webpackConfigDevDefaults: IWebpackConfig = {
   mode: 'development',
   cache: true,
-  devtool: 'cheap-module-source-map',
+  devtool: 'source-map',
+  // devtool: 'cheap-module-source-map',
   module: {
     rules: [{
       test: /\.ts(x?)$/,
