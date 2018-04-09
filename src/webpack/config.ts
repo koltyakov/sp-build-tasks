@@ -45,18 +45,31 @@ const defaultItemMap: IWebpackMapItem = {
   target: 'app.js'
 };
 
+const rules: webpack.Rule[] = [
+  {
+    test: /\.ts(x?)$/,
+    exclude: /(node_modules|dist)/,
+    use: [ 'awesome-typescript-loader' ]
+  },
+  {
+    test: /\.css$/,
+    use: [ 'style-loader', 'css-loader' ]
+  },
+  {
+    test: /\.scss$/,
+    use: [
+      { loader: 'style-loader' },
+      { loader: 'css-loader', options: { sourceMap: true } },
+      { loader: 'sass-loader', options: { sourceMap: true } }
+    ]
+  }
+];
+
 const webpackConfigDevDefaults: IWebpackConfig = {
   mode: 'development',
   cache: true,
   devtool: 'source-map',
-  // devtool: 'cheap-module-source-map',
-  module: {
-    rules: [{
-      test: /\.ts(x?)$/,
-      exclude: /(node_modules|dist)/,
-      use: ['awesome-typescript-loader']
-    }]
-  },
+  module: { rules },
   plugins: [
     new UglifyJSPlugin({ sourceMap: true })
   ],
@@ -69,13 +82,7 @@ const webpackConfigProdDefaults: IWebpackConfig = {
   mode: 'production',
   cache: false,
   devtool: 'source-map',
-  module: {
-    rules: [{
-      test: /\.ts(x?)$/,
-      exclude: /(node_modules|dist)/,
-      use: ['awesome-typescript-loader']
-    }]
-  },
+  module: { rules },
   plugins: [
     new UglifyJSPlugin({ sourceMap: true }),
     new webpack.DefinePlugin({
