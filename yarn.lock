@@ -97,9 +97,9 @@
   version "6.0.96"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.96.tgz#7bf0bf40d6ce51e93762cc47d010c8cc5ebb2179"
 
-"@types/node@^9.6.2":
-  version "9.6.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.2.tgz#e49ac1adb458835e95ca6487bc20f916b37aff23"
+"@types/node@^9.6.4":
+  version "9.6.4"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.4.tgz#0ef7b4cfc3499881c81e0ea1ce61a23f6f4f5b42"
 
 "@types/request-promise@^4.1.36", "@types/request-promise@^4.1.41":
   version "4.1.41"
@@ -5326,9 +5326,9 @@ sass-graph@^2.2.4:
     scss-tokenizer "^0.2.3"
     yargs "^7.0.0"
 
-sass-loader@^6.0.7:
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-6.0.7.tgz#dd2fdb3e7eeff4a53f35ba6ac408715488353d00"
+sass-loader@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-7.0.0.tgz#bdc9653eaf569f0ce77ac01efcaa0b92ca5e0571"
   dependencies:
     clone-deep "^2.0.1"
     loader-utils "^1.0.1"
