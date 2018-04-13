@@ -68,13 +68,11 @@ const rules: webpack.Rule[] = [
 const webpackConfigDevDefaults: IWebpackConfig = {
   mode: 'development',
   cache: true,
-  devtool: 'source-map',
+  devtool: appConf.devtool || 'eval', // 'source-map',
   module: { rules },
-  plugins: [
-    new UglifyJSPlugin({ sourceMap: true })
-  ],
+  // plugins: [ new UglifyJSPlugin({ sourceMap: true }) ],
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx']
+    extensions: [ '.ts', '.tsx', '.js', '.jsx' ]
   }
 };
 
@@ -92,7 +90,7 @@ const webpackConfigProdDefaults: IWebpackConfig = {
     })
   ],
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx']
+    extensions: [ '.ts', '.tsx', '.js', '.jsx' ]
   }
 };
 

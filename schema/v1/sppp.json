@@ -104,13 +104,9 @@
                 "default": "./src/scripts/index.ts"
               },
               "target": {
-                "description": "Relative path to output bundle script within `./dist/stripts` folder.\n\nE.g.: `myApp.js`",
+                "description": "Relative path to output bundle script within `./dist/stripts` folder.\n\nE.g.: `app.js`",
                 "type": "string",
-                "default": "myApp.js"
-              },
-              "webpackConfig": {
-                "$ref": "#/definitions/webpackConfig",
-                "description": "Optional Webpack configuration which is added to webpack's configs for a specific entry point."
+                "default": "app.js"
               }
             }
           }
@@ -119,6 +115,11 @@
           "description": "Relative path for module inside dist structure, e.g. `modules/my-module`",
           "type": "string",
           "default": ""
+        },
+        "devtool": {
+          "description": "Webpack `devtool` option for development mode\n\nE.g.: `eval`",
+          "type": "string",
+          "default": "cheap-eval-source-map"
         }
       }
     },

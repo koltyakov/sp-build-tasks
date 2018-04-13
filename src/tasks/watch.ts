@@ -148,7 +148,12 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     webpackConfig = webpackConfig.map(w => {
       return {
         ...w,
-        watch: true
+        watch: true,
+        watchOptions: {
+          aggregateTimeout: 300,
+          poll: 1000,
+          ignored: /node_modules/
+        }
       };
     });
     webpack(webpackConfig, (err, stats) => {
