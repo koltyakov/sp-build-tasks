@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { exec } from 'child_process';
 
 export const walkFolders = (startFolder: string): string[] => {
   let results: string[] = [];
@@ -20,6 +21,17 @@ export const formatTime = (date: Date) => {
   let mm = ('0' + date.getMinutes()).slice(-2);
   let ss = ('0' + date.getSeconds()).slice(-2);
   return `${hh}:${mm}:${ss}`;
+};
+
+export const execPromise = (command: string): Promise<{ stdout: any; stderr: any }> => {
+  return new Promise((resolve, reject) => {
+    exec(command, (err, stdout, stderr) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve({ stdout, stderr });
+    });
+  });
 };
 
 export class Debounce {

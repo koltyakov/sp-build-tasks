@@ -1,3 +1,4 @@
+import { readFileSync } from 'fs';
 import * as path from 'path';
 import { ISPRequest, create as createRequest } from 'sp-request';
 import { Delete } from 'sppurge';
@@ -16,6 +17,30 @@ export interface IFileProcessItem {
   length?: number;
   processed?: boolean;
 }
+
+export const extractSourcemapPath = (filePath: string) => {
+
+  const innerRegex = /[#@] sourceMappingURL=([^\s'"]*)/;
+
+  const regex = RegExp(
+    '(?:' +
+      '/\\*' +
+      '(?:\\s*\r?\n(?://)?)?' +
+      '(?:' + innerRegex.source + ')' +
+      '\\s*' +
+      '\\*/' +
+      '|' +
+      '//(?:' + innerRegex.source + ')' +
+    ')' +
+    '\\s*'
+  );
+
+  const code = readFileSync(filePath).toString();
+
+  const match = code.match(regex);
+  return (match ? match[1] || match[2] || '' : null);
+
+};
 
 export default class Files {
 
