@@ -53,14 +53,38 @@ const rules: webpack.Rule[] = [
   },
   {
     test: /\.css$/,
-    use: [ 'style-loader', 'css-loader' ]
+    use: [
+      {
+        loader: 'style-loader'
+      },
+      {
+        loader: 'css-loader',
+        options: {
+          minimize: true,
+          sourceMap: true
+        }
+      }
+    ]
   },
   {
     test: /\.scss$/,
     use: [
-      { loader: 'style-loader' },
-      { loader: 'css-loader', options: { sourceMap: true } },
-      { loader: 'sass-loader', options: { sourceMap: true } }
+      {
+        loader: 'style-loader'
+      },
+      {
+        loader: 'css-loader',
+        options: {
+          minimize: true,
+          sourceMap: true
+        }
+      },
+      {
+        loader: 'sass-loader',
+        options: {
+          sourceMap: true
+        }
+      }
     ]
   }
 ];
