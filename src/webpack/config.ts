@@ -96,7 +96,8 @@ const webpackConfigDevDefaults: IWebpackConfig = {
   module: { rules },
   // plugins: [ new UglifyJSPlugin({ sourceMap: true }) ],
   resolve: {
-    extensions: [ '.ts', '.tsx', '.js', '.jsx' ]
+    extensions: [ '.ts', '.tsx', '.js', '.jsx' ],
+    mainFields: [ 'esnext', 'es2015', 'module', 'main' ]
   }
 };
 
@@ -114,7 +115,8 @@ const webpackConfigProdDefaults: IWebpackConfig = {
     })
   ],
   resolve: {
-    extensions: [ '.ts', '.tsx', '.js', '.jsx' ]
+    extensions: [ '.ts', '.tsx', '.js', '.jsx' ],
+    mainFields: [ 'esnext', 'es2015', 'module', 'main' ]
   }
 };
 
