@@ -92,7 +92,7 @@ const rules: webpack.Rule[] = [
 const webpackConfigDevDefaults: IWebpackConfig = {
   mode: 'development',
   cache: true,
-  devtool: appConf.devtool || 'cheap-module-eval-source-map', // ''eval', // 'source-map',
+  devtool: appConf.devtool || 'source-map', // 'eval-source-map',
   module: { rules },
   // plugins: [ new UglifyJSPlugin({ sourceMap: true }) ],
   resolve: {
