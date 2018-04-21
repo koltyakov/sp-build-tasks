@@ -49,7 +49,15 @@ const rules: webpack.Rule[] = [
   {
     test: /\.ts(x?)$/,
     exclude: /(node_modules|dist)/,
-    use: [ 'awesome-typescript-loader' ]
+    use: [
+      {
+        loader: 'cache-loader',
+        options: {
+          cacheDirectory: path.join(process.cwd(), 'cache')
+        }
+      },
+      'awesome-typescript-loader'
+    ]
   },
   {
     test: /\.css$/,
@@ -96,8 +104,8 @@ const webpackConfigDevDefaults: IWebpackConfig = {
   module: { rules },
   // plugins: [ new UglifyJSPlugin({ sourceMap: true }) ],
   resolve: {
-    extensions: [ '.ts', '.tsx', '.js', '.jsx' ]
-    // mainFields: [ 'esnext', 'es2015', 'module', 'main' ]
+    extensions: [ '.ts', '.tsx', '.js', '.jsx' ],
+    mainFields: [ 'es2015', 'browser', 'module', 'main' ]
   }
 };
 
@@ -132,8 +140,8 @@ const webpackConfigProdDefaults: IWebpackConfig = {
     })
   ],
   resolve: {
-    extensions: [ '.ts', '.tsx', '.js', '.jsx' ]
-    // mainFields: [ 'esnext', 'es2015', 'module', 'main' ]
+    extensions: [ '.ts', '.tsx', '.js', '.jsx' ],
+    mainFields: [ 'es2015', 'browser', 'module', 'main' ]
   }
 };
 
