@@ -193,8 +193,12 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     $.watch(configs.watch.assets, (event) => {
       if (event.event !== 'unlink') {
         run(event.path, () => {
-          spsave(event.path, (chunkPath) => {
-            liveReload.emitUpdatedPath(chunkPath);
+          spsave(event.path, (chunkPath: string) => {
+            let body: string;
+            if (chunkPath.toLowerCase().split('.').pop() === 'css') {
+              body = fs.readFileSync(chunkPath).toString();
+            }
+            liveReload.emitUpdatedPath(chunkPath, false, body);
           });
         });
       } else if (configs.appConfig.deleteFiles) {

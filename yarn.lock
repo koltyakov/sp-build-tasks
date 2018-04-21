@@ -5521,9 +5521,9 @@ source-map@^0.6.0, source-map@^0.6.1, source-map@~0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
 
-sp-live-reload@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/sp-live-reload/-/sp-live-reload-3.0.2.tgz#4c6742122ab0ccf6f275682d6863e594d28100d1"
+sp-live-reload@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/sp-live-reload/-/sp-live-reload-3.0.3.tgz#bad4cc68104ca34ce2f636347bc59d19d1e6e78a"
   dependencies:
     express "^4.16.3"
     socket.io "^2.1.0"
