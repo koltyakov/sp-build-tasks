@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import { Gulp } from 'gulp';
 import * as webpack from 'webpack';
 import sppurge, { IOptions as IPurgeOptions } from 'sppurge';
-const LiveReload = require('sp-live-reload');
+import { LiveReload } from 'sp-live-reload';
 
 import { Debounce, formatTime } from '../utils/misc';
 import Build from '../utils/build';
@@ -23,8 +23,10 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   const spsave = (filePath: string, throughCallback?: Function): void => {
     let configs: IGulpConfigs = global.gulpConfigs;
     saveQueue[filePath] = (saveQueue[filePath] || 0) + 1;
-    console.log(`[${formatTime(new Date())}]`, 'Watch:', path.relative('./', filePath), fs.statSync(filePath).size,
-      saveQueue[filePath] > 1 ? '(delayed)' : '');
+    console.log(`[${formatTime(new Date())}]`, 'Watch:',
+      path.relative('./', filePath), fs.statSync(filePath).size,
+      saveQueue[filePath] > 1 ? '(delayed)' : ''
+    );
     if (saveQueue[filePath] === 1) {
       gulp
         .src(filePath, { base: configs.watch.base })

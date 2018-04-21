@@ -1,6 +1,6 @@
 import * as colors from 'colors';
 import Deploy from '../utils/deploy';
-const LiveReload = require('sp-live-reload');
+import { ReloadProvisioning } from 'sp-live-reload';
 
 import { Gulp } from 'gulp';
 import { ISPBuildSettings, IGulpConfigs, IDeploySettings } from '../interfaces';
@@ -13,7 +13,7 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     console.log(`\n${colors.yellow('===')} ${colors.green('Installing live reload to site collection')} ${colors.yellow('===')}\n`);
 
     let configs: IGulpConfigs = global.gulpConfigs;
-    let liveReload = new LiveReload(configs.liveReload);
+    let liveReload = new ReloadProvisioning(configs.liveReload);
     liveReload.provisionMonitoringAction()
       .then(() => {
         console.log('Custom action has been installed');
@@ -30,7 +30,7 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     console.log(`\n${colors.yellow('===')} ${colors.green('Retracting live reload from site collection')} ${colors.yellow('===')}\n`);
 
     let configs: IGulpConfigs = global.gulpConfigs;
-    let liveReload = new LiveReload(configs.liveReload);
+    let liveReload = new ReloadProvisioning(configs.liveReload);
     liveReload.retractMonitoringAction()
       .then(() => {
         console.log('Custom action has been retracted');
