@@ -1,6 +1,7 @@
 import { IAuthOptions } from 'node-sp-auth';
 import { Gulp } from 'gulp';
 import { Configuration, Options } from 'webpack';
+import { ILRSettings } from 'sp-live-reload/dist/interfaces';
 
 export interface IWebpackConfig extends Configuration {
   // [key: string]: any;
@@ -17,7 +18,7 @@ export interface IGulpConfigs {
   privateConf: IPrivateConfig;
   spSaveCoreOptions: any;
   watch: IWatchSettings;
-  liveReload: any;
+  liveReload: ILRSettings;
 }
 
 export interface IWatchSettings {
