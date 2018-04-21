@@ -149,8 +149,13 @@ export default class Build {
     let { content, srcPath, distPath } = params;
     content = content || fs.readFileSync(srcPath, this.settings.fileEncoding);
     let minifiedContent = uglifyJS.minify(content, {
-      sourceMap: true
-    });
+      compress: true,
+      sourceMap: true,
+      output: {
+        comments: false
+      },
+      fromString: true
+    } as uglifyJS.CompressOptions & any);
     if (distPath) {
       mkdirp.sync(path.dirname(distPath));
       fs.writeFileSync(distPath, minifiedContent.code, {
