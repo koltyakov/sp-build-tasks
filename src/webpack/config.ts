@@ -106,8 +106,25 @@ const webpackConfigProdDefaults: IWebpackConfig = {
   cache: false,
   devtool: 'source-map',
   module: { rules },
+  optimization: {
+    minimizer: [
+      new UglifyJSPlugin({
+        cache: true,
+        parallel: true,
+        uglifyOptions: {
+          compress: true,
+          ecma: 5,
+          mangle: true,
+          output: {
+            comments: false
+          }
+        },
+        sourceMap: true
+      })
+    ]
+  },
   plugins: [
-    new UglifyJSPlugin({ sourceMap: true }),
+    // new UglifyJSPlugin({ sourceMap: true }),
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
