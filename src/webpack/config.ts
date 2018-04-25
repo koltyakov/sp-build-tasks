@@ -103,6 +103,23 @@ const webpackConfigDevDefaults: IWebpackConfig = {
   cache: true,
   devtool: appConf.devtool || 'source-map', // 'eval-source-map',
   module: { rules },
+  optimization: {
+    minimizer: [
+      new UglifyJSPlugin({
+        cache: true,
+        parallel: true,
+        uglifyOptions: {
+          ecma: 5,
+          compress: false,
+          mangle: false,
+          output: {
+            comments: false
+          }
+        },
+        sourceMap: true
+      })
+    ]
+  },
   // plugins: [ new UglifyJSPlugin({ sourceMap: true }) ],
   resolve: {
     extensions: [ '.ts', '.tsx', '.js', '.jsx' ],
@@ -121,8 +138,8 @@ const webpackConfigProdDefaults: IWebpackConfig = {
         cache: true,
         parallel: true,
         uglifyOptions: {
-          compress: true,
           ecma: 5,
+          compress: true,
           mangle: true,
           output: {
             comments: false

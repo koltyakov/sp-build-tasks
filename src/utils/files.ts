@@ -20,7 +20,7 @@ export interface IFileProcessItem {
 
 export const extractSourcemapPath = (filePath: string) => {
 
-  const innerRegex = /[#@] sourceMappingURL=([^\s'"]*)/;
+  const innerRegex = /[#@] sourceMappingURL=([^\s'"]*)$/;
 
   const regex = RegExp(
     '(?:' +
