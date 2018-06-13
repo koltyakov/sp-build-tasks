@@ -2,6 +2,7 @@ import * as webpack from 'webpack';
 import * as UglifyJSPlugin from 'uglifyjs-webpack-plugin';
 import * as path from 'path';
 import * as fs from 'fs';
+import { TsConfigPathsPlugin } from 'awesome-typescript-loader';
 
 declare var global: any;
 
@@ -120,6 +121,7 @@ const webpackConfigDevDefaults: IWebpackConfig = {
       })
     ]
   },
+  plugins: [ new TsConfigPathsPlugin() as any ],
   // plugins: [ new UglifyJSPlugin({ sourceMap: true }) ],
   resolve: {
     extensions: [ '.ts', '.tsx', '.js', '.jsx' ]
@@ -151,6 +153,7 @@ const webpackConfigProdDefaults: IWebpackConfig = {
   },
   plugins: [
     // new UglifyJSPlugin({ sourceMap: true }),
+    new TsConfigPathsPlugin() as any,
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
