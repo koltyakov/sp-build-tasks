@@ -1,7 +1,7 @@
 {
   "name": "sp-build-tasks",
   "description": "SharePoint front-end projects automation and tasks tool-belt",
-  "version": "2.0.3-beta",
+  "version": "2.0.3",
   "author": "Andrew Koltyakov <andrew.koltyakov@gmail.com>",
   "main": "./dist/index.js",
   "typings": "./dist/index",
@@ -54,6 +54,7 @@
     "sppurge": "^1.1.4",
     "style-loader": "^0.21.0",
     "through2": "^2.0.3",
+    "tsconfig-paths-webpack-plugin": "^3.2.0",
     "tslint": "^5.10.0",
     "typescript": "^2.8.3",
     "uglifyjs-webpack-plugin": "^1.2.5",
@@ -67,7 +68,7 @@
     "@types/mkdirp": "^0.5.2",
     "@types/node": "^9.6.6",
     "@types/uglify-js": "^3.0.2",
-    "@types/webpack": "^4.1.4",
+    "@types/webpack": "^4.4.0",
     "tslint-config-standard": "^7.0.0"
   }
 }
