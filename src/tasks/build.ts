@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as mkdirp from 'mkdirp';
 import * as webpack from 'webpack';
 import { Gulp } from 'gulp';
+import * as Listr from 'listr';
 
 import { getConfigs } from './config';
 import Build from '../utils/build';
@@ -24,23 +25,18 @@ export const getBuildInstance = (settings: IGulpConfigs): Build => {
 export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   gulp.task('build', cb => {
-    detectProdMode();
+    processStepMessage(`Build (mode: ${detectProdMode()})`);
     (async () => {
-      processStepMessage('Build: Copy Assets');
-      await buildCopyAssetsTask(settings);
-      processStepMessage('Build: CEWPs');
-      await buildWebpartsTask(settings);
-      processStepMessage('Build: Masterpages');
-      await buildMasterpagesTask(settings);
-      processStepMessage('Build: Layouts');
-      await buildLayoutsTask(settings);
-      processStepMessage('Build: Custom CSS');
-      await buildCustomCssTask(settings);
-      processStepMessage('Build: CSS Libraries');
-      await buildCssLibsTask(settings);
-      processStepMessage('Build: JavaScript DLLs');
-      await buildJsLibsTask(settings);
-      processStepMessage('Build: Webpack');
+      await new Listr([
+        { title: 'Copy Assets', task: () => buildCopyAssetsTask(settings) },
+        { title: 'Build CEWPs', task: () => buildWebpartsTask(settings) },
+        { title: 'Build Masterpages', task: () => buildMasterpagesTask(settings) },
+        { title: 'Build Layouts', task: () => buildLayoutsTask(settings) },
+        { title: 'Build Custom CSS', task: () => buildCustomCssTask(settings) },
+        { title: 'Build CSS Libraries', task: () => buildCssLibsTask(settings) },
+        { title: 'Build JavaScript DLLs', task: () => buildJsLibsTask(settings) }
+      ]).run();
+      processStepMessage(`Starting webpack`);
       await buildWebpackTask();
     })()
       .then(_ => cb())

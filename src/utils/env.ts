@@ -1,4 +1,4 @@
-export const detectProdMode = (): void => {
+export const detectProdMode = (): string => {
   const args = process.argv.splice(3);
   const prod = args.filter(arg => {
     return [ '--ship', '--prod' ].indexOf(arg.toLowerCase()) !== -1;
@@ -8,4 +8,5 @@ export const detectProdMode = (): void => {
   } else {
     process.env.NODE_ENV = 'development';
   }
+  return process.env.NODE_ENV;
 };
