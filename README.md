@@ -71,7 +71,7 @@ module.exports = (gulp, $) => {
 
   // $ - gulp plugins dynamic loader
 
-  gulp.task('example', (cb) => {
+  gulp.task('example', cb => {
     console.log('Example Gulp Task');
     cb();
   });
@@ -151,6 +151,14 @@ Compiles front-end to `./dist` folder.
   - build:masterpage - .hbs to .masterpage
   - build:layouts - .hbs to .aspx layouts
   - build:webparts - compiles .hbs CEWPs
+
+#### Build options
+
+**Production build**
+
+```bash
+gulp build --prod
+```
 
 ### Deployment
 
