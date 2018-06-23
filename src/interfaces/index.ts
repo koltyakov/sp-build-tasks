@@ -41,6 +41,7 @@ export interface IAppConfig {
   customData?: any;
   webpackItemsMap?: Array<{ entry: string; target: string; }>;
   devtool?: Options.Devtool;
+  $schema: string;
 }
 
 export interface ICustomActionDefinition {
