@@ -20,10 +20,10 @@ interface IHashesProps {
 export class Hashes {
 
   private hashes: IHash = {
-    '~publishroot/': { get: this.getPublishRootUrl, needReplacement: true },
-    '~site/': { get: this.getSiteUrl, needReplacement: false },
-    '~sitecollection/': { get: this.getSiteCollectionUrl, needReplacement: false },
-    '~hubsite/': { get: this.getHubSiteUrl, needReplacement: true }
+    '~publishroot/': { get: this.getPublishRootUrl.bind(this), needReplacement: true },
+    '~site/': { get: this.getSiteUrl.bind(this), needReplacement: false },
+    '~sitecollection/': { get: this.getSiteCollectionUrl.bind(this), needReplacement: false },
+    '~hubsite/': { get: this.getHubSiteUrl.bind(this), needReplacement: true }
   };
 
   private sp: SPRest;
