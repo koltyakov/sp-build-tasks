@@ -1,10 +1,10 @@
-import * as colors from 'colors';
 import { Gulp } from 'gulp';
 import { join } from 'path';
 
 import { getConfigs } from './config';
 import { execPromise } from '../utils/misc';
 import { extractSourcemapPath } from '../utils/files';
+import { processStepMessage } from '../utils/log';
 
 import { ISPBuildSettings, IGulpConfigs } from '../interfaces';
 
@@ -14,7 +14,7 @@ export const analyzeTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => 
 
   gulp.task('analyze', cb => {
 
-    console.log(`\n${colors.red('===')} ${colors.green('Analyze Webpack Bundle')} ${colors.yellow('===')}\n`);
+    processStepMessage('Analyze Webpack Bundle');
 
     (async () => {
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);

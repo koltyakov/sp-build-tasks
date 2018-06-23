@@ -1,12 +1,12 @@
-import * as colors from 'colors';
 import { Gulp } from 'gulp';
 
+import { processStepMessage } from '../utils/log';
 import { ISPBuildSettings } from '../interfaces';
 
 export const cleanTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   gulp.task('clean', _ => {
-    console.log(`\n${colors.red('===')} ${colors.green('Cleaning Distribution folder')} ${colors.yellow('===')}\n`);
+    processStepMessage('Cleaning Distribution folder');
     return $.del(['dist/**', 'cache/**', 'tmp/**']);
   });
 

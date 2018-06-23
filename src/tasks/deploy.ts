@@ -1,9 +1,9 @@
-import * as colors from 'colors';
 import Deploy from '../utils/deploy';
 import { ReloadProvisioning } from 'sp-live-reload';
 
 import { Gulp } from 'gulp';
 
+import { processStepMessage } from '../utils/log';
 import { getConfigs } from './config';
 import { ISPBuildSettings, IGulpConfigs } from '../interfaces';
 
@@ -12,7 +12,7 @@ declare var global: any;
 export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   gulp.task('reload:install', async cb => {
-    console.log(`\n${colors.yellow('===')} ${colors.green('Installing live reload to site collection')} ${colors.yellow('===')}\n`);
+    processStepMessage('Installing live reload to site collection');
 
     const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
     const liveReload = new ReloadProvisioning(configs.liveReload);
@@ -29,7 +29,7 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   });
 
   gulp.task('reload:retract', async cb => {
-    console.log(`\n${colors.yellow('===')} ${colors.green('Retracting live reload from site collection')} ${colors.yellow('===')}\n`);
+    processStepMessage('Retracting live reload from site collection');
 
     const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
     const liveReload = new ReloadProvisioning(configs.liveReload);
@@ -46,7 +46,7 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   });
 
   gulp.task('masterpage:restore', async cb => {
-    console.log(`\n${colors.yellow('===')} ${colors.green('Restoring masterpage on the web')} ${colors.yellow('===')}\n`);
+    processStepMessage('Restoring masterpage on the web');
 
     const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
     const deploy = new Deploy({
@@ -70,7 +70,7 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   });
 
   gulp.task('masterpage:apply', ['logo:apply'], async cb => {
-    console.log(`\n${colors.yellow('===')} ${colors.green('Applying masterpage to the web')} ${colors.yellow('===')}\n`);
+    processStepMessage('Applying masterpage to the web');
 
     const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
     if (typeof configs.appConfig.masterpagePath !== 'undefined') {
@@ -96,7 +96,7 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   });
 
   gulp.task('logo:apply', async cb => {
-    console.log(`\n${colors.yellow('===')} ${colors.green('Applying logotype to the web')} ${colors.yellow('===')}\n`);
+    processStepMessage('Applying logotype to the web');
 
     const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
     if (typeof configs.appConfig.masterpagePath !== 'undefined') {

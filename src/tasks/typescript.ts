@@ -1,6 +1,6 @@
-import * as colors from 'colors';
 import { Gulp } from 'gulp';
 
+import { processStepMessage } from '../utils/log';
 import { getConfigs } from './config';
 import { ISPBuildSettings, IGulpConfigs } from '../interfaces';
 
@@ -10,7 +10,7 @@ export const typescriptTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) 
 
   // Compile TypeScript files
   gulp.task('tsc', async () => {
-    console.log(`\n${colors.yellow('===')} ${colors.green('Simple TypeScript compilation')} ${colors.yellow('===')}\n`);
+    processStepMessage('TypeScript compilation');
 
     const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
     return gulp

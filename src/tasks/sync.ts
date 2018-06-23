@@ -1,10 +1,10 @@
-import * as colors from 'colors';
 import * as path from 'path';
 import { Gulp } from 'gulp';
 const sppull = require('sppull').sppull;
 
 import Files from './../utils/files';
 
+import { processStepMessage } from '../utils/log';
 import { getConfigs } from './config';
 import { ISPBuildSettings, IGulpConfigs } from '../interfaces';
 
@@ -13,7 +13,7 @@ declare var global: any;
 export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   gulp.task('pull', async cb => {
-    console.log(`\n${colors.yellow('===')} ${colors.green('Fetching files from SharePoint')} ${colors.yellow('===')}\n`);
+    processStepMessage('Fetching files from SharePoint');
 
     const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
     const options = {
@@ -34,7 +34,7 @@ export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     const args = process.argv.splice(3);
     const diff = args.filter(arg => arg.toLowerCase() === '--diff').length > 0;
 
-    console.log(`\n${colors.yellow('===')} ${colors.green(`Publishing assets to SharePoint${ diff ? ' (incremental mode)' : '' }`)} ${colors.yellow('===')}\n`);
+    processStepMessage(`Publishing assets to SharePoint${ diff ? ' (incremental mode)' : '' }`);
 
     const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
 

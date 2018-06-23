@@ -1,4 +1,3 @@
-import * as colors from 'colors';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as mkdirp from 'mkdirp';
@@ -9,6 +8,7 @@ import { getConfigs } from './config';
 import Build from '../utils/build';
 import { walkFolders } from '../utils/misc';
 import { detectProdMode } from '../utils/env';
+import { processStepMessage } from '../utils/log';
 
 import { ISPBuildSettings, IGulpConfigs, IAssetMap } from '../interfaces';
 
@@ -26,13 +26,21 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   gulp.task('build', cb => {
     detectProdMode();
     (async () => {
+      processStepMessage('Build: Copy Assets');
       await buildCopyAssetsTask(settings);
+      processStepMessage('Build: CEWPs');
       await buildWebpartsTask(settings);
+      processStepMessage('Build: Masterpages');
       await buildMasterpagesTask(settings);
+      processStepMessage('Build: Layouts');
       await buildLayoutsTask(settings);
+      processStepMessage('Build: Custom CSS');
       await buildCustomCssTask(settings);
+      processStepMessage('Build: CSS Libraries');
       await buildCssLibsTask(settings);
+      processStepMessage('Build: JavaScript DLLs');
       await buildJsLibsTask(settings);
+      processStepMessage('Build: Webpack');
       await buildWebpackTask();
     })()
       .then(_ => cb())
@@ -40,43 +48,43 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   });
 
   gulp.task('build:js-libs', cb => {
-    console.log(`\n${colors.red('===')} ${colors.green('Build: JavaScript DLLs')} ${colors.yellow('===')}\n`);
+    processStepMessage('Build: JavaScript DLLs');
     buildJsLibsTask(settings).then(_ => cb()).catch(cb);
   });
 
   gulp.task('build:webpack', cb => {
-    console.log(`\n${colors.red('===')} ${colors.green('Build: Webpack')} ${colors.yellow('===')}\n`);
+    processStepMessage('Build: Webpack');
     detectProdMode();
     buildWebpackTask().then(_ => cb()).catch(cb);
   });
 
   gulp.task('build:css-libs', cb => {
-    console.log(`\n${colors.red('===')} ${colors.green('Build: CSS Libraries')} ${colors.yellow('===')}\n`);
+    processStepMessage('Build: CSS Libraries');
     buildCssLibsTask(settings).then(_ => cb()).catch(cb);
   });
 
   gulp.task('build:css-custom', cb => {
-    console.log(`\n${colors.red('===')} ${colors.green('Build: Custom CSS')} ${colors.yellow('===')}\n`);
+    processStepMessage('Build: Custom CSS');
     buildCustomCssTask(settings).then(_ => cb()).catch(cb);
   });
 
   gulp.task('build:copy-assets', cb => {
-    console.log(`\n${colors.red('===')} ${colors.green('Build: Copy Assets')} ${colors.yellow('===')}\n`);
+    processStepMessage('Build: Copy Assets');
     buildCopyAssetsTask(settings).then(_ => cb()).catch(cb);
   });
 
   gulp.task('build:masterpage', cb => {
-    console.log(`\n${colors.red('===')} ${colors.green('Build: Masterpages')} ${colors.yellow('===')}\n`);
+    processStepMessage('Build: Masterpages');
     buildMasterpagesTask(settings).then(_ => cb()).catch(cb);
   });
 
   gulp.task('build:layouts', cb => {
-    console.log(`\n${colors.red('===')} ${colors.green('Build: Layouts')} ${colors.yellow('===')}\n`);
+    processStepMessage('Build: Layouts');
     buildLayoutsTask(settings).then(_ => cb()).catch(cb);
   });
 
   gulp.task('build:webparts', cb => {
-    console.log(`\n${colors.red('===')} ${colors.green('Build: CEWPs')} ${colors.yellow('===')}\n`);
+    processStepMessage('Build: CEWPs');
     buildWebpartsTask(settings).then(_ => cb()).catch(cb);
   });
 

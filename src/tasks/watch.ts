@@ -1,4 +1,3 @@
-import * as colors from 'colors';
 import * as path from 'path';
 import * as fs from 'fs';
 import { Gulp } from 'gulp';
@@ -6,6 +5,7 @@ import * as webpack from 'webpack';
 import sppurge, { IOptions as IPurgeOptions } from 'sppurge';
 import { LiveReload } from 'sp-live-reload';
 
+import { processStepMessage } from '../utils/log';
 import { getConfigs } from './config';
 import { Debounce, formatTime } from '../utils/misc';
 import { getBuildInstance } from './build';
@@ -137,7 +137,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   };
 
   gulp.task('watch:webpack', _ => {
-    console.log(`\n${colors.yellow('===')} ${colors.green('Watch Webpack')} ${colors.yellow('===')}\n`);
+    processStepMessage('Watch Webpack');
     detectProdMode();
 
     let webpackConfigPath: string = path.join(process.cwd(), 'webpack.config.js');
@@ -165,7 +165,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   });
 
   gulp.task('watch', async () => {
-    console.log(`\n${colors.yellow('===')} ${colors.green('Watch Assets')} ${colors.yellow('===')}\n`);
+    processStepMessage('Watch Assets');
     detectProdMode();
 
     const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
@@ -184,7 +184,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   });
 
   gulp.task('live', async () => {
-    console.log(`\n${colors.yellow('===')} ${colors.green('Watch with reload is initiated')} ${colors.yellow('===')}\n`);
+    processStepMessage('Watch with reload is initiated');
     detectProdMode();
 
     const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
