@@ -25,8 +25,8 @@ export const getBuildInstance = (settings: IGulpConfigs): Build => {
 export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   gulp.task('build', cb => {
-    processStepMessage(`Build (mode: ${detectProdMode()})`);
     (async () => {
+      processStepMessage(`Build (mode: ${detectProdMode()})`);
       await new Listr([
         { title: 'Copy Assets', task: () => buildCopyAssetsTask(settings) },
         { title: 'Build CEWPs', task: () => buildWebpartsTask(settings) },
@@ -38,9 +38,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       ]).run();
       processStepMessage(`Starting webpack`);
       await buildWebpackTask();
-    })()
-      .then(_ => cb())
-      .catch(cb);
+    })().then(_ => cb()).catch(cb);
   });
 
   gulp.task('build:js-libs', cb => {

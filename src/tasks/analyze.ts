@@ -13,10 +13,8 @@ declare var global: any;
 export const analyzeTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   gulp.task('analyze', cb => {
-
-    processStepMessage('Analyze Webpack Bundle');
-
     (async () => {
+      processStepMessage('Analyze Webpack Bundle');
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
       const webpackItemsMaps = configs.appConfig.webpackItemsMap || [{
         entry: './src/scripts/index.ts',
@@ -34,10 +32,7 @@ export const analyzeTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => 
           console.log(`No source map found in ${target}`);
         }
       }
-    })()
-      .then(_ => cb())
-      .catch(cb);
-
+    })().then(_ => cb()).catch(cb);
   });
 
 };

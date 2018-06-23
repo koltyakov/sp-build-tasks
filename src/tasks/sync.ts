@@ -25,9 +25,7 @@ export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       };
 
       await sppull(configs.privateConf, options);
-    })()
-      .then(_ => cb())
-      .catch(cb);
+    })().then(_ => cb()).catch(cb);
   });
 
   gulp.task('push', cb => {
@@ -79,9 +77,7 @@ export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         }
       }
 
-    })()
-      .then(_ => cb())
-      .catch(cb);
+    })().then(_ => cb()).catch(cb);
   });
 
 };

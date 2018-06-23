@@ -21,9 +21,7 @@ export const featuresTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) =>
         console.log('MDS is already deactivated');
       }
 
-      cb();
-
-    })().catch(cb);
+    })().then(_ => cb()).catch(cb);
   });
 
 };
