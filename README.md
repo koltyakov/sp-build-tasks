@@ -154,7 +154,7 @@ Compiles front-end to `./dist` folder.
 
 #### Build options
 
-**Production build**
+##### Production build
 
 ```bash
 gulp build --prod

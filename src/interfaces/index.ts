@@ -1,11 +1,8 @@
 import { IAuthOptions } from 'node-sp-auth';
-// import { Gulp } from 'gulp';
 import { Configuration, Options } from 'webpack';
 import { ILRSettings } from 'sp-live-reload/dist/interfaces';
 
-export interface IWebpackConfig extends Configuration {
-  // [key: string]: any;
-}
+export interface IWebpackConfig extends Configuration {}
 
 export interface IWebpackMapItem {
   entry: string;
@@ -38,15 +35,19 @@ export interface IAppConfig {
   bundleJSLibsFiles?: string[];
   bundleCSSLibsFiles?: string[];
   copyAssetsMap?: IAssetMap[];
+  customActions?: ICustomActionDefinition[];
   customStyles?: IAssetMap | IAssetMap[];
   modulePath?: string;
   customData?: any;
-  webpackItemsMap?: Array<{
-    entry: string;
-    target: string;
-    // webpackConfig?: any;
-  }>;
+  webpackItemsMap?: Array<{ entry: string; target: string; }>;
   devtool?: Options.Devtool;
+}
+
+export interface ICustomActionDefinition {
+  name?: string;
+  scriptSrc: string;
+  scope: 'web' | 'site';
+  sequence: number;
 }
 
 export interface IAssetMap {

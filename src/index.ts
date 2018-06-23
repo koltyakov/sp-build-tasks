@@ -13,6 +13,7 @@ import { watchTasks } from './tasks/watch';
 import { typescriptTasks } from './tasks/typescript';
 import { cleanTasks } from './tasks/clean';
 import { analyzeTasks } from './tasks/analyze';
+import { featuresTasks } from './tasks/features';
 
 class SPBuildTasks {
 
@@ -49,6 +50,7 @@ class SPBuildTasks {
     typescriptTasks(this.gulp, plugins, this.settings);
     cleanTasks(this.gulp, plugins, this.settings);
     analyzeTasks(this.gulp, plugins, this.settings);
+    featuresTasks(this.gulp, plugins, this.settings);
   }
 
   private loadCustomGulpTasks (taskPath: string, plugins?: IGulpPlugins, settings?: ISPBuildSettings) {

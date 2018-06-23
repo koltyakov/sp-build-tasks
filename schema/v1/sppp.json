@@ -91,6 +91,37 @@
             }
           }
         },
+        "customActions": {
+          "description": "SharePoint ScriptLink Custom Actions configuration",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [ "scriptSrc", "scope", "sequence" ],
+            "properties": {
+              "name": {
+                "description": "An optional name for custom action",
+                "type": "string",
+                "default": "My Custom Action"
+              },
+              "scriptSrc": {
+                "description": "Custom action script source.\n\nSupports following hashes:\n\n- `~publishroot` - location in SharePoint where SPPP's `./dist` folder is targeted to;\n\n- `~site` - SPWeb location;\n\n- `~sitecollection` - SPSite location;\n\n- `~hubsite` - SPO Hub Site location.",
+                "type": "string",
+                "default": "~publishroot/scripts/app.js"
+              },
+              "scope": {
+                "description": "Custom action scope: `web` (SPWeb) or `site` (SPSite) (site collection)",
+                "type": "string",
+                "enum": [ "web", "site" ],
+                "default": "web"
+              },
+              "sequence": {
+                "description": "Custom action script sequence",
+                "type": "number",
+                "default": 100
+              }
+            }
+          }
+        },
         "webpackItemsMap": {
           "description": "Scripts build configuration. Array or entry/target script pairs.",
           "type": "array",
