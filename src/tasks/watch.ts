@@ -73,6 +73,34 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       });
   };
 
+  const webpackWatch = () => {
+    processStepMessage('Watch Webpack');
+    detectProdMode();
+
+    let webpackConfigPath: string = path.join(process.cwd(), 'webpack.config.js');
+    if (!fs.existsSync(webpackConfigPath)) {
+      webpackConfigPath = path.join(__dirname, '../webpack/config.js');
+    }
+    let webpackConfig: any = require(webpackConfigPath);
+    if (!Array.isArray(webpackConfig)) {
+      webpackConfig = [webpackConfig];
+    }
+    webpackConfig = webpackConfig.map(w => {
+      return {
+        ...w,
+        watch: true,
+        watchOptions: {
+          aggregateTimeout: 300,
+          poll: 1000,
+          ignored: /node_modules/
+        }
+      };
+    });
+    webpack(webpackConfig, (err, stats) => {
+      console.log(err || stats.toString({ colors: true }));
+    });
+  };
+
   const Watcher = function (configs: IGulpConfigs) {
     $.watch(`./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.'), (event) => {
       if (event.event !== 'unlink') {
@@ -95,9 +123,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       './src/scripts/**/*.ts',
       './src/scripts/**/*.tsx',
       '!./src/scripts/**/*.d.ts'
-    ]).once('data', () => {
-      gulp.start('watch:webpack');
-    });
+    ]).once('data', () => webpackWatch());
     $.watch('./src/webparts/**/*.hbs', (vinyl) => {
       if (vinyl.event !== 'unlink') {
         const build = getBuildInstance(configs);
@@ -135,34 +161,6 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       }
     });
   };
-
-  gulp.task('watch:webpack', _ => {
-    processStepMessage('Watch Webpack');
-    detectProdMode();
-
-    let webpackConfigPath: string = path.join(process.cwd(), 'webpack.config.js');
-    if (!fs.existsSync(webpackConfigPath)) {
-      webpackConfigPath = path.join(__dirname, '../webpack/config.js');
-    }
-    let webpackConfig: any = require(webpackConfigPath);
-    if (!Array.isArray(webpackConfig)) {
-      webpackConfig = [webpackConfig];
-    }
-    webpackConfig = webpackConfig.map(w => {
-      return {
-        ...w,
-        watch: true,
-        watchOptions: {
-          aggregateTimeout: 300,
-          poll: 1000,
-          ignored: /node_modules/
-        }
-      };
-    });
-    webpack(webpackConfig, (err, stats) => {
-      console.log(err || stats.toString({ colors: true }));
-    });
-  });
 
   gulp.task('watch', async () => {
     processStepMessage('Watch Assets');

@@ -9,46 +9,54 @@ import { ISPBuildSettings, IGulpConfigs } from '../interfaces';
 
 declare var global: any;
 
+const applyLogo = async (settings: ISPBuildSettings) => {
+  const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+  if (typeof configs.appConfig.masterpagePath !== 'undefined') {
+    processStepMessage('Applying logotype to the web');
+    const deploy = new Deploy({
+      siteUrl: configs.privateConf.siteUrl,
+      creds: configs.privateConf.creds,
+      dist: configs.appConfig.distFolder,
+      spFolder: configs.appConfig.spFolder
+    });
+    await deploy.applyLogotypeToWeb({
+      logoPath: configs.appConfig.logoPath
+    });
+  }
+  return;
+};
+
 export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
-  gulp.task('reload:install', async cb => {
-    processStepMessage('Installing live reload to site collection');
-
+  gulp.task('live-reload', async cb => {
+    const args = process.argv.splice(3);
+    const install = args.filter(arg => arg.toLowerCase() === '--uninstall').length === 0;
     const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
     const liveReload = new ReloadProvisioning(configs.liveReload);
-    liveReload.provisionMonitoringAction()
-      .then(_ => {
-        console.log('Custom action has been installed');
-        cb();
-      })
-      .catch(err => {
-        console.log(err.message);
-        cb();
-      });
-
+    if (install) {
+      processStepMessage('Installing live reload to site collection');
+      liveReload.provisionMonitoringAction()
+        .then(_ => {
+          console.log('Custom action has been installed');
+          cb();
+        })
+        .catch(cb);
+    } else {
+      processStepMessage('Retracting live reload from site collection');
+      liveReload.retractMonitoringAction()
+        .then(_ => {
+          console.log('Custom action has been retracted');
+          cb();
+        })
+        .catch(cb);
+    }
   });
 
-  gulp.task('reload:retract', async cb => {
-    processStepMessage('Retracting live reload from site collection');
-
+  gulp.task('masterpage', async cb => {
+    const args = process.argv.splice(3);
+    const install = args.filter(arg => arg.toLowerCase() === '--uninstall').length === 0;
     const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
-    const liveReload = new ReloadProvisioning(configs.liveReload);
-    liveReload.retractMonitoringAction()
-      .then(_ => {
-        console.log('Custom action has been retracted');
-        cb();
-      })
-      .catch(err => {
-        console.log(err.message);
-        cb();
-      });
 
-  });
-
-  gulp.task('masterpage:restore', async cb => {
-    processStepMessage('Restoring masterpage on the web');
-
-    const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
     const deploy = new Deploy({
       siteUrl: configs.privateConf.siteUrl,
       creds: configs.privateConf.creds,
@@ -56,67 +64,34 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       spFolder: configs.appConfig.spFolder
     });
 
-    deploy.applyMasterpageToWeb({
-      spFolder: '/',
-      masterpagePath: '_catalogs/masterpage/seattle.master'
-    })
-      .then(masterpageFullPath => {
-        console.log('Masterpage has been applied: ' + masterpageFullPath);
-        cb();
-      })
-      .catch(err => {
-        cb(err.message);
-      });
-  });
+    if (install) {
+      await applyLogo(settings);
+      processStepMessage('Applying masterpage to the web');
 
-  gulp.task('masterpage:apply', ['logo:apply'], async cb => {
-    processStepMessage('Applying masterpage to the web');
+      if (typeof configs.appConfig.masterpagePath !== 'undefined') {
+        deploy.applyMasterpageToWeb({
+          masterpagePath: configs.appConfig.masterpagePath
+        })
+          .then(masterpageFullPath => {
+            console.log('Masterpage has been applied: ' + masterpageFullPath);
+            cb();
+          })
+          .catch(cb);
+      } else {
+        cb(`Property 'masterpagePath' is missed in ./config/app.json`);
+      }
+    } else {
+      processStepMessage('Restoring masterpage on the web');
 
-    const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
-    if (typeof configs.appConfig.masterpagePath !== 'undefined') {
-      const deploy = new Deploy({
-        siteUrl: configs.privateConf.siteUrl,
-        creds: configs.privateConf.creds,
-        dist: configs.appConfig.distFolder,
-        spFolder: configs.appConfig.spFolder
-      });
       deploy.applyMasterpageToWeb({
-        masterpagePath: configs.appConfig.masterpagePath
+        spFolder: '/',
+        masterpagePath: '_catalogs/masterpage/seattle.master'
       })
         .then(masterpageFullPath => {
           console.log('Masterpage has been applied: ' + masterpageFullPath);
           cb();
         })
-        .catch(err => {
-          cb(err.message);
-        });
-    } else {
-      cb(`Property 'masterpagePath' is missed in ./config/app.json`);
-    }
-  });
-
-  gulp.task('logo:apply', async cb => {
-    processStepMessage('Applying logotype to the web');
-
-    const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
-    if (typeof configs.appConfig.masterpagePath !== 'undefined') {
-      const deploy = new Deploy({
-        siteUrl: configs.privateConf.siteUrl,
-        creds: configs.privateConf.creds,
-        dist: configs.appConfig.distFolder,
-        spFolder: configs.appConfig.spFolder
-      });
-      deploy.applyLogotypeToWeb({
-        logoPath: configs.appConfig.logoPath
-      })
-        .then(_logoFullPath => {
-          cb();
-        })
-        .catch(err => {
-          cb(err.message);
-        });
-    } else {
-      cb(`Property 'logoPath' is missed in ./config/app.json`);
+        .catch(cb);
     }
   });
 
