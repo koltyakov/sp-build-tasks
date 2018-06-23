@@ -14,7 +14,7 @@ import { cleanTasks } from './tasks/clean';
 import { analyzeTasks } from './tasks/analyze';
 import { featuresTasks } from './tasks/features';
 
-class SPBuildTasks {
+export default class SPBuildTasks {
 
   private gulp: Gulp;
   private settings: ISPBuildSettings;
@@ -81,4 +81,4 @@ class SPBuildTasks {
 
 }
 
-module.exports = SPBuildTasks;
+export { ISPBuildSettings, IAppConfig } from './interfaces';
