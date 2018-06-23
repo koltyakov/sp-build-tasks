@@ -64,6 +64,7 @@
   },
   "devDependencies": {
     "@types/colors": "^1.2.1",
+    "@types/gulp": "3.8.36",
     "@types/gulp-load-plugins": "0.0.31",
     "@types/mkdirp": "^0.5.2",
     "@types/node": "^10.3.5",
