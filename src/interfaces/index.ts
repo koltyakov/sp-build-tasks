@@ -132,7 +132,7 @@ export interface IConcatFilesContent {
 export interface IBuildCustomCssFromScss {
   file?: string;
   data?: string;
-  outputStyle?: string;
+  outputStyle?: string | any;
   outFile?: string;
   sourceMap?: string;
   sourceMapContents?: boolean;

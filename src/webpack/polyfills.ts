@@ -8,5 +8,3 @@ if (typeof Promise === 'undefined') {
 }
 
 require('whatwg-fetch');
-
-Object.assign = require('object-assign');

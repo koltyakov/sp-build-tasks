@@ -4,8 +4,6 @@ import * as path from 'path';
 import * as mkdirp from 'mkdirp';
 import * as uglifyJS from 'uglify-js';
 import * as CleanCSS from 'clean-css';
-import * as deasync from 'deasync';
-import * as less from 'less';
 import * as sass from 'node-sass';
 
 import Copy from './copy';
@@ -23,7 +21,7 @@ export default class Build {
   private copy: Copy;
   private EOL: string = '\n';
 
-  constructor (settings: IBuildSettings = {}) {
+  constructor(settings: IBuildSettings = {}) {
     this.settings = {
       ...settings,
       src: settings.src || './src',
@@ -33,7 +31,7 @@ export default class Build {
     this.copy = new Copy(this.settings);
   }
 
-  public buildBootstrap3 () {
+  public async buildBootstrap3(): Promise<string> {
     let compiledCss = '';
     const bootstrapRoot = path.join(process.cwd(), '/node_modules/bootstrap/less');
     if (fs.existsSync(bootstrapRoot)) {
@@ -94,48 +92,60 @@ export default class Build {
         return path.join(bootstrapRoot, '/', fileName + '.less');
       });
       const content = this.concatFilesContent({ filesArr: bootstrapPaths });
-      let bootstrapIsReady = false;
-      less.render(content, {
-        filename: path.resolve(path.join(bootstrapRoot, '/_.less'))
-      }, (err, output) => {
-        if (err) {
-          console.log('Less compilation error:', err.message);
-        } else {
-          compiledCss = output.css;
-        }
-        bootstrapIsReady = true;
-      });
-      deasync.loopWhile(() => !bootstrapIsReady);
+
+      let less = null;
+      try {
+        less = require('less');
+      } catch (ex) { /**/ }
+      if (less) {
+        const compileLess = (): Promise<string> => {
+          return new Promise((resolve, reject) => {
+            less.render(content, { filename: path.resolve(path.join(bootstrapRoot, '/_.less')) }, (err, output) => {
+              if (err) {
+                reject('Less compilation error:' + err.message);
+              }
+              const styles: string = output.css;
+              resolve(styles);
+            });
+          });
+        };
+        compiledCss = await compileLess();
+      }
+    } else {
+      console.log('No Bootstrap 3 installed found');
     }
     return compiledCss;
   }
 
-  public buildCustomCssFromScss (params: IBuildCustomCssFromScss = {}) {
-    let { file, data, outputStyle, outFile, sourceMap, sourceMapContents } = params;
-    data = data || file ? fs.readFileSync(file, this.settings.fileEncoding).toString() : null;
-    outputStyle = outputStyle || 'compressed';
-    let result = { css: '', map: '' };
-    // Files lock issue workaraund
-    let renderIsReady = false;
-    setTimeout(() => {
-      result = sass.renderSync({ file, data, outputStyle, outFile, sourceMap, sourceMapContents });
-      renderIsReady = true;
-    }, 50);
-    deasync.loopWhile(() => !renderIsReady);
-    return result; // .css
+  public buildCustomCssFromScss(params: IBuildCustomCssFromScss = {}): Promise<sass.Result> {
+    return new Promise((resolve, reject) => {
+      let { file, data, outputStyle, outFile, sourceMap, sourceMapContents } = params;
+      data = data || file ? fs.readFileSync(file, this.settings.fileEncoding).toString() : null;
+      outputStyle = outputStyle || 'compressed';
+      // Files lock issue workaraund
+      setTimeout(() => {
+        sass.render({ file, data, outputStyle, outFile, sourceMap, sourceMapContents }, (err, result) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(result);
+        });
+      }, 50);
+    });
   }
 
-  public concatFilesContent (params: IConcatFilesContent) {
+  public async concatFilesContent(params: IConcatFilesContent): Promise<string> {
     const { filesArr, distPath } = params;
-    const concatedContent = (filesArr || []).map(filePath => {
+    const concatedContent: string[] = [];
+    for (const filePath of (filesArr || [])) {
       let content = '';
-      if (filePath === 'bootstrap') {
-        content = this.buildBootstrap3();
+      if (filePath === 'bootstrap3') {
+        content = await this.buildBootstrap3();
       } else {
         content = fs.readFileSync(filePath, this.settings.fileEncoding).toString();
       }
-      return content;
-    });
+      concatedContent.push(content);
+    }
     if (distPath) {
       mkdirp.sync(path.dirname(distPath));
       fs.writeFileSync(distPath, concatedContent.join(this.EOL), {
@@ -145,7 +155,7 @@ export default class Build {
     return concatedContent.join(this.EOL);
   }
 
-  public minifyJsContent (params: IMinifyContent) {
+  public minifyJsContent(params: IMinifyContent): uglifyJS.MinifyOutput {
     let { content, srcPath, distPath } = params;
     content = content || fs.readFileSync(srcPath, this.settings.fileEncoding);
     const minifiedContent = uglifyJS.minify(content, {
@@ -165,10 +175,11 @@ export default class Build {
     return minifiedContent;
   }
 
-  public minifyCssContent (params: IMinifyContent) {
+  public minifyCssContent(params: IMinifyContent): CleanCSS.Output {
     let { content, srcPath, distPath } = params;
     content = content || fs.readFileSync(srcPath, this.settings.fileEncoding);
-    const minifiedContent = new CleanCSS({ level: { 1: { specialComments: 0 } } }).minify(content);
+    // level: { 1: { specialComments: 0 } }
+    const minifiedContent = new CleanCSS({}).minify(content);
     if (distPath) {
       mkdirp.sync(path.dirname(distPath));
       fs.writeFileSync(distPath, minifiedContent.styles, {
@@ -178,7 +189,7 @@ export default class Build {
     return minifiedContent;
   }
 
-  public copyAssets (params: ICopyAssets) {
+  public copyAssets(params: ICopyAssets): void {
     const { srcArrayOrPath, dist } = params;
     mkdirp.sync(dist);
     if (Array.isArray(srcArrayOrPath)) {
@@ -190,7 +201,7 @@ export default class Build {
     }
   }
 
-  public compileHbsTemplate (params: ICompileHbsTemplate) {
+  public compileHbsTemplate(params: ICompileHbsTemplate): Promise<{ targetBody: string; targetPath: string; }> {
     return new Promise((resolve, reject) => {
       let { source, target, data } = params;
       const src = path.normalize(this.settings.src);
@@ -228,16 +239,15 @@ export default class Build {
     });
   }
 
-  public compileHbsTemplates (params: ICompileHbsTemplates) {
+  public async compileHbsTemplates(params: ICompileHbsTemplates): Promise<{ targetBody: string; targetPath: string; }[]> {
     const { files, data } = params;
-    const compilePromises = files.map(file => {
-      return this.compileHbsTemplate({
-        source: file.source,
-        target: file.target,
-        data
-      });
-    });
-    return Promise.all(compilePromises);
+    const results: { targetBody: string; targetPath: string; }[] = [];
+    for (const file of files) {
+      const { source, target } = file;
+      const result = await this.compileHbsTemplate({ source, target, data });
+      results.push(result);
+    }
+    return results;
   }
 
 }

@@ -2,14 +2,18 @@ import { Gulp } from 'gulp';
 import { Web } from '@pnp/sp';
 
 import { setupPnp } from '../utils/pnpjs';
-import { ISPBuildSettings } from '../interfaces';
+import { getConfigs } from './config';
+import { ISPBuildSettings, IGulpConfigs } from '../interfaces';
+
+declare var global: any;
 
 export const featuresTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   gulp.task('features:disable-mds', cb => {
     (async () => {
 
-      const ctx = await setupPnp(settings);
+      const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+      const ctx = await setupPnp(configs);
       const web = new Web(ctx.siteUrl);
 
       const mmdFeatureId = '87294c72-f260-42f3-a41b-981a2ffce37a';

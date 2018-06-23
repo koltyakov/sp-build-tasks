@@ -10,7 +10,6 @@ import { syncTasks } from './tasks/sync';
 import { deployTasks } from './tasks/deploy';
 import { buildTasks } from './tasks/build';
 import { watchTasks } from './tasks/watch';
-import { typescriptTasks } from './tasks/typescript';
 import { cleanTasks } from './tasks/clean';
 import { analyzeTasks } from './tasks/analyze';
 import { featuresTasks } from './tasks/features';
@@ -47,7 +46,6 @@ class SPBuildTasks {
     deployTasks(this.gulp, plugins, this.settings);
     buildTasks(this.gulp, plugins, this.settings);
     watchTasks(this.gulp, plugins, this.settings);
-    typescriptTasks(this.gulp, plugins, this.settings);
     cleanTasks(this.gulp, plugins, this.settings);
     analyzeTasks(this.gulp, plugins, this.settings);
     featuresTasks(this.gulp, plugins, this.settings);
@@ -73,14 +71,9 @@ class SPBuildTasks {
   private loadGulpPlugins (): IGulpPlugins {
     return loadGulpPlugins({
       pattern: [
-        'gulp-*', 'gulp.*',
-        'run-sequence', 'merge-stream',
-        'yargs', 'del', 'through2'
+        'gulp-*', 'gulp.*', 'del', 'through2'
       ],
       rename: {
-        'gulp-typescript': 'tsc',
-        'run-sequence': 'rns',
-        'merge-stream': 'merge',
         'through2': 'through'
       }
     });

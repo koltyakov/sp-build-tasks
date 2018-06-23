@@ -1,6 +1,6 @@
 import { Gulp } from 'gulp';
 import * as path from 'path';
-import { sp, Web } from '@pnp/sp';
+import { sp, Web, Site } from '@pnp/sp';
 import { ReloadProvisioning } from 'sp-live-reload';
 
 import Deploy from '../utils/deploy';
@@ -44,7 +44,7 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         });
       } else {
         processStepMessage('Retracting live reload from site collection');
-        await liveReload.retractMonitoringAction() .then(_ => {
+        await liveReload.retractMonitoringAction().then(_ => {
           console.log('Custom action has been retracted');
         });
       }
@@ -97,14 +97,15 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
 
       const customActions = configs.appConfig.customActions || [];
-      const moduleName = require(path.join(process.cwd(), 'package.json'));
+      const moduleName = require(path.join(process.cwd(), 'package.json')).name;
 
       if (customActions.length === 0) {
         console.log('No custom actions in app.json to deal with.');
         return;
       }
 
-      await setupPnp(settings);
+      const ctx = await setupPnp(configs);
+      const web = new Web(ctx.siteUrl);
 
       if (install) {
         processStepMessage('Installing custom actions');
@@ -118,7 +119,7 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
             const payload: any = {
               Location: 'ScriptLink',
               Title: actionTitle,
-              Sequence: '100'
+              Sequence: parseInt(`${ca.sequence}`, 10) || 100
             };
 
             if (hashes.isHashedUrl(url)) {
@@ -128,22 +129,27 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
               payload.ScriptBlock = getCustomActionScriptBlock(url);
             }
 
+            let scope: Web | Site = null;
+
             if (ca.scope === 'web') {
-              await sp.web.userCustomActions
-                .add(payload)
-                .then(_ => {
-                  console.log(`${actionTitle} has been added`);
-                })
-                .catch(console.log);
+              scope = web;
             }
 
             if (ca.scope === 'site') {
-              await sp.site.userCustomActions
-                .add(payload)
-                .then(_ => {
-                  console.log(`${actionTitle} has been added`);
-                })
-                .catch(console.log);
+              scope = sp.site;
+            }
+
+            if (scope) {
+              const actions = await web.userCustomActions.filter(`Title eq '${actionTitle}'`).get();
+              if (actions.length === 0) {
+                await scope.userCustomActions.add(payload)
+                  .then(_ => console.log(`${actionTitle} has been added`))
+                  .catch(err => console.log(err.data.responseBody.error.message.value));
+              } else {
+                await scope.userCustomActions.getById(actions[0].Id).update(payload)
+                  .then(_ => console.log(`${actionTitle} has been added`))
+                  .catch(err => console.log(err.data.responseBody.error.message.value));
+              }
             }
 
           } else {
@@ -152,16 +158,17 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         }
       } else {
         processStepMessage('Uninstalling custom actions');
-        const webActions = await sp.web.userCustomActions.filter(`startswith(Title,'${moduleName} (')`).get();
-        const siteActions = await sp.site.userCustomActions.filter(`startswith(Title,'${moduleName} (')`).get();
+        const webActions = await web.userCustomActions.filter(`startswith(Title,'${moduleName} ')`).get();
+        const siteActions = await sp.site.userCustomActions.filter(`startswith(Title,'${moduleName} ')`).get();
         for (const ca of webActions) {
-          await sp.web.userCustomActions.getById(ca.Id).delete();
-          console.log(`${ca.Title} has been deleted`);
+          await web.userCustomActions.getById(ca.Id).delete()
+            .then(_ => console.log(`${ca.Title} has been deleted`))
+            .catch(err => console.log(err.data.responseBody.error.message.value));
         }
         for (const ca of siteActions) {
-          await sp.site.userCustomActions.getById(ca.Id).delete().then(_ => {
-            console.log(`${ca.Title} has been deleted`);
-          }).catch(console.log);
+          await sp.site.userCustomActions.getById(ca.Id).delete()
+            .then(_ => console.log(`${ca.Title} has been deleted`))
+            .catch(err => console.log(err.data.responseBody.error.message.value));
         }
       }
     })().then(_ => cb()).catch(cb);
@@ -181,7 +188,7 @@ const getCustomActionScriptBlock = (scriptUri: string) => {
       scriptEl.src = '${scriptUri}?v=${assetsVersion}&ext=.js';
       headEl.appendChild(scriptEl);
     })();
-  `.trim().split('\n').join('') : `
+  `.trim().split('\n').map(l => l.trim()).join('') : `
     (function() {
       var headEl = document.getElementsByTagName('head')[0];
       var styleEl = document.createElement('link');
@@ -190,5 +197,5 @@ const getCustomActionScriptBlock = (scriptUri: string) => {
       styleEl.href = '${scriptUri}?v=${assetsVersion}&ext=.css';
       headEl.appendChild(styleEl);
     })();
-  `.trim().split('\n').join('');
+  `.trim().split('\n').map(l => l.trim()).join('');
 };

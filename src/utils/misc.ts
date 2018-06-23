@@ -16,7 +16,7 @@ export const walkFolders = (startFolder: string): string[] => {
   return results;
 };
 
-export const formatTime = (date: Date) => {
+export const formatTime = (date: Date): string => {
   const hh = ('0' + date.getHours()).slice(-2);
   const mm = ('0' + date.getMinutes()).slice(-2);
   const ss = ('0' + date.getSeconds()).slice(-2);
@@ -35,13 +35,11 @@ export const execPromise = (command: string): Promise<{ stdout: any; stderr: any
 };
 
 export class Debounce {
-  private timers: {
-    [key: string]: NodeJS.Timer
-  } = {};
+  private timers: { [key: string]: NodeJS.Timer } = {};
 
   constructor (public delay: number = 100) {}
 
-  public run = (key: string, cb: (...args: any[]) => void) => {
+  public run = (key: string, cb: (...args: any[]) => void): void => {
     clearTimeout(this.timers[key]);
     this.timers[key] = setTimeout(cb, this.delay);
   }

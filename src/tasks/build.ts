@@ -90,7 +90,7 @@ const buildJsLibsTask = async (settings: ISPBuildSettings): Promise<void> => {
 
   const filesArr = configs.appConfig.bundleJSLibsFiles;
   const distPath = configs.appConfig.distFolder + '/scripts/vendor.js';
-  const content = build.concatFilesContent({ filesArr });
+  const content = await build.concatFilesContent({ filesArr });
   content && build.minifyJsContent({ content, distPath });
 
   return;
@@ -121,7 +121,7 @@ const buildCssLibsTask = async (settings: ISPBuildSettings): Promise<void> => {
 
   const filesArr = configs.appConfig.bundleCSSLibsFiles;
   const distPath = configs.appConfig.distFolder + '/styles/vendor.css';
-  const content = build.concatFilesContent({ filesArr });
+  const content = await build.concatFilesContent({ filesArr });
   if (content) {
     build.minifyCssContent({ content, distPath });
   }
@@ -154,7 +154,7 @@ const buildCustomCssTask = async (settings: ISPBuildSettings): Promise<void> => 
       const distPath = path.join(process.cwd(), configs.appConfig.distFolder, (configs.appConfig.modulePath || ''), assets.dist);
       const sourceMapPath = distPath + '.map';
       const sourceMapFile = sourceMapPath.split('\\').pop();
-      const result = build.buildCustomCssFromScss({ file: srcPath, sourceMap: sourceMapFile, sourceMapContents: true });
+      const result = await build.buildCustomCssFromScss({ file: srcPath, sourceMap: sourceMapFile, sourceMapContents: true });
       mkdirp.sync(path.dirname(distPath));
       fs.writeFileSync(
         distPath,
@@ -179,8 +179,8 @@ const buildCopyAssetsTask = async (settings: ISPBuildSettings): Promise<void> =>
   return;
 };
 
-const mapProjectData = (configs: IGulpConfigs) => {
-  const serverPath: string = configs.privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
+export const mapProjectData = (configs: IGulpConfigs) => {
+  const serverPath: string = configs.privateConf.siteUrl.split('/').splice(0, 3).join('/');
   const publishPath: string = `${configs.privateConf.siteUrl}/${configs.appConfig.spFolder}`.replace(serverPath, '');
 
   const packageData = require(path.join(process.cwd(), 'package.json'));

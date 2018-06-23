@@ -3,8 +3,8 @@ import * as UglifyJSPlugin from 'uglifyjs-webpack-plugin';
 import * as path from 'path';
 import * as fs from 'fs';
 
-// import { TsConfigPathsPlugin } from 'awesome-typescript-loader';
-import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
+import { TsConfigPathsPlugin } from 'awesome-typescript-loader';
+// import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 
 declare var global: any;
 
@@ -31,8 +31,8 @@ if (!privateConf) {
   appConf = require(path.join(process.cwd(), 'config/private.json'));
 }
 
-const serverPath: string = privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
-const publishPath: string = `${privateConf.siteUrl}/${appConf.spFolder}`.replace(serverPath, '');
+const publishPath: string = '/' + `${privateConf.siteUrl}/${appConf.spFolder}`
+  .split('/').splice(3, 100).join('/').replace(/\/\//g, '/');
 
 let defaultEntryExt = 'ts';
 const defEntryRoot = './src/scripts';
@@ -125,7 +125,7 @@ const webpackConfigDevDefaults: IWebpackConfig = {
   },
   resolve: {
     extensions: [ '.ts', '.tsx', '.js', '.jsx' ],
-    plugins: [ new TsconfigPathsPlugin() ]
+    plugins: [ new TsConfigPathsPlugin() ]
   }
 };
 
@@ -160,7 +160,7 @@ const webpackConfigProdDefaults: IWebpackConfig = {
   ],
   resolve: {
     extensions: [ '.ts', '.tsx', '.js', '.jsx' ],
-    plugins: [ new TsconfigPathsPlugin() ]
+    plugins: [ new TsConfigPathsPlugin() ]
   }
 };
 

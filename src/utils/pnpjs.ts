@@ -1,22 +1,22 @@
 import { sp } from '@pnp/sp';
 import { PnpNode, IPnpNodeSettings } from 'sp-pnp-node';
 
-import { ISPBuildSettings } from '../interfaces';
+import { IGulpConfigs } from '../interfaces';
 
-export const setupPnp = async (settings: ISPBuildSettings): Promise<IPnpNodeSettings> => {
-  const config = await new PnpNode({
-    config: {
-      configPath: settings.privateConf
-    }
-  }).init();
+export const setupPnp = async (configs: IGulpConfigs): Promise<IPnpNodeSettings> => {
+
+  const { siteUrl, creds: authOptions } = configs.privateConf;
+  const config = await new PnpNode({ siteUrl, authOptions }).init();
 
   sp.setup({
     sp: {
       headers: {
-        accept: 'application/json;odata=verbose'
-      }
+        Accept: 'application/json;odata=verbose'
+      },
+      baseUrl: siteUrl
     }
   });
 
   return config;
+
 };

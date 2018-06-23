@@ -16,7 +16,7 @@ export default class Copy {
     };
   }
 
-  public copyFileOrFolderSync (source: string, target: string) {
+  public copyFileOrFolderSync(source: string, target: string): void {
     const skipFolder: boolean = source.endsWith('/*');
     if (skipFolder) {
       source = source.replace('/*', '');
@@ -30,7 +30,7 @@ export default class Copy {
     }
   }
 
-  public copyFileSync (source: string, target: string) {
+  public copyFileSync(source: string, target: string): void {
     let targetFile = target;
     if (fs.existsSync(target)) {
       if (fs.lstatSync(target).isDirectory()) {
@@ -42,7 +42,7 @@ export default class Copy {
     });
   }
 
-  public copyFolderRecursiveSync (source: string, target: string, skipFolder: boolean = false) {
+  public copyFolderRecursiveSync(source: string, target: string, skipFolder: boolean = false): void {
     let files = [];
     const targetFolder = skipFolder ? path.resolve(target) : path.join(target, path.basename(source));
     if (!fs.existsSync(targetFolder)) {

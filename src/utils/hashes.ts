@@ -1,4 +1,4 @@
-import { Web, SPRest, SPHttpClient } from '@pnp/sp';
+import { SPRest, SPHttpClient } from '@pnp/sp';
 
 import { IGulpConfigs } from '../interfaces';
 
@@ -37,9 +37,10 @@ export class Hashes {
   }
 
   public isHashedUrl(uri: string): boolean {
-    let str = uri.toLowerCase();
+    const str = uri.toLowerCase();
     return Object.keys(this.hashes)
-      .filter(key => str.indexOf(key) !== -1).length > 0;
+      .filter(key => str.indexOf(key) !== -1)
+      .length > 0;
   }
 
   public async replaceHashedUrl(uri: string): Promise<string> {
@@ -50,9 +51,7 @@ export class Hashes {
       if (rule.needReplacement) {
         if (typeof rule.value === 'undefined') {
           await rule.get()
-          .then(res => {
-            rule.value = res;
-          })
+          .then(res => rule.value = res)
           .catch(error => {
             console.log(error);
             rule.value = null;
@@ -62,7 +61,7 @@ export class Hashes {
           str = null;
         }
         if (str !== null) {
-          str = str.replace(new RegExp(key, 'ig'), rule.value);
+          str = str.replace(new RegExp(key.replace(/\//g, ''), 'ig'), rule.value);
         }
       }
     }
@@ -76,6 +75,9 @@ export class Hashes {
     const siteHubData = await this.client.get(endpoint)
       .then(r => r.json())
       .then(data => {
+        if (typeof data['odata.error'] !== 'undefined') {
+          throw Error(data['odata.error'].message.value);
+        }
         if (data.value === null) {
           return null;
         }
@@ -83,7 +85,7 @@ export class Hashes {
       });
 
     if (siteHubData) {
-      const hubRelativeUrl = '/' + siteHubData.url.split('/').splice(3,100).join('/');
+      const hubRelativeUrl = '/' + siteHubData.url.split('/').splice(3,100).join('/').replace(/\/\//g, '/');
       return hubRelativeUrl;
     } else {
       return null;
@@ -101,8 +103,8 @@ export class Hashes {
   }
 
   private async getPublishRootUrl(): Promise<string> {
-    const publishRootUrl = '/' + (this.configs.privateConf.siteUrl + this.configs.appConfig.spFolder)
-      .split('/').splice(3,100).join('/');
+    const publishRootUrl = '/' + (this.configs.privateConf.siteUrl + '/' + this.configs.appConfig.spFolder)
+      .split('/').splice(3,100).join('/').replace(/\/\//g, '/');
     return publishRootUrl;
   }
 

@@ -1,10 +1,9 @@
 import { readFileSync } from 'fs';
-import * as path from 'path';
 import { ISPRequest, create as createRequest } from 'sp-request';
 import { Delete } from 'sppurge';
 import * as colors from 'colors';
 
-import { IBuildSettings, IDeploySettings } from '../interfaces';
+import { IDeploySettings } from '../interfaces';
 
 export interface IFolderProcessItem {
   path: string;
