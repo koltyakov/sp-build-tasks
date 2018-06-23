@@ -17,7 +17,7 @@ export default class Copy {
   }
 
   public copyFileOrFolderSync (source: string, target: string) {
-    let skipFolder: boolean = source.endsWith('/*');
+    const skipFolder: boolean = source.endsWith('/*');
     if (skipFolder) {
       source = source.replace('/*', '');
     }
@@ -44,14 +44,14 @@ export default class Copy {
 
   public copyFolderRecursiveSync (source: string, target: string, skipFolder: boolean = false) {
     let files = [];
-    let targetFolder = skipFolder ? path.resolve(target) : path.join(target, path.basename(source));
+    const targetFolder = skipFolder ? path.resolve(target) : path.join(target, path.basename(source));
     if (!fs.existsSync(targetFolder)) {
       fs.mkdirSync(targetFolder);
     }
     if (fs.lstatSync(source).isDirectory()) {
       files = fs.readdirSync(source);
       files.forEach((file) => {
-        let curSource = path.join(source, file);
+        const curSource = path.join(source, file);
         if (fs.lstatSync(curSource).isDirectory()) {
           this.copyFolderRecursiveSync(curSource, targetFolder, false);
         } else {

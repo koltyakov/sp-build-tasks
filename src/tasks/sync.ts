@@ -5,75 +5,72 @@ const sppull = require('sppull').sppull;
 
 import Files from './../utils/files';
 
+import { getConfigs } from './config';
 import { ISPBuildSettings, IGulpConfigs } from '../interfaces';
 
 declare var global: any;
 
 export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
-  gulp.task('pull', ['config'], (cb) => {
+  gulp.task('pull', async cb => {
     console.log(`\n${colors.yellow('===')} ${colors.green('Fetching files from SharePoint')} ${colors.yellow('===')}\n`);
 
-    let configs: IGulpConfigs = global.gulpConfigs;
-    let options = {
+    const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+    const options = {
       spRootFolder: configs.appConfig.spFolder,
       dlRootFolder: configs.appConfig.distFolder
     };
 
     sppull(configs.privateConf, options)
-      .then(() => {
-        cb();
-      })
-      .catch((err) => {
+      .then(_ => cb())
+      .catch(err => {
         cb(err.message);
       });
 
   });
 
-  gulp.task('push', ['config'], () => {
-    console.log(`\n${colors.yellow('===')} ${colors.green('Publishing assets to SharePoint')} ${colors.yellow('===')}\n`);
+  gulp.task('push', async cb => {
 
-    let configs: IGulpConfigs = global.gulpConfigs;
-    return gulp
-      .src(configs.watch.assets, { base: configs.watch.base })
-      .pipe($.spsave(configs.spSaveCoreOptions, configs.privateConf.creds));
+    const args = process.argv.splice(3);
+    const diff = args.filter(arg => arg.toLowerCase() === '--diff').length > 0;
 
-  });
+    console.log(`\n${colors.yellow('===')} ${colors.green(`Publishing assets to SharePoint${ diff ? ' (incremental mode)' : '' }`)} ${colors.yellow('===')}\n`);
 
-  gulp.task('push:diff', ['config'], (cb) => {
-    console.log(`\n${colors.yellow('===')} ${colors.green('Publishing assets to SharePoint (incremental mode)')} ${colors.yellow('===')}\n`);
+    const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
 
-    let configs: IGulpConfigs = global.gulpConfigs;
-    const utils = new Files({
-      siteUrl: configs.privateConf.siteUrl,
-      creds: configs.privateConf.creds,
-      dist: configs.appConfig.distFolder,
-      spFolder: configs.appConfig.spFolder
-    });
-
-    utils.getFiles().then(files => {
-      gulp
+    if (!diff) {
+      return gulp
         .src(configs.watch.assets, { base: configs.watch.base })
-        .pipe($.through.obj(function (chunk, _, next) {
-          let fileRelativePath = path.relative(chunk.base, chunk.path).replace(/\\/g, '/');
-          let remoteFiles = files.filter(file => {
-            return file.relativePath === fileRelativePath;
-          });
-          if (remoteFiles.length === 1) {
-            // Different size
-            if (remoteFiles[0].length !== chunk.contents.length) {
+        .pipe($.spsave(configs.spSaveCoreOptions, configs.privateConf.creds));
+    } else {
+      // Incrementall mode
+      const utils = new Files({
+        siteUrl: configs.privateConf.siteUrl,
+        creds: configs.privateConf.creds,
+        dist: configs.appConfig.distFolder,
+        spFolder: configs.appConfig.spFolder
+      });
+
+      utils.getFiles().then(files => {
+        gulp
+          .src(configs.watch.assets, { base: configs.watch.base })
+          .pipe($.through.obj(function (chunk, _, next) {
+            const fileRelativePath = path.relative(chunk.base, chunk.path).replace(/\\/g, '/');
+            const remoteFiles = files.filter(file => file.relativePath === fileRelativePath);
+            if (remoteFiles.length === 1) {
+              // Different size
+              if (remoteFiles[0].length !== chunk.contents.length) {
+                this.push(chunk);
+              }
+            } else {
               this.push(chunk);
             }
-          } else {
-            this.push(chunk);
-          }
-          next();
-        }))
-        .pipe($.spsave(configs.spSaveCoreOptions, configs.privateConf.creds))
-        .on('finish', () => {
-          cb();
-        });
-    });
+            next();
+          }))
+          .pipe($.spsave(configs.spSaveCoreOptions, configs.privateConf.creds))
+          .on('finish', _ => cb());
+      });
+    }
 
   });
 

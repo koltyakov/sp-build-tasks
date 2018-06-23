@@ -33,11 +33,11 @@ export default class Build {
     this.copy = new Copy(this.settings);
   }
 
-  public buildBootstrap () {
+  public buildBootstrap3 () {
     let compiledCss = '';
-    let bootstrapRoot = path.join(process.cwd(), '/node_modules/bootstrap/less');
+    const bootstrapRoot = path.join(process.cwd(), '/node_modules/bootstrap/less');
     if (fs.existsSync(bootstrapRoot)) {
-      let bootstrapFiles = [
+      const bootstrapFiles = [
         // Core variables and mixins
         'variables',
         'mixins',
@@ -90,10 +90,10 @@ export default class Build {
         'responsive-utilities',
         'theme'
       ];
-      let bootstrapPaths = bootstrapFiles.map(fileName => {
+      const bootstrapPaths = bootstrapFiles.map(fileName => {
         return path.join(bootstrapRoot, '/', fileName + '.less');
       });
-      let content = this.concatFilesContent({ filesArr: bootstrapPaths });
+      const content = this.concatFilesContent({ filesArr: bootstrapPaths });
       let bootstrapIsReady = false;
       less.render(content, {
         filename: path.resolve(path.join(bootstrapRoot, '/_.less'))
@@ -126,11 +126,11 @@ export default class Build {
   }
 
   public concatFilesContent (params: IConcatFilesContent) {
-    let { filesArr, distPath } = params;
-    let concatedContent = (filesArr || []).map(filePath => {
+    const { filesArr, distPath } = params;
+    const concatedContent = (filesArr || []).map(filePath => {
       let content = '';
       if (filePath === 'bootstrap') {
-        content = this.buildBootstrap();
+        content = this.buildBootstrap3();
       } else {
         content = fs.readFileSync(filePath, this.settings.fileEncoding).toString();
       }
@@ -148,7 +148,7 @@ export default class Build {
   public minifyJsContent (params: IMinifyContent) {
     let { content, srcPath, distPath } = params;
     content = content || fs.readFileSync(srcPath, this.settings.fileEncoding);
-    let minifiedContent = uglifyJS.minify(content, {
+    const minifiedContent = uglifyJS.minify(content, {
       compress: true,
       sourceMap: true,
       output: {
@@ -168,7 +168,7 @@ export default class Build {
   public minifyCssContent (params: IMinifyContent) {
     let { content, srcPath, distPath } = params;
     content = content || fs.readFileSync(srcPath, this.settings.fileEncoding);
-    let minifiedContent = new CleanCSS({ level: { 1: { specialComments: 0 } } }).minify(content);
+    const minifiedContent = new CleanCSS({ level: { 1: { specialComments: 0 } } }).minify(content);
     if (distPath) {
       mkdirp.sync(path.dirname(distPath));
       fs.writeFileSync(distPath, minifiedContent.styles, {
@@ -179,7 +179,7 @@ export default class Build {
   }
 
   public copyAssets (params: ICopyAssets) {
-    let { srcArrayOrPath, dist } = params;
+    const { srcArrayOrPath, dist } = params;
     mkdirp.sync(dist);
     if (Array.isArray(srcArrayOrPath)) {
       srcArrayOrPath.forEach(src => {
@@ -193,8 +193,8 @@ export default class Build {
   public compileHbsTemplate (params: ICompileHbsTemplate) {
     return new Promise((resolve, reject) => {
       let { source, target, data } = params;
-      let src = path.normalize(this.settings.src);
-      let dist = path.normalize(this.settings.dist);
+      const src = path.normalize(this.settings.src);
+      const dist = path.normalize(this.settings.dist);
       source = path.normalize(source);
       target = path.normalize(target);
       if (source.indexOf(src) !== 0) {
@@ -203,7 +203,7 @@ export default class Build {
       if (target.indexOf(dist) !== 0) {
         target = path.join(dist, target);
       }
-      let fileParse = path.parse(target);
+      const fileParse = path.parse(target);
       data = {
         ...data,
         fileName: `${fileParse.name}${fileParse.ext}`
@@ -212,8 +212,8 @@ export default class Build {
         if (err) {
           reject(err);
         }
-        let template = Handlebars.compile(sourceBody.toString());
-        let targetBody = template(data);
+        const template = Handlebars.compile(sourceBody.toString());
+        const targetBody = template(data);
         mkdirp.sync(path.dirname(target));
         fs.writeFile(target, targetBody, {
           encoding: this.settings.fileEncoding
@@ -229,8 +229,8 @@ export default class Build {
   }
 
   public compileHbsTemplates (params: ICompileHbsTemplates) {
-    let { files, data } = params;
-    let compilePromises = files.map(file => {
+    const { files, data } = params;
+    const compilePromises = files.map(file => {
       return this.compileHbsTemplate({
         source: file.source,
         target: file.target,

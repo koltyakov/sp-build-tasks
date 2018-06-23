@@ -22,7 +22,7 @@ interface IWebpackConfig extends IWebpackConfigOld {
 
 const configs: IGulpConfigs = global.gulpConfigs;
 let appConf: IAppConfig = (configs || { appConfig: null }).appConfig;
-let privateConf: IPrivateConfig = (configs || { privateConf: null }).privateConf;
+const privateConf: IPrivateConfig = (configs || { privateConf: null }).privateConf;
 
 if (!appConf) {
   appConf = require(path.join(process.cwd(), 'config/app.json'));

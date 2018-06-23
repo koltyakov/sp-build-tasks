@@ -31,9 +31,9 @@ export default class Deploy {
       if (masterpagePath.length === 0) {
         reject('Error: SharePoint masterpage path is not provided');
       }
-      let methodUri = `${webUrl}/_api/web`;
-      let webRelativeUrl = `/${webUrl.replace('https://', '').replace('http://', '').split('/').splice(1, 100).join('/')}`;
-      let masterpageFullPath = `/${webRelativeUrl}/${spFolder}/${masterpagePath}`.replace(/\/\//g, '/');
+      const methodUri = `${webUrl}/_api/web`;
+      const webRelativeUrl = `/${webUrl.replace('https://', '').replace('http://', '').split('/').splice(1, 100).join('/')}`;
+      const masterpageFullPath = `/${webRelativeUrl}/${spFolder}/${masterpagePath}`.replace(/\/\//g, '/');
       request.requestDigest(webUrl)
         .then(digest => {
           return request.post(methodUri, {
@@ -76,9 +76,9 @@ export default class Deploy {
       if (logoPath.length === 0) {
         reject('Error: SharePoint logotype path is not provided');
       }
-      let methodUri = `${webUrl}/_api/web`;
-      let webRelativeUrl = `/${webUrl.replace('https://', '').replace('http://', '').split('/').splice(1, 100).join('/')}`;
-      let logoFullPath = `/${webRelativeUrl}/${spFolder}/${logoPath}`.replace(/\/\//g, '/');
+      const methodUri = `${webUrl}/_api/web`;
+      const webRelativeUrl = `/${webUrl.replace('https://', '').replace('http://', '').split('/').splice(1, 100).join('/')}`;
+      const logoFullPath = `/${webRelativeUrl}/${spFolder}/${logoPath}`.replace(/\/\//g, '/');
       request.requestDigest(webUrl)
         .then(digest => {
           return request.post(methodUri, {

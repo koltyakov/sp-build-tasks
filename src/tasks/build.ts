@@ -5,10 +5,12 @@ import * as mkdirp from 'mkdirp';
 import * as webpack from 'webpack';
 import { Gulp } from 'gulp';
 
+import { getConfigs } from './config';
 import Build from '../utils/build';
 import { walkFolders } from '../utils/misc';
+import { detectProdMode } from '../utils/env';
 
-import { ISPBuildSettings, IGulpConfigs, IBuildSettings, IAssetMap } from '../interfaces';
+import { ISPBuildSettings, IGulpConfigs, IAssetMap } from '../interfaces';
 
 declare var global: any;
 
@@ -21,300 +23,261 @@ export const getBuildInstance = (settings: IGulpConfigs): Build => {
 
 export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
-  gulp.task('build:prod', ['env:prod', 'build']);
-  gulp.task('build:dev', ['env:dev', 'build']);
-
-  gulp.task('build', [
-    'build:webpack', 'build:css-custom', 'build:copy-assets',
-    'build:js-libs', 'build:css-libs', 'build:masterpage',
-    'build:layouts', 'build:webparts'
-  ]);
-
-  gulp.task('build:js-libs', ['config'], (cb) => {
-    let configs: IGulpConfigs = global.gulpConfigs;
-    const build = getBuildInstance(configs);
-
-    let filesArr = configs.appConfig.bundleJSLibsFiles;
-    let distPath = configs.appConfig.distFolder + '/scripts/vendor.js';
-    try {
-      let concatedContent = build.concatFilesContent({
-        filesArr: filesArr
-      });
-      if (concatedContent) {
-        let minifiedContent = build.minifyJsContent({
-          content: concatedContent,
-          distPath: distPath
-        });
-      }
-      cb();
-    } catch (ex) {
-      cb(ex);
-    }
+  gulp.task('build', cb => {
+    detectProdMode();
+    (async () => {
+      await buildCopyAssetsTask(settings);
+      await buildWebpartsTask(settings);
+      await buildMasterpagesTask(settings);
+      await buildLayoutsTask(settings);
+      await buildCustomCssTask(settings);
+      await buildCssLibsTask(settings);
+      await buildJsLibsTask(settings);
+      await buildWebpackTask();
+    })()
+      .then(_ => cb())
+      .catch(cb);
   });
 
-  gulp.task('build:webpack', ['config'], (cb) => {
-    let webpackConfigPath: string = path.join(process.cwd(), 'webpack.config.js');
-    if (!fs.existsSync(webpackConfigPath)) {
-      webpackConfigPath = path.join(__dirname, '../webpack/config.js');
-    }
-    let webpackConfig: any = require(webpackConfigPath);
+  gulp.task('build:js-libs', cb => {
+    console.log(`\n${colors.red('===')} ${colors.green('Build: JavaScript DLLs')} ${colors.yellow('===')}\n`);
+    buildJsLibsTask(settings).then(_ => cb()).catch(cb);
+  });
+
+  gulp.task('build:webpack', cb => {
+    console.log(`\n${colors.red('===')} ${colors.green('Build: Webpack')} ${colors.yellow('===')}\n`);
+    detectProdMode();
+    buildWebpackTask().then(_ => cb()).catch(cb);
+  });
+
+  gulp.task('build:css-libs', cb => {
+    console.log(`\n${colors.red('===')} ${colors.green('Build: CSS Libraries')} ${colors.yellow('===')}\n`);
+    buildCssLibsTask(settings).then(_ => cb()).catch(cb);
+  });
+
+  gulp.task('build:css-custom', cb => {
+    console.log(`\n${colors.red('===')} ${colors.green('Build: Custom CSS')} ${colors.yellow('===')}\n`);
+    buildCustomCssTask(settings).then(_ => cb()).catch(cb);
+  });
+
+  gulp.task('build:copy-assets', cb => {
+    console.log(`\n${colors.red('===')} ${colors.green('Build: Copy Assets')} ${colors.yellow('===')}\n`);
+    buildCopyAssetsTask(settings).then(_ => cb()).catch(cb);
+  });
+
+  gulp.task('build:masterpage', cb => {
+    console.log(`\n${colors.red('===')} ${colors.green('Build: Masterpages')} ${colors.yellow('===')}\n`);
+    buildMasterpagesTask(settings).then(_ => cb()).catch(cb);
+  });
+
+  gulp.task('build:layouts', cb => {
+    console.log(`\n${colors.red('===')} ${colors.green('Build: Layouts')} ${colors.yellow('===')}\n`);
+    buildLayoutsTask(settings).then(_ => cb()).catch(cb);
+  });
+
+  gulp.task('build:webparts', cb => {
+    console.log(`\n${colors.red('===')} ${colors.green('Build: CEWPs')} ${colors.yellow('===')}\n`);
+    buildWebpartsTask(settings).then(_ => cb()).catch(cb);
+  });
+
+};
+
+const buildJsLibsTask = async (settings: ISPBuildSettings): Promise<void> => {
+  const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+  const build = getBuildInstance(configs);
+
+  const filesArr = configs.appConfig.bundleJSLibsFiles;
+  const distPath = configs.appConfig.distFolder + '/scripts/vendor.js';
+  const content = build.concatFilesContent({ filesArr });
+  content && build.minifyJsContent({ content, distPath });
+
+  return;
+};
+
+const buildWebpackTask = async (): Promise<void> => {
+  let webpackConfigPath: string = path.join(process.cwd(), 'webpack.config.js');
+  if (!fs.existsSync(webpackConfigPath)) {
+    webpackConfigPath = path.join(__dirname, '../webpack/config.js');
+  }
+  const webpackConfig = require(webpackConfigPath);
+  await new Promise((resolve, reject) => {
     webpack(webpackConfig, (err, stats) => {
       if (err) {
-        cb(err);
-      } else {
-        console.log(stats.toString({ colors: true }));
-        cb();
+        reject(err.message);
       }
+      console.log(stats.toString({ colors: true }));
+      resolve();
     });
   });
 
-  gulp.task('build:css-libs', ['config'], (cb) => {
-    let configs: IGulpConfigs = global.gulpConfigs;
-    const build = getBuildInstance(configs);
+  return;
+};
 
-    let filesArr = configs.appConfig.bundleCSSLibsFiles;
-    let distPath = configs.appConfig.distFolder + '/styles/vendor.css';
-    try {
-      let concatedContent = build.concatFilesContent({
-        filesArr: filesArr
-      });
-      if (concatedContent) {
-        let minifiedContent = build.minifyCssContent({
-          content: concatedContent,
-          distPath: distPath
-        });
-      }
-      cb();
-    } catch (ex) {
-      cb(ex);
-    }
-  });
+const buildCssLibsTask = async (settings: ISPBuildSettings): Promise<void> => {
+  const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+  const build = getBuildInstance(configs);
 
-  gulp.task('build:css-custom', ['config'], (cb) => {
-    let configs: IGulpConfigs = global.gulpConfigs;
-    const build = getBuildInstance(configs);
+  const filesArr = configs.appConfig.bundleCSSLibsFiles;
+  const distPath = configs.appConfig.distFolder + '/styles/vendor.css';
+  const content = build.concatFilesContent({ filesArr });
+  if (content) {
+    build.minifyCssContent({ content, distPath });
+  }
 
-    let assetsArr: IAssetMap[] = [];
-    let defaultMap: IAssetMap = {
-      src: 'styles/index.scss',
-      dist: 'styles/app.css'
-    };
-    if (!configs.appConfig.customStyles) {
-      assetsArr.push({
-        ...defaultMap
-      });
-    } else if (!Array.isArray(configs.appConfig.customStyles)) {
-      assetsArr.push({
-        src: (configs.appConfig.customStyles as IAssetMap).src || defaultMap.src,
-        dist: (configs.appConfig.customStyles as IAssetMap).dist || defaultMap.dist
-      });
-    } else {
-      assetsArr = configs.appConfig.customStyles;
-    }
+  return;
+};
 
-    try {
-      for (let assets of assetsArr) {
-        let srcPath = path.join(process.cwd(), 'src', (assets as any).src);
-        if (fs.existsSync(srcPath)) {
-          let distPath = path.join(process.cwd(), configs.appConfig.distFolder, (configs.appConfig.modulePath || ''), assets.dist);
-          let sourceMapPath = distPath + '.map';
-          let sourceMapFile = sourceMapPath.split('\\').pop();
-          let result = build.buildCustomCssFromScss({ file: srcPath, sourceMap: sourceMapFile, sourceMapContents: true });
-          mkdirp.sync(path.dirname(distPath));
-          fs.writeFileSync(
-            distPath,
-            result.css.toString().replace('/*# sourceMappingURL=../../../', '/*# sourceMappingURL='),
-            { encoding: 'utf-8' }
-          );
-          fs.writeFileSync(sourceMapPath, result.map.toString(), { encoding: 'utf-8' });
-        }
-      }
-      cb();
-    } catch (ex) {
-      cb(ex);
-    }
-  });
+const buildCustomCssTask = async (settings: ISPBuildSettings): Promise<void> => {
+  const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+  const build = getBuildInstance(configs);
 
-  gulp.task('build:copy-assets', ['config'], (cb) => {
-    let configs: IGulpConfigs = global.gulpConfigs;
-    const build = getBuildInstance(configs);
-
-    (configs.appConfig.copyAssetsMap || []).forEach((assets) => {
-      build.copyAssets({
-        srcArrayOrPath: assets.src,
-        dist: assets.dist
-      });
+  let assetsArr: IAssetMap[] = [];
+  const defaultMap: IAssetMap = {
+    src: 'styles/index.scss',
+    dist: 'styles/app.css'
+  };
+  if (!configs.appConfig.customStyles) {
+    assetsArr.push({ ...defaultMap });
+  } else if (!Array.isArray(configs.appConfig.customStyles)) {
+    assetsArr.push({
+      src: (configs.appConfig.customStyles as IAssetMap).src || defaultMap.src,
+      dist: (configs.appConfig.customStyles as IAssetMap).dist || defaultMap.dist
     });
-    cb();
+  } else {
+    assetsArr = configs.appConfig.customStyles;
+  }
+  for (const assets of assetsArr) {
+    const srcPath = path.join(process.cwd(), 'src', (assets as any).src);
+    if (fs.existsSync(srcPath)) {
+      const distPath = path.join(process.cwd(), configs.appConfig.distFolder, (configs.appConfig.modulePath || ''), assets.dist);
+      const sourceMapPath = distPath + '.map';
+      const sourceMapFile = sourceMapPath.split('\\').pop();
+      const result = build.buildCustomCssFromScss({ file: srcPath, sourceMap: sourceMapFile, sourceMapContents: true });
+      mkdirp.sync(path.dirname(distPath));
+      fs.writeFileSync(
+        distPath,
+        result.css.toString().replace('/*# sourceMappingURL=../../../', '/*# sourceMappingURL='),
+        { encoding: 'utf-8' }
+      );
+      fs.writeFileSync(sourceMapPath, result.map.toString(), { encoding: 'utf-8' });
+    }
+  }
+
+  return;
+};
+
+const buildCopyAssetsTask = async (settings: ISPBuildSettings): Promise<void> => {
+  const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+  const build = getBuildInstance(configs);
+
+  (configs.appConfig.copyAssetsMap || []).forEach(assets => {
+    build.copyAssets({ srcArrayOrPath: assets.src, dist: assets.dist });
   });
 
-  gulp.task('build:masterpage', ['config'], (cb) => {
-    let configs: IGulpConfigs = global.gulpConfigs;
-    const build = getBuildInstance(configs);
+  return;
+};
 
-    let serverPath: string = configs.privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
-    let publishPath: string = `${configs.privateConf.siteUrl}/${configs.appConfig.spFolder}`.replace(serverPath, '');
+const mapProjectData = (configs: IGulpConfigs) => {
+  const serverPath: string = configs.privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
+  const publishPath: string = `${configs.privateConf.siteUrl}/${configs.appConfig.spFolder}`.replace(serverPath, '');
 
-    let packageData = require(path.join(process.cwd(), 'package.json'));
-    let data = {
-      serverPath,
-      publishPath,
-      absolutePublishPath: `${serverPath}${publishPath}`,
-      masterpageName: configs.appConfig.masterpageCodeName,
-      siteUrl: configs.privateConf.siteUrl,
-      spRootFolder: configs.appConfig.spFolder,
-      assetsVersion: packageData.version + '_' + (new Date()).getTime(),
-      ...(configs.appConfig.masterpage || {}),
-      customData: {
-        ...(configs.appConfig.customData || {})
+  const packageData = require(path.join(process.cwd(), 'package.json'));
+  const data = {
+    serverPath,
+    publishPath,
+    absolutePublishPath: `${serverPath}${publishPath}`,
+    masterpageName: configs.appConfig.masterpageCodeName,
+    siteUrl: configs.privateConf.siteUrl,
+    spRootFolder: configs.appConfig.spFolder,
+    assetsVersion: packageData.version + '_' + (new Date()).getTime(),
+    ...(configs.appConfig.masterpage || {}),
+    customData: {
+      ...(configs.appConfig.customData || {})
+    }
+  };
+
+  return data;
+};
+
+const buildMasterpagesTask = async (settings: ISPBuildSettings): Promise<void> => {
+  const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+  const build = getBuildInstance(configs);
+
+  const data = mapProjectData(configs);
+  const source = `./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.');
+  const target = `${configs.appConfig.distFolder}/masterpage/${configs.appConfig.masterpageCodeName}.master`;
+
+  if (fs.existsSync(source)) {
+    await build.compileHbsTemplate({ source, target, data });
+  }
+
+  return;
+};
+
+const buildLayoutsTask = async (settings: ISPBuildSettings): Promise<void> => {
+  const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+  const build = getBuildInstance(configs);
+
+  const data = mapProjectData(configs);
+  const source = './src/masterpage/layouts';
+  const target = configs.appConfig.distFolder + '/masterpage/layouts';
+
+  if (!fs.existsSync(source)) {
+    return;
+  }
+
+  const files = fs.readdirSync(source).map(file => {
+    let res = null;
+    const fileName = path.join(source, file);
+    const stat = fs.lstatSync(fileName);
+    if (!stat.isDirectory()) {
+      const fileParse = path.parse(fileName);
+      if (fileParse.ext === '.hbs') {
+        res = {
+          source: fileName,
+          target: path.join(target, fileParse.name + '.aspx')
+        };
       }
-    };
-    let source = `./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.');
-    let target = `${configs.appConfig.distFolder}/masterpage/${configs.appConfig.masterpageCodeName}.master`;
-
-    if (fs.existsSync(source)) {
-      build.compileHbsTemplate({
-        source: source,
-        target: target,
-        data: data
-      })
-        .then((res) => {
-          cb();
-        })
-        .catch((err) => {
-          cb(err);
-        });
-    } else {
-      cb();
     }
-  });
+    return res;
+  }).filter(obj => obj !== null);
 
-  gulp.task('build:layouts', ['config'], (cb) => {
-    let configs: IGulpConfigs = global.gulpConfigs;
-    const build = getBuildInstance(configs);
+  if (files.length > 0) {
+    await build.compileHbsTemplates({ files, data });
+  }
 
-    let serverPath: string = configs.privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
-    let publishPath: string = `${configs.privateConf.siteUrl}/${configs.appConfig.spFolder}`.replace(serverPath, '');
+  return;
+};
 
-    let packageData = require(path.join(process.cwd(), 'package.json'));
-    let data = {
-      serverPath,
-      publishPath,
-      absolutePublishPath: `${serverPath}${publishPath}`,
-      masterpageName: configs.appConfig.masterpageCodeName,
-      spRootFolder: configs.appConfig.spFolder,
-      assetsVersion: packageData.version + '_' + (new Date()).getTime(),
-      ...(configs.appConfig.masterpage || {}),
-      customData: {
-        ...(configs.appConfig.customData || {})
-      }
-    };
-    let source = './src/masterpage/layouts';
-    let target = configs.appConfig.distFolder + '/masterpage/layouts';
+const buildWebpartsTask = async (settings: ISPBuildSettings): Promise<void> => {
+  const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+  const build = getBuildInstance(configs);
 
-    if (!fs.existsSync(source)) {
-      return cb();
+  const data = mapProjectData(configs);
+  const source = './src/webparts';
+  const target = `${configs.appConfig.distFolder}/${(configs.appConfig.modulePath || '')}/webparts`.replace(/\/\//g, '/');
+
+  if (!fs.existsSync(source)) {
+    return;
+  }
+
+  const files = walkFolders(source).map(file => {
+    let res = null;
+    const fileParse = path.parse(file);
+    const relativeFolder = fileParse.dir.replace(source, '');
+
+    if (fileParse.ext === '.hbs') {
+      res = {
+        source: file,
+        target: path.join(target, relativeFolder, fileParse.name + '.html')
+      };
     }
+    return res;
+  }).filter(obj => obj !== null);
 
-    let files = fs.readdirSync(source)
-      .map((file) => {
-        let res = null;
-        let fileName = path.join(source, file);
-        let stat = fs.lstatSync(fileName);
-        if (!stat.isDirectory()) {
-          let fileParse = path.parse(fileName);
-          if (fileParse.ext === '.hbs') {
-            res = {
-              source: fileName,
-              target: path.join(target, fileParse.name + '.aspx')
-            };
-          }
-        }
-        return res;
-      })
-      .filter((obj) => {
-        return obj !== null;
-      });
+  if (files.length > 0) {
+    await build.compileHbsTemplates({ files, data });
+  }
 
-    if (files.length > 0) {
-      build.compileHbsTemplates({
-        files: files,
-        data: data
-      })
-        .then((res) => {
-          cb();
-        })
-        .catch((err) => {
-          cb(err);
-        });
-    } else {
-      cb();
-    }
-  });
-
-  gulp.task('build:webparts', ['config'], (cb) => {
-    let configs: IGulpConfigs = global.gulpConfigs;
-    const build = getBuildInstance(configs);
-
-    let serverPath: string = configs.privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
-    let publishPath: string = `${configs.privateConf.siteUrl}/${configs.appConfig.spFolder}`.replace(serverPath, '');
-
-    if ((configs.appConfig.modulePath || '').length > 0) {
-      publishPath += `/${configs.appConfig.modulePath}`.replace(/\/\//g, '/');
-    }
-
-    let packageData = require(path.join(process.cwd(), 'package.json'));
-    let data = {
-      serverPath,
-      publishPath,
-      absolutePublishPath: `${serverPath}${publishPath}`,
-      masterpageName: configs.appConfig.masterpageCodeName,
-      spRootFolder: configs.appConfig.spFolder,
-      assetsVersion: packageData.version + '_' + (new Date()).getTime(),
-      ...(configs.appConfig.masterpage || {}),
-      customData: {
-        ...(configs.appConfig.customData || {})
-      }
-    };
-    let source = './src/webparts';
-    let target = `${configs.appConfig.distFolder}/${(configs.appConfig.modulePath || '')}/webparts`.replace(/\/\//g, '/');
-
-    if (!fs.existsSync(source)) {
-      return cb();
-    }
-
-    let files = walkFolders(source)
-      .map((file) => {
-        let res = null;
-        let fileParse = path.parse(file);
-        let relativeFolder = fileParse.dir.replace(source, '');
-
-        if (fileParse.ext === '.hbs') {
-          res = {
-            source: file,
-            target: path.join(target, relativeFolder, fileParse.name + '.html')
-          };
-        }
-        return res;
-      })
-      .filter((obj) => {
-        return obj !== null;
-      });
-
-    if (files.length > 0) {
-      build.compileHbsTemplates({
-        files: files,
-        data: data
-      })
-        .then((res) => {
-          cb();
-        })
-        .catch((err) => {
-          cb(err);
-        });
-    } else {
-      cb();
-    }
-  });
-
+  return;
 };

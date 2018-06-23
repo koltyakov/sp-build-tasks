@@ -3,75 +3,78 @@ import Deploy from '../utils/deploy';
 import { ReloadProvisioning } from 'sp-live-reload';
 
 import { Gulp } from 'gulp';
-import { ISPBuildSettings, IGulpConfigs, IDeploySettings } from '../interfaces';
+
+import { getConfigs } from './config';
+import { ISPBuildSettings, IGulpConfigs } from '../interfaces';
 
 declare var global: any;
 
 export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
-  gulp.task('reload:install', ['config'], (cb) => {
+  gulp.task('reload:install', async cb => {
     console.log(`\n${colors.yellow('===')} ${colors.green('Installing live reload to site collection')} ${colors.yellow('===')}\n`);
 
-    let configs: IGulpConfigs = global.gulpConfigs;
-    let liveReload = new ReloadProvisioning(configs.liveReload);
+    const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+    const liveReload = new ReloadProvisioning(configs.liveReload);
     liveReload.provisionMonitoringAction()
-      .then(() => {
+      .then(_ => {
         console.log('Custom action has been installed');
         cb();
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err.message);
         cb();
       });
 
   });
 
-  gulp.task('reload:retract', ['config'], (cb) => {
+  gulp.task('reload:retract', async cb => {
     console.log(`\n${colors.yellow('===')} ${colors.green('Retracting live reload from site collection')} ${colors.yellow('===')}\n`);
 
-    let configs: IGulpConfigs = global.gulpConfigs;
-    let liveReload = new ReloadProvisioning(configs.liveReload);
+    const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+    const liveReload = new ReloadProvisioning(configs.liveReload);
     liveReload.retractMonitoringAction()
-      .then(() => {
+      .then(_ => {
         console.log('Custom action has been retracted');
         cb();
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err.message);
         cb();
       });
 
   });
 
-  gulp.task('masterpage:restore', ['config'], (cb) => {
+  gulp.task('masterpage:restore', async cb => {
     console.log(`\n${colors.yellow('===')} ${colors.green('Restoring masterpage on the web')} ${colors.yellow('===')}\n`);
 
-    let configs: IGulpConfigs = global.gulpConfigs;
-    let deploy = new Deploy({
+    const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+    const deploy = new Deploy({
       siteUrl: configs.privateConf.siteUrl,
       creds: configs.privateConf.creds,
       dist: configs.appConfig.distFolder,
       spFolder: configs.appConfig.spFolder
     });
+
     deploy.applyMasterpageToWeb({
       spFolder: '/',
       masterpagePath: '_catalogs/masterpage/seattle.master'
     })
-      .then((masterpageFullPath) => {
+      .then(masterpageFullPath => {
         console.log('Masterpage has been applied: ' + masterpageFullPath);
         cb();
       })
-      .catch((err) => {
+      .catch(err => {
         cb(err.message);
       });
   });
 
-  gulp.task('masterpage:apply', ['logo:apply', 'config'], (cb) => {
+  gulp.task('masterpage:apply', ['logo:apply'], async cb => {
     console.log(`\n${colors.yellow('===')} ${colors.green('Applying masterpage to the web')} ${colors.yellow('===')}\n`);
 
-    let configs: IGulpConfigs = global.gulpConfigs;
+    const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
     if (typeof configs.appConfig.masterpagePath !== 'undefined') {
-      let deploy = new Deploy({
+      const deploy = new Deploy({
         siteUrl: configs.privateConf.siteUrl,
         creds: configs.privateConf.creds,
         dist: configs.appConfig.distFolder,
@@ -80,11 +83,11 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       deploy.applyMasterpageToWeb({
         masterpagePath: configs.appConfig.masterpagePath
       })
-        .then((masterpageFullPath) => {
+        .then(masterpageFullPath => {
           console.log('Masterpage has been applied: ' + masterpageFullPath);
           cb();
         })
-        .catch((err) => {
+        .catch(err => {
           cb(err.message);
         });
     } else {
@@ -92,12 +95,12 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     }
   });
 
-  gulp.task('logo:apply', ['config'], (cb) => {
+  gulp.task('logo:apply', async cb => {
     console.log(`\n${colors.yellow('===')} ${colors.green('Applying logotype to the web')} ${colors.yellow('===')}\n`);
 
-    let configs: IGulpConfigs = global.gulpConfigs;
+    const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
     if (typeof configs.appConfig.masterpagePath !== 'undefined') {
-      let deploy = new Deploy({
+      const deploy = new Deploy({
         siteUrl: configs.privateConf.siteUrl,
         creds: configs.privateConf.creds,
         dist: configs.appConfig.distFolder,
@@ -106,10 +109,10 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       deploy.applyLogotypeToWeb({
         logoPath: configs.appConfig.logoPath
       })
-        .then((logoFullPath) => {
+        .then(_logoFullPath => {
           cb();
         })
-        .catch((err) => {
+        .catch(err => {
           cb(err.message);
         });
     } else {

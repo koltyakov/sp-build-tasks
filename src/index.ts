@@ -5,7 +5,6 @@ import * as path from 'path';
 
 import { Gulp } from 'gulp';
 
-import { envTasks } from './tasks/env';
 import { configTasks } from './tasks/config';
 import { syncTasks } from './tasks/sync';
 import { deployTasks } from './tasks/deploy';
@@ -32,7 +31,7 @@ class SPBuildTasks {
   }
 
   private initGulpTasks () {
-    let plugins = this.loadGulpPlugins();
+    const plugins = this.loadGulpPlugins();
     this.loadSPBuildGulpPlugins(plugins);
     this.loadCustomGulpTasks(this.settings.taskPath, plugins, this.settings);
   }
@@ -42,7 +41,6 @@ class SPBuildTasks {
       plugins = this.loadGulpPlugins();
     }
 
-    envTasks(this.gulp, plugins, this.settings);
     configTasks(this.gulp, plugins, this.settings);
     syncTasks(this.gulp, plugins, this.settings);
     deployTasks(this.gulp, plugins, this.settings);
@@ -61,7 +59,7 @@ class SPBuildTasks {
       }
       taskList.forEach((taskFile) => {
         if (taskFile !== 'customDataLoader.js') {
-          let task = require(path.resolve(path.join(taskPath, taskFile)));
+          const task = require(path.resolve(path.join(taskPath, taskFile)));
           if (task && typeof task === 'function') {
             task(this.gulp, plugins, settings);
           }

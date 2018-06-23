@@ -1,19 +1,18 @@
 import * as colors from 'colors';
 import { Gulp } from 'gulp';
 
+import { getConfigs } from './config';
 import { ISPBuildSettings, IGulpConfigs } from '../interfaces';
 
 declare var global: any;
 
 export const typescriptTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
-  // const tsconfig = require('./tsconfig.json');
-
   // Compile TypeScript files
-  gulp.task('tsc', ['config'], () => {
+  gulp.task('tsc', async () => {
     console.log(`\n${colors.yellow('===')} ${colors.green('Simple TypeScript compilation')} ${colors.yellow('===')}\n`);
 
-    let configs: IGulpConfigs = global.gulpConfigs;
+    const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
     return gulp
       .src(['./src/**/*.ts'])
       .pipe($.tsc.createProject('tsconfig.json')())
@@ -21,7 +20,7 @@ export const typescriptTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) 
   });
 
   gulp.task('tslint', () => {
-    let emitError = $.yargs.argv.emitError;
+    const emitError = $.yargs.argv.emitError;
     return gulp.src(['src/**/*.ts'])
       .pipe($.tslint({
         configuration: './tslint.json',
@@ -29,7 +28,7 @@ export const typescriptTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) 
       }))
       .pipe($.tslint.report({
         summarizeFailureOutput: true,
-        emitError: emitError
+        emitError
       }));
   });
 

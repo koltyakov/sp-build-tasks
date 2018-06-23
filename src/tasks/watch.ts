@@ -6,9 +6,10 @@ import * as webpack from 'webpack';
 import sppurge, { IOptions as IPurgeOptions } from 'sppurge';
 import { LiveReload } from 'sp-live-reload';
 
+import { getConfigs } from './config';
 import { Debounce, formatTime } from '../utils/misc';
-import Build from '../utils/build';
 import { getBuildInstance } from './build';
+import { detectProdMode } from '../utils/env';
 
 import { ISPBuildSettings, IGulpConfigs } from '../interfaces';
 
@@ -18,10 +19,10 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   const { run } = new Debounce(50);
 
-  let saveQueue: any = {};
+  const saveQueue: any = {};
 
-  const spsave = (filePath: string, throughCallback?: Function): void => {
-    let configs: IGulpConfigs = global.gulpConfigs;
+  const spsave = async (filePath: string, throughCallback?: (err: any) => void): Promise<void> => {
+    const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
     saveQueue[filePath] = (saveQueue[filePath] || 0) + 1;
     console.log(`[${formatTime(new Date())}]`, 'Watch:',
       path.relative('./', filePath), fs.statSync(filePath).size,
@@ -33,7 +34,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         .pipe($.spsave(configs.spSaveCoreOptions, configs.privateConf.creds))
         .pipe($.through.obj((chunk, enc, callback) => {
           if (throughCallback && typeof throughCallback === 'function') {
-            let chunkPath = chunk.path;
+            const chunkPath = chunk.path;
             throughCallback(chunkPath);
           }
           saveQueue[filePath] -= 1;
@@ -46,10 +47,10 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     }
   };
 
-  const purge = (filePath: string): void => {
-    let configs: IGulpConfigs = global.gulpConfigs;
+  const purge = async (filePath: string): Promise<void> => {
+    const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
 
-    let sppurgeOptions: IPurgeOptions = {
+    const sppurgeOptions: IPurgeOptions = {
       folder: configs.appConfig.spFolder,
       localFilePath: filePath,
       localBasePath: configs.appConfig.distFolder
@@ -101,11 +102,11 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       if (vinyl.event !== 'unlink') {
         const build = getBuildInstance(configs);
 
-        let serverPath: string = configs.privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
-        let publishPath: string = `${configs.privateConf.siteUrl}/${configs.appConfig.spFolder}`.replace(serverPath, '');
+        const serverPath: string = configs.privateConf.siteUrl.replace('://', '__').split('/')[0].replace('__', '://');
+        const publishPath: string = `${configs.privateConf.siteUrl}/${configs.appConfig.spFolder}`.replace(serverPath, '');
 
-        let packageData = require(path.join(process.cwd(), 'package.json'));
-        let data = {
+        const packageData = require(path.join(process.cwd(), 'package.json'));
+        const data = {
           serverPath,
           publishPath,
           masterpageName: configs.appConfig.masterpageCodeName,
@@ -113,12 +114,12 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
           assetsVersion: packageData.version + '_' + (new Date()).getTime(),
           ...(configs.appConfig.masterpage || {})
         };
-        let targetFolder = configs.appConfig.distFolder + '/webparts';
+        const targetFolder = configs.appConfig.distFolder + '/webparts';
 
-        let srcPath = path.relative('./src', vinyl.path);
-        let relPath = path.relative(path.join('./src', 'webparts'), vinyl.path);
-        let fileParse = path.parse(relPath);
-        let trgPath = path.join(targetFolder, path.dirname(relPath), fileParse.name + '.html');
+        const srcPath = path.relative('./src', vinyl.path);
+        const relPath = path.relative(path.join('./src', 'webparts'), vinyl.path);
+        const fileParse = path.parse(relPath);
+        const trgPath = path.join(targetFolder, path.dirname(relPath), fileParse.name + '.html');
 
         build.compileHbsTemplate({
           source: srcPath,
@@ -135,10 +136,10 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     });
   };
 
-  gulp.task('watch:prod', ['env:prod', 'watch']);
-  gulp.task('watch:dev', ['env:dev', 'watch']);
+  gulp.task('watch:webpack', _ => {
+    console.log(`\n${colors.yellow('===')} ${colors.green('Watch Webpack')} ${colors.yellow('===')}\n`);
+    detectProdMode();
 
-  gulp.task('watch:webpack', ['config'], () => {
     let webpackConfigPath: string = path.join(process.cwd(), 'webpack.config.js');
     if (!fs.existsSync(webpackConfigPath)) {
       webpackConfigPath = path.join(__dirname, '../webpack/config.js');
@@ -163,10 +164,11 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     });
   });
 
-  gulp.task('watch', ['config'], (cb) => {
+  gulp.task('watch', async () => {
     console.log(`\n${colors.yellow('===')} ${colors.green('Watch Assets')} ${colors.yellow('===')}\n`);
+    detectProdMode();
 
-    const configs: IGulpConfigs = global.gulpConfigs;
+    const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
 
     $.watch(configs.watch.assets, (event) => {
       if (event.event !== 'unlink') {
@@ -181,11 +183,12 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     new Watcher(configs);
   });
 
-  gulp.task('live', ['config'], (cb) => {
+  gulp.task('live', async () => {
     console.log(`\n${colors.yellow('===')} ${colors.green('Watch with reload is initiated')} ${colors.yellow('===')}\n`);
+    detectProdMode();
 
-    const configs: IGulpConfigs = global.gulpConfigs;
-    const build = getBuildInstance(configs);
+    const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+    // const build = getBuildInstance(configs);
 
     const liveReload = new LiveReload(configs.liveReload);
     liveReload.runServer();

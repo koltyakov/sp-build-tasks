@@ -62,7 +62,7 @@ export default class Files {
       if (typeof global['serverRelativeUrl'] !== 'undefined') {
         resolve(global['serverRelativeUrl']);
       } else {
-        let requestUrl = `${this.settings.siteUrl}/_api/web?$select=ServerRelativeUrl`;
+        const requestUrl = `${this.settings.siteUrl}/_api/web?$select=ServerRelativeUrl`;
         this.spr.get(requestUrl, {
           headers: {
             'Accept': 'application/json; odata=verbose',
@@ -88,9 +88,9 @@ export default class Files {
         if (foldersArr.filter(folder => !folder.processed).length === 0) {
           resolve(filesArr);
         } else {
-          let folder = foldersArr.find(folder => !folder.processed);
+          const folder = foldersArr.find(folder => !folder.processed);
 
-          let requestUrl = `${this.settings.siteUrl}` +
+          const requestUrl = `${this.settings.siteUrl}` +
             `/_api/web/getFolderByServerRelativeUrl('${folder.path}')?` +
               `$select=Files,Folders/ServerRelativeUrl,Folders/ItemCount&` +
               `$expand=Files,Folders`;
@@ -133,7 +133,7 @@ export default class Files {
       if (filesQueue.filter(file => !file.processed).length === 0) {
         resolve();
       } else {
-        let file = filesQueue.find(folder => !folder.processed);
+        const file = filesQueue.find(folder => !folder.processed);
         console.log(`Deleting ${colors.red(file.path)}`);
         this.deleteFile(file.path).then(_ => {
           file.processed = true;

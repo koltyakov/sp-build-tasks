@@ -1,7 +1,8 @@
 import * as colors from 'colors';
 import { Gulp } from 'gulp';
-import { join, resolve } from 'path';
+import { join } from 'path';
 
+import { getConfigs } from './config';
 import { execPromise } from '../utils/misc';
 import { extractSourcemapPath } from '../utils/files';
 
@@ -11,15 +12,16 @@ declare var global: any;
 
 export const analyzeTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
-  gulp.task('analyze', ['config'], (cb) => {
+  gulp.task('analyze', cb => {
+
     console.log(`\n${colors.red('===')} ${colors.green('Analyze Webpack Bundle')} ${colors.yellow('===')}\n`);
-    let configs: IGulpConfigs = global.gulpConfigs;
-    const webpackItemsMaps = configs.appConfig.webpackItemsMap || [{
-      entry: './src/scripts/index.ts',
-      target: 'app.js'
-    }];
 
     (async () => {
+      const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+      const webpackItemsMaps = configs.appConfig.webpackItemsMap || [{
+        entry: './src/scripts/index.ts',
+        target: 'app.js'
+      }];
       for (const item of webpackItemsMaps) {
         const target = `${configs.appConfig.distFolder}/scripts/${item.target}`;
         let sourceMap = extractSourcemapPath(target);
@@ -32,9 +34,10 @@ export const analyzeTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => 
           console.log(`No source map found in ${target}`);
         }
       }
-    })();
+    })()
+      .then(_ => cb())
+      .catch(cb);
 
-    cb();
   });
 
 };

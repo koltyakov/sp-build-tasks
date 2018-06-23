@@ -4,15 +4,13 @@ import { AuthConfig } from 'node-sp-auth-config';
 import { IAuthOptions } from 'node-sp-auth';
 import { Gulp } from 'gulp';
 
-import {
-  ISPBuildSettings, IAppConfig, IPrivateConfig, IGulpConfigs
-} from '../interfaces';
+import { ISPBuildSettings, IAppConfig, IGulpConfigs } from '../interfaces';
 
 declare var global: any;
 
-export const getConfigs = (settings: ISPBuildSettings, forcePrompts: boolean = false): Promise<IGulpConfigs> => {
+const getConfigsData = (settings: ISPBuildSettings, forcePrompts: boolean = false): Promise<IGulpConfigs> => {
   const mapGulpConfigs = (appConfig: IAppConfig, privateConfig: any): IGulpConfigs => {
-    let gulpConfigs: IGulpConfigs = {
+    const gulpConfigs: IGulpConfigs = {
       appConfig: {
         ...appConfig,
         masterpageCodeName: appConfig.masterpageCodeName || 'Frankfurt',
@@ -64,7 +62,7 @@ export const getConfigs = (settings: ISPBuildSettings, forcePrompts: boolean = f
     });
     if (typeof global.spBuildContext === 'undefined') {
       authConfig.getContext()
-        .then((context: any) => {
+        .then(context => {
           global.spBuildContext = context;
           global.gulpConfigs = mapGulpConfigs(global.spBuildAppConfig, global.spBuildContext);
           resolve(global.gulpConfigs);
@@ -72,14 +70,12 @@ export const getConfigs = (settings: ISPBuildSettings, forcePrompts: boolean = f
         .catch(reject);
     } else {
       global.gulpConfigs = mapGulpConfigs(global.spBuildAppConfig, global.spBuildContext);
-      process.nextTick(() => {
-        resolve(global.gulpConfigs);
-      });
+      resolve(global.gulpConfigs);
     }
   });
 };
 
-export const getCustomData = (settings: ISPBuildSettings, gulpConfigs: IGulpConfigs): Promise<IGulpConfigs> => {
+const getCustomData = (settings: ISPBuildSettings, gulpConfigs: IGulpConfigs): Promise<IGulpConfigs> => {
   return new Promise(resolve => {
     const customDataModulePath = path.join(process.cwd(), settings.taskPath, 'customDataLoader.js');
     if (fs.existsSync(customDataModulePath)) {
@@ -109,28 +105,18 @@ export const getCustomData = (settings: ISPBuildSettings, gulpConfigs: IGulpConf
   });
 };
 
+export const getConfigs = (settings: ISPBuildSettings, force: boolean = false): Promise<IGulpConfigs> => {
+  return getConfigsData(settings, force).then(conf => getCustomData(settings, conf));
+};
+
+const execConfigTask = (settings: ISPBuildSettings, force: boolean, cb: (err?: any) => void) => {
+  getConfigs(settings, force).then(_ => cb()).catch(cb);
+};
+
 export const configTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
-
-  gulp.task('config', (cb) => {
-    getConfigs(settings)
-      .then(gulpConfigs => getCustomData(settings, gulpConfigs))
-      .then(() => {
-        cb();
-      })
-      .catch((err) => {
-        cb(err.message);
-      });
+  gulp.task('config', cb => {
+    const args = process.argv.splice(3);
+    const force = args.filter(arg => arg.toLowerCase() === '--init').length > 0;
+    execConfigTask(settings, force, cb);
   });
-
-  gulp.task('config:force', (cb) => {
-    getConfigs(settings, true)
-      .then(gulpConfigs => getCustomData(settings, gulpConfigs))
-      .then(() => {
-        cb();
-      })
-      .catch((err) => {
-        cb(err.message);
-      });
-  });
-
 };
