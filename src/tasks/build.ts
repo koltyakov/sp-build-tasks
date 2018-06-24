@@ -27,60 +27,66 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   gulp.task('build', cb => {
     (async () => {
       processStepMessage(`Build (mode: ${detectProdMode()})`);
-      await new Listr([
-        { title: 'Copy Assets', task: () => buildCopyAssetsTask(settings) },
-        { title: 'Build CEWPs', task: () => buildWebpartsTask(settings) },
-        { title: 'Build Masterpages', task: () => buildMasterpagesTask(settings) },
-        { title: 'Build Layouts', task: () => buildLayoutsTask(settings) },
-        { title: 'Build Custom CSS', task: () => buildCustomCssTask(settings) },
-        { title: 'Build CSS Libraries', task: () => buildCssLibsTask(settings) },
-        { title: 'Build JavaScript DLLs', task: () => buildJsLibsTask(settings) }
-      ]).run();
-      processStepMessage(`Starting webpack`);
-      await buildWebpackTask();
+      const args = process.argv.splice(3);
+      const tasksInfo = [
+        { key: '--copy-assets', title: 'Copy Assets', task: () => buildCopyAssetsTask(settings) },
+        { key: '--webparts', title: 'Build CEWPs', task: () => buildWebpartsTask(settings) },
+        { key: '--masterpage', title: 'Build Masterpages', task: () => buildMasterpagesTask(settings) },
+        { key: '--layouts', title: 'Build Layouts', task: () => buildLayoutsTask(settings) },
+        { key: '--css-custom', title: 'Build Custom CSS', task: () => buildCustomCssTask(settings) },
+        { key: '--css-libs', title: 'Build CSS Libraries', task: () => buildCssLibsTask(settings) },
+        { key: '--js-libs', title: 'Build JavaScript DLLs', task: () => buildJsLibsTask(settings) },
+        { key: '--webpack', title: 'Starting Webpack build', task: () => Promise.resolve() }
+      ];
+      let tasks = tasksInfo.filter(task => args.indexOf(task.key) !== -1);
+      tasks = tasks.length > 0 ? tasks : tasksInfo;
+      await new Listr(tasks).run();
+      if (args.indexOf('--webpack') !== -1 || tasksInfo.length === tasks.length) {
+        await buildWebpackTask();
+      }
     })().then(_ => cb()).catch(cb);
   });
 
-  gulp.task('build:js-libs', cb => {
-    processStepMessage('Build: JavaScript DLLs');
-    buildJsLibsTask(settings).then(_ => cb()).catch(cb);
-  });
+  // gulp.task('build:js-libs', cb => {
+  //   processStepMessage('Build: JavaScript DLLs');
+  //   buildJsLibsTask(settings).then(_ => cb()).catch(cb);
+  // });
 
-  gulp.task('build:webpack', cb => {
-    processStepMessage('Build: Webpack');
-    detectProdMode();
-    buildWebpackTask().then(_ => cb()).catch(cb);
-  });
+  // gulp.task('build:webpack', cb => {
+  //   processStepMessage('Build: Webpack');
+  //   detectProdMode();
+  //   buildWebpackTask().then(_ => cb()).catch(cb);
+  // });
 
-  gulp.task('build:css-libs', cb => {
-    processStepMessage('Build: CSS Libraries');
-    buildCssLibsTask(settings).then(_ => cb()).catch(cb);
-  });
+  // gulp.task('build:css-libs', cb => {
+  //   processStepMessage('Build: CSS Libraries');
+  //   buildCssLibsTask(settings).then(_ => cb()).catch(cb);
+  // });
 
-  gulp.task('build:css-custom', cb => {
-    processStepMessage('Build: Custom CSS');
-    buildCustomCssTask(settings).then(_ => cb()).catch(cb);
-  });
+  // gulp.task('build:css-custom', cb => {
+  //   processStepMessage('Build: Custom CSS');
+  //   buildCustomCssTask(settings).then(_ => cb()).catch(cb);
+  // });
 
-  gulp.task('build:copy-assets', cb => {
-    processStepMessage('Build: Copy Assets');
-    buildCopyAssetsTask(settings).then(_ => cb()).catch(cb);
-  });
+  // gulp.task('build:copy-assets', cb => {
+  //   processStepMessage('Build: Copy Assets');
+  //   buildCopyAssetsTask(settings).then(_ => cb()).catch(cb);
+  // });
 
-  gulp.task('build:masterpage', cb => {
-    processStepMessage('Build: Masterpages');
-    buildMasterpagesTask(settings).then(_ => cb()).catch(cb);
-  });
+  // gulp.task('build:masterpage', cb => {
+  //   processStepMessage('Build: Masterpages');
+  //   buildMasterpagesTask(settings).then(_ => cb()).catch(cb);
+  // });
 
-  gulp.task('build:layouts', cb => {
-    processStepMessage('Build: Layouts');
-    buildLayoutsTask(settings).then(_ => cb()).catch(cb);
-  });
+  // gulp.task('build:layouts', cb => {
+  //   processStepMessage('Build: Layouts');
+  //   buildLayoutsTask(settings).then(_ => cb()).catch(cb);
+  // });
 
-  gulp.task('build:webparts', cb => {
-    processStepMessage('Build: CEWPs');
-    buildWebpartsTask(settings).then(_ => cb()).catch(cb);
-  });
+  // gulp.task('build:webparts', cb => {
+  //   processStepMessage('Build: CEWPs');
+  //   buildWebpartsTask(settings).then(_ => cb()).catch(cb);
+  // });
 
 };
 
