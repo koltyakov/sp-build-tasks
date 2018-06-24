@@ -81,7 +81,7 @@ export class Hashes {
         if (data.value === null) {
           return null;
         }
-        return JSON.parse(data.value);
+        return JSON.parse(data.value ? data.value : data.d.HubSiteData);
       });
 
     if (siteHubData) {
