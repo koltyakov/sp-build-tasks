@@ -25,9 +25,9 @@ export const getBuildInstance = (settings: IGulpConfigs): Build => {
 export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   gulp.task('build', cb => {
+    const args = process.argv.splice(3);
     (async () => {
       processStepMessage(`Build (mode: ${detectProdMode()})`);
-      const args = process.argv.splice(3);
       const tasksInfo = [
         { key: '--copy-assets', title: 'Copy Assets', task: () => buildCopyAssetsTask(settings) },
         { key: '--webparts', title: 'Build CEWPs', task: () => buildWebpartsTask(settings) },

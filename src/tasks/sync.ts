@@ -29,8 +29,8 @@ export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   });
 
   gulp.task('push', cb => {
+    const args = process.argv.splice(3);
     (async () => {
-      const args = process.argv.splice(3);
       const diff = args.filter(arg => arg.toLowerCase() === '--diff').length > 0;
 
       processStepMessage(`Publishing assets to SharePoint${ diff ? ' (incremental mode)' : '' }`);
