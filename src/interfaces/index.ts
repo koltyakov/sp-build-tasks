@@ -24,9 +24,10 @@ export interface IWatchSettings {
 }
 
 export interface IAppConfig {
+  $schema?: string;
   spFolder: string;
   distFolder: string;
-  deleteFiles: boolean;
+  deleteFiles?: boolean;
   masterpagePath?: string;
   masterpage?: any;
   masterpageCodeName?: string;
@@ -41,7 +42,6 @@ export interface IAppConfig {
   customData?: any;
   webpackItemsMap?: Array<{ entry: string; target: string; }>;
   devtool?: Options.Devtool;
-  $schema: string;
 }
 
 export interface ICustomActionDefinition {
