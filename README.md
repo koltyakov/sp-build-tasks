@@ -17,13 +17,7 @@ The library was designed for usage with [SharePoint Push-n-Pull](https://github.
 ### Dependency
 
 ```bash
-yarn add sp-build-tasks --dev
-```
-
-or
-
-```bash
-npm install sp-build-tasks --save-dev
+npm i sp-build-tasks --save-dev
 ```
 
 ### Integration to the code
@@ -32,34 +26,49 @@ npm install sp-build-tasks --save-dev
 // gulpfile.js
 
 const gulp = require('gulp');
+require('dotenv').load();
 
-new (require('sp-build-tasks'))(gulp, {
-  privateConf: './config/private.json',
-  appConfig: './config/app.json',
-  taskPath: './build/tasks'
+new (require('sp-build-tasks').SPBuildTasks)(gulp, {
+  privateConf: process.env.PRIVATE_JSON || './config/private.json',
+  appConfig: process.env.APP_JSON || './config/app.json',
+  taskPath: './tools/tasks'
 });
 ```
 
 #### Settings
 
-- `privateConf` - path to [credentials](https://github.com/koltyakov/node-sp-auth-config) config file
-- `appConfig` - path to application config file
-- `taskPath` - path to custom gulp tasks folder
+Parameter | Description
+----------|------------
+`privateConf` | path to [credentials](https://github.com/koltyakov/node-sp-auth-config) config file
+`appConfig` | path to application config file
+`taskPath` | path to custom gulp tasks folder
 
-### App config
+### App config file
+
+The app config file should be a JSON document with the following schema `sp-build-tasks/schema/v1/sppp.json`.
+
+The schema represents the following interface:
 
 ```javascript
 export interface IAppConfig {
+  $schema?: string; // Path to `sp-build-tasks/schema/v1/sppp.json`
   spFolder: string; // SharePoint relative target folder (e.i. `_catalogs/masterpage/contoso`)
   distFolder: string; // Local distribution folder path
+  deleteFiles?: boolean; // Delete remote files on local files unlink event
   masterpagePath?: string; // Path to masterpage .hbs in `./src` structure
-  masterpage?: any; // masterpage custom properties passed to hbs template
+  masterpage?: any; // masterpage's custom properties passed to hbs template
   masterpageCodeName?: string; // masterpage code name (used for renaming output file)
+  platformVersion?: string; // Masterpage platform version (2016, 2013, etc.)
   logoPath?: string; // Path to logo image
   bundleJSLibsFiles?: string[]; // Paths to .js files to bundle together in a single vendor.js
   bundleCSSLibsFiles?: string[]; // Paths to .css files to bundle together in a single vendor.css
   copyAssetsMap?: IAssetMap[]; // Custom static files copy configuration
+  customActions?: ICustomActionDefinition[];
   customStyles?: IAssetMap | IAssetMap[]; // Custom styles
+  modulePath?: string; // Relative path for module inside dist structure, e.g. `modules/my-module`
+  customData?: any; // Optional custom data object that can be used for feeding data to templates
+  webpackItemsMap?: Array<{ entry: string; target: string; }>; // Scripts build configuration. Array or entry/target script pairs.
+  devtool?: Options.Devtool; // Webpack `devtool` option for development mode, i.e. `eval`
 }
 ```
 
@@ -67,9 +76,11 @@ export interface IAppConfig {
 
 ```javascript
 // `./build/tasks/example.js`
-module.exports = (gulp, $) => {
+module.exports = (gulp, $, settings) => {
 
-  // $ - gulp plugins dynamic loader
+  // gulp - Gulp object
+  // $ - Gulp plugins dynamic loader
+  // settings - ISPBuilderSettings object
 
   gulp.task('example', cb => {
     console.log('Example Gulp Task');
@@ -78,6 +89,23 @@ module.exports = (gulp, $) => {
 
   // ...
 };
+```
+
+or types supported version:
+
+```javascript
+//@ts-check
+
+const { customTask } = require('sp-build-tasks');
+
+module.exports = customTask((gulp, $, settings) => {
+
+  gulp.task('example', cb => {
+    console.log('Example Gulp Task');
+    cb();
+  });
+
+});
 ```
 
 ## Gulp tasks
@@ -126,6 +154,14 @@ gulp push
 
 Publishes all `./dist` folder content to SharePoint target folder.
 
+#### Publishing in incremental mode
+
+```bash
+gulp push --diff
+```
+
+Uploads only files which size is different from those in SharePoint.
+
 #### Fetching files from SharePOint
 
 ```bash
@@ -142,16 +178,6 @@ gulp build
 
 Compiles front-end to `./dist` folder.
 
-- build
-  - build:webpack - webpack'ing .ts to single app.js buldle
-  - build:css-custom - bundling custom css (from .scss)
-  - build:copy-assets - copying static content
-  - build:js-libs - bundling JavaScript libraries
-  - build:css-libs - bundling CSS libraries or custom .css
-  - build:masterpage - .hbs to .masterpage
-  - build:layouts - .hbs to .aspx layouts
-  - build:webparts - compiles .hbs CEWPs
-
 #### Build options
 
 ##### Production build
@@ -159,6 +185,29 @@ Compiles front-end to `./dist` folder.
 ```bash
 gulp build --prod
 ```
+
+Used with Webpack build.
+
+##### Build subtasks
+
+A specific subtasks can be provided as `gulp build` parameters:
+
+Parameter | Description
+----------|------------
+--webpack | webpack'ing .ts to single app.js buldle
+--css-custom | bundling custom css (from .scss)
+--copy-assets | copying static content
+--js-libs | bundling JavaScript libraries
+--css-libs | bundling CSS libraries or custom .css
+--masterpage | .hbs to .masterpage
+--layouts | .hbs to .aspx layouts
+--webparts | compiles .hbs CEWPs
+
+```bash
+gulp build --prod --webpack --webparts
+```
+
+Starts webparts and webpack tasks, also uses prodaction build configs.
 
 ### Deployment
 
