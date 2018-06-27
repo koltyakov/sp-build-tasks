@@ -27,16 +27,30 @@ export class SPBuildTasks {
       taskPath: settings.taskPath || './build/tasks'
     };
     this.gulp = gulp;
+    this.initDotEnv();
     this.initGulpTasks();
   }
 
-  private initGulpTasks () {
+  private initDotEnv() {
+    const envPath = path.join(process.cwd(), '.env');
+    if (!fs.existsSync(envPath)) {
+      fs.writeFileSync(
+        envPath, `
+          PRIVATE_JSON=./config/private.json
+          APP_JSON=./config/app.json
+        `.trim().split('\n').map(l => l.trim()).join('\n'),
+        { encoding: 'utf-8' }
+      );
+    }
+  }
+
+  private initGulpTasks() {
     const plugins = this.loadGulpPlugins();
     this.loadSPBuildGulpPlugins(plugins);
     this.loadCustomGulpTasks(this.settings.taskPath, plugins, this.settings);
   }
 
-  private loadSPBuildGulpPlugins (plugins?: IGulpPlugins) {
+  private loadSPBuildGulpPlugins(plugins?: IGulpPlugins) {
     if (typeof plugins === 'undefined') {
       plugins = this.loadGulpPlugins();
     }
@@ -51,7 +65,7 @@ export class SPBuildTasks {
     featuresTasks(this.gulp, plugins, this.settings);
   }
 
-  private loadCustomGulpTasks (taskPath: string, plugins?: IGulpPlugins, settings?: ISPBuildSettings) {
+  private loadCustomGulpTasks(taskPath: string, plugins?: IGulpPlugins, settings?: ISPBuildSettings) {
     if (fs.existsSync(taskPath)) {
       const taskList = fs.readdirSync(taskPath);
       if (typeof plugins === 'undefined') {
@@ -68,7 +82,7 @@ export class SPBuildTasks {
     }
   }
 
-  private loadGulpPlugins (): IGulpPlugins {
+  private loadGulpPlugins(): IGulpPlugins {
     return loadGulpPlugins({
       pattern: [
         'gulp-*', 'gulp.*', 'del', 'through2'
