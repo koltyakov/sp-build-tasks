@@ -162,10 +162,11 @@ export class BuildTasks {
   public buildCopyAssetsTask = async (): Promise<void> => {
     const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(this.settings);
     const build = getBuildInstance(configs);
+    const assetsToCopy = configs.appConfig.copyAssetsMap || [];
 
-    (configs.appConfig.copyAssetsMap || []).forEach(assets => {
+    for (const assets of assetsToCopy) {
       build.copyAssets({ srcArrayOrPath: assets.src, dist: assets.dist });
-    });
+    }
 
     return;
   }
