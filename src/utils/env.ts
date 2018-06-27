@@ -1,5 +1,5 @@
-export const detectProdMode = (): string => {
-  const args = process.argv.splice(3);
+export const detectProdMode = (main: NodeJS.Process): string => {
+  const args = main.argv.splice(3);
   const prod = args.filter(arg => {
     return [ '--ship', '--prod' ].indexOf(arg.toLowerCase()) !== -1;
   }).length > 0;

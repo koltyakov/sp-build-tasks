@@ -76,9 +76,6 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   };
 
   const webpackWatch = () => {
-    // processStepMessage('Watch Webpack');
-    detectProdMode();
-
     let webpackConfigPath: string = path.join(process.cwd(), 'webpack.config.js');
     if (!fs.existsSync(webpackConfigPath)) {
       webpackConfigPath = path.join(__dirname, '../webpack/config.js');
@@ -167,7 +164,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   gulp.task('watch', cb => {
     processStepMessage('Watch has been started');
-    detectProdMode();
+    detectProdMode(process);
     (async () => {
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
       $.watch(configs.watch.assets, (event) => {
@@ -186,7 +183,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   gulp.task('live', cb => {
     processStepMessage('Watch with reload is initiated');
-    detectProdMode();
+    detectProdMode(process);
     (async () => {
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
       // const build = getBuildInstance(configs);
