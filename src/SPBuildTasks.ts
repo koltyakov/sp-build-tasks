@@ -34,13 +34,7 @@ export class SPBuildTasks {
   private initDotEnv() {
     const envPath = path.join(process.cwd(), '.env');
     if (!fs.existsSync(envPath)) {
-      fs.writeFileSync(
-        envPath, `
-          PRIVATE_JSON=./config/private.json
-          APP_JSON=./config/app.json
-        `.trim().split('\n').map(l => l.trim()).join('\n'),
-        { encoding: 'utf-8' }
-      );
+      fs.writeFileSync(envPath, `PRIVATE_JSON=./config/private.json\nAPP_JSON=./config/app.json`, { encoding: 'utf-8' });
     }
   }
 
