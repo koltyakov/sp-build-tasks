@@ -121,13 +121,8 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         buildTasks.buildCustomCssTask();
       }
     });
-    $.watch(
-      [
-        ...['js', 'jsx', 'ts', 'tsx']
-          .map(ext => `./src/scripts/**/*.${ext}`),
-        '!./src/scripts/**/*.d.ts'
-      ]
-    ).once('data', () => webpackWatch());
+    $.watch([ ...['js', 'jsx', 'ts', 'tsx'].map(ext => `./src/scripts/**/*.${ext}`), '!./src/scripts/**/*.d.ts' ])
+      .once('data', () => webpackWatch());
     $.watch('./src/webparts/**/*.hbs', vinyl => {
       if (vinyl.event !== 'unlink') {
         const build = getBuildInstance(configs);
