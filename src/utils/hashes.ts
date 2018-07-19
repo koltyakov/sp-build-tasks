@@ -85,7 +85,7 @@ export class Hashes {
       });
 
     if (siteHubData) {
-      const hubRelativeUrl = '/' + siteHubData.url.split('/').splice(3,100).join('/').replace(/\/\//g, '/');
+      const hubRelativeUrl = '/' + siteHubData.url.split('/').splice(3).join('/').replace(/\/\//g, '/');
       return hubRelativeUrl;
     } else {
       return null;
@@ -104,7 +104,7 @@ export class Hashes {
 
   private async getPublishRootUrl(): Promise<string> {
     const publishRootUrl = '/' + (this.configs.privateConf.siteUrl + '/' + this.configs.appConfig.spFolder)
-      .split('/').splice(3,100).join('/').replace(/\/\//g, '/');
+      .split('/').splice(3).join('/').replace(/\/\//g, '/');
     return publishRootUrl;
   }
 

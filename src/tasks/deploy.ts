@@ -33,7 +33,7 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   gulp.task('live-reload', cb => {
     (async () => {
-      const args = process.argv.splice(3);
+      const args = process.argv.slice(3);
       const install = args.filter(arg => arg.toLowerCase() === '--uninstall').length === 0;
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
       const liveReload = new ReloadProvisioning(configs.liveReload);
@@ -52,7 +52,7 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   });
 
   gulp.task('masterpage', cb => {
-    const args = process.argv.splice(3);
+    const args = process.argv.slice(3);
     (async () => {
       const install = args.filter(arg => arg.toLowerCase() === '--uninstall').length === 0;
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
@@ -91,7 +91,7 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   });
 
   gulp.task('custom-actions', cb => {
-    const args = process.argv.splice(3);
+    const args = process.argv.slice(3);
     (async () => {
       const install = args.filter(arg => arg.toLowerCase() === '--uninstall').length === 0;
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);

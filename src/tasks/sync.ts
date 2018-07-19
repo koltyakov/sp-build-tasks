@@ -29,7 +29,7 @@ export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   });
 
   gulp.task('push', cb => {
-    const args = process.argv.splice(3);
+    const args = process.argv.slice(3);
     (async () => {
       const diff = args.filter(arg => arg.toLowerCase() === '--diff').length > 0;
 

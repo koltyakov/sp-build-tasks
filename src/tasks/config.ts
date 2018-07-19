@@ -115,7 +115,7 @@ const execConfigTask = (settings: ISPBuildSettings, force: boolean, cb: (err?: a
 
 export const configTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   gulp.task('config', cb => {
-    const args = process.argv.splice(3);
+    const args = process.argv.slice(3);
     const force = args.filter(arg => arg.toLowerCase() === '--init').length > 0;
     execConfigTask(settings, force, cb);
   });

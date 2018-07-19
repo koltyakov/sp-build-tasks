@@ -32,7 +32,7 @@ export default class Deploy {
         reject('Error: SharePoint masterpage path is not provided');
       }
       const methodUri = `${webUrl}/_api/web`;
-      const webRelativeUrl = `/${webUrl.replace('https://', '').replace('http://', '').split('/').splice(1, 100).join('/')}`;
+      const webRelativeUrl = `/${webUrl.replace('https://', '').replace('http://', '').split('/').splice(1).join('/')}`;
       const masterpageFullPath = `/${webRelativeUrl}/${spFolder}/${masterpagePath}`.replace(/\/\//g, '/');
       request.requestDigest(webUrl)
         .then(digest => {
@@ -77,7 +77,7 @@ export default class Deploy {
         reject('Error: SharePoint logotype path is not provided');
       }
       const methodUri = `${webUrl}/_api/web`;
-      const webRelativeUrl = `/${webUrl.replace('https://', '').replace('http://', '').split('/').splice(1, 100).join('/')}`;
+      const webRelativeUrl = `/${webUrl.replace('https://', '').replace('http://', '').split('/').splice(1).join('/')}`;
       const logoFullPath = `/${webRelativeUrl}/${spFolder}/${logoPath}`.replace(/\/\//g, '/');
       request.requestDigest(webUrl)
         .then(digest => {

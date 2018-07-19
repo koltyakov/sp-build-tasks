@@ -164,7 +164,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   gulp.task('watch', cb => {
     processStepMessage('Watch has been started');
-    detectProdMode(process);
+    detectProdMode();
     (async () => {
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
       $.watch(configs.watch.assets, (event) => {
@@ -183,7 +183,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   gulp.task('live', cb => {
     processStepMessage('Watch with reload is initiated');
-    detectProdMode(process);
+    detectProdMode();
     (async () => {
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
       // const build = getBuildInstance(configs);

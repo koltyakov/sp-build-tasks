@@ -20,8 +20,8 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   const buildTasks = new BuildTasks(settings);
 
   gulp.task('build', cb => {
-    const mode = detectProdMode(process);
-    const args = process.argv.splice(3);
+    const mode = detectProdMode();
+    const args = process.argv.slice(3);
     (async () => {
       processStepMessage(`Build (mode: ${mode})`);
       if (!fs.existsSync(path.resolve(settings.privateConf))) {

@@ -22,17 +22,17 @@ interface IWebpackConfig extends IWebpackConfigOld {
 
 const configs: IGulpConfigs = global.gulpConfigs;
 let appConf: IAppConfig = (configs || { appConfig: null }).appConfig;
-const privateConf: IPrivateConfig = (configs || { privateConf: null }).privateConf;
+let privateConf: IPrivateConfig = (configs || { privateConf: null }).privateConf;
 
 if (!appConf) {
   appConf = require(path.join(process.cwd(), 'config/app.json'));
 }
 if (!privateConf) {
-  appConf = require(path.join(process.cwd(), 'config/private.json'));
+  privateConf = require(path.join(process.cwd(), 'config/private.json'));
 }
 
 const publishPath: string = '/' + `${privateConf.siteUrl}/${appConf.spFolder}`
-  .split('/').splice(3, 100).join('/').replace(/\/\//g, '/');
+  .split('/').splice(3).join('/').replace(/\/\//g, '/');
 
 let defaultEntryExt = 'ts';
 const defEntryRoot = './src/scripts';
@@ -151,13 +151,6 @@ const webpackConfigProdDefaults: IWebpackConfig = {
       })
     ]
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      }
-    })
-  ],
   resolve: {
     extensions: [ '.ts', '.tsx', '.js', '.jsx' ],
     plugins: [ new TsConfigPathsPlugin() ]
@@ -171,7 +164,7 @@ const webpackConfigDefaults: IWebpackConfig =
 
 const webpackItemsMap: IWebpackMapItem[] = appConf.webpackItemsMap || [defaultItemMap];
 
-module.exports = webpackItemsMap.map(mapItem => {
+const webpackConfigs = webpackItemsMap.map(mapItem => {
   const filename = mapItem.target || defaultItemMap.target;
   const name = path.parse(filename).name;
   return {
@@ -188,3 +181,5 @@ module.exports = webpackItemsMap.map(mapItem => {
     }
   } as IWebpackConfig;
 });
+
+module.exports = webpackConfigs;
