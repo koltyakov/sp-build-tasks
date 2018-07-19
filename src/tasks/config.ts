@@ -54,13 +54,13 @@ const getConfigsData = (settings: ISPBuildSettings, forcePrompts: boolean = fals
   };
   return new Promise((resolve, reject) => {
     global.spBuildAppConfig = global.spBuildAppConfig || require(path.resolve(settings.appConfig));
-    const authConfig = new AuthConfig({
-      configPath: path.resolve(settings.privateConf),
-      encryptPassword: true,
-      saveConfigOnDisk: true,
-      forcePrompts: forcePrompts
-    });
     if (typeof global.spBuildContext === 'undefined') {
+      const authConfig = new AuthConfig({
+        configPath: path.resolve(settings.privateConf),
+        encryptPassword: true,
+        saveConfigOnDisk: true,
+        forcePrompts: forcePrompts
+      });
       authConfig.getContext()
         .then(context => {
           global.spBuildContext = context;

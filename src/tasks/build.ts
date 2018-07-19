@@ -24,6 +24,9 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     const args = process.argv.splice(3);
     (async () => {
       processStepMessage(`Build (mode: ${mode})`);
+      if (!fs.existsSync(path.resolve(this.settings.privateConf))) {
+        await getConfigs(this.settings);
+      }
       const tasksInfo = [
         { key: '--copy-assets', title: 'Copy Assets', task: buildTasks.buildCopyAssetsTask },
         { key: '--webparts', title: 'Build CEWPs', task: buildTasks.buildWebpartsTask },
@@ -40,7 +43,9 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       if (args.indexOf('--webpack') !== -1 || tasksInfo.length === tasks.length) {
         await buildTasks.buildWebpackTask();
       }
-    })().then(_ => cb()).catch(cb);
+    })()
+      .then(_ => cb())
+      .catch(cb);
   });
 
 };
