@@ -24,8 +24,8 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     const args = process.argv.splice(3);
     (async () => {
       processStepMessage(`Build (mode: ${mode})`);
-      if (!fs.existsSync(path.resolve(this.settings.privateConf))) {
-        await getConfigs(this.settings);
+      if (!fs.existsSync(path.resolve(settings.privateConf))) {
+        await getConfigs(settings);
       }
       const tasksInfo = [
         { key: '--copy-assets', title: 'Copy Assets', task: buildTasks.buildCopyAssetsTask },
