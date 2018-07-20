@@ -140,14 +140,14 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
             }
 
             if (scope) {
-              const actions = await web.userCustomActions.filter(`Title eq '${actionTitle}'`).get();
+              const actions = await scope.userCustomActions.filter(`Title eq '${encodeURIComponent(actionTitle)}'`).get();
               if (actions.length === 0) {
                 await scope.userCustomActions.add(payload)
                   .then(_ => console.log(`${actionTitle} has been added`))
                   .catch(err => console.log(err.data.responseBody.error.message.value));
               } else {
                 await scope.userCustomActions.getById(actions[0].Id).update(payload)
-                  .then(_ => console.log(`${actionTitle} has been added`))
+                  .then(_ => console.log(`${actionTitle} has been updated`))
                   .catch(err => console.log(err.data.responseBody.error.message.value));
               }
             }
