@@ -140,7 +140,7 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
             }
 
             if (scope) {
-              const actions = await web.userCustomActions.filter(`Title eq '${actionTitle}'`).get();
+              const actions = await scope.userCustomActions.filter(`Title eq '${actionTitle}'`).get();
               if (actions.length === 0) {
                 await scope.userCustomActions.add(payload)
                   .then(_ => console.log(`${actionTitle} has been added`))
