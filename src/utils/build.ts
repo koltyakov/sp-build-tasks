@@ -91,7 +91,12 @@ export default class Build {
       const bootstrapPaths = bootstrapFiles.map(fileName => {
         return path.join(bootstrapRoot, '/', fileName + '.less');
       });
-      const content = await this.concatFilesContent({ filesArr: bootstrapPaths });
+      let content = await this.concatFilesContent({ filesArr: bootstrapPaths });
+      content += `
+        .row * {
+          box-sizing: border-box;
+        }
+      `;
 
       let less = null;
       try {
