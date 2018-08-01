@@ -91,12 +91,14 @@ export default class Build {
       const bootstrapPaths = bootstrapFiles.map(fileName => {
         return path.join(bootstrapRoot, '/', fileName + '.less');
       });
-      const content = this.concatFilesContent({ filesArr: bootstrapPaths });
+      const content = await this.concatFilesContent({ filesArr: bootstrapPaths });
 
       let less = null;
       try {
         less = require('less');
-      } catch (ex) { /**/ }
+      } catch (ex) {
+        console.log('`npm i -D less` is required to build Bootstrap 3');
+      }
       if (less) {
         const compileLess = (): Promise<string> => {
           return new Promise((resolve, reject) => {
