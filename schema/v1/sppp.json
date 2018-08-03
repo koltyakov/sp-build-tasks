@@ -34,6 +34,10 @@
             "type": "object",
             "required": [ "src", "dist" ],
             "properties": {
+              "name": {
+                "description": "Description of the configuration, doesn't effect on logic",
+                "type": "string"
+              },
               "src": {
                 "description": "Source entry point path relative to './src'\n\nE.g.: `styles/index.scss`",
                 "type": "string",
@@ -56,8 +60,7 @@
           },
           "default": [
             "./node_modules/es6-promise/dist/es6-promise.auto.min.js",
-            "./node_modules/whatwg-fetch/fetch.js",
-            "./node_modules/sp-pnp-js/dist/pnp.js"
+            "./node_modules/whatwg-fetch/fetch.js"
           ]
         },
         "bundleCSSLibsFiles": {
@@ -75,6 +78,10 @@
             "type": "object",
             "required": [ "src", "dist" ],
             "properties": {
+              "name": {
+                "description": "Description of the configuration, doesn't effect on logic",
+                "type": "string"
+              },
               "src": {
                 "description": "Is an array of paths to folders or files. Folders and files are copied based on this array, subfolders are created automatically",
                 "type": "array",
@@ -129,6 +136,10 @@
             "type": "object",
             "required": [ "entry", "target" ],
             "properties": {
+              "name": {
+                "description": "Description of the configuration, doesn't effect on logic",
+                "type": "string"
+              },
               "entry": {
                 "description": "Relative path to .ts, .js file within the project's folder structure.\n\nE.g.: `./src/scripts/index.ts`",
                 "type": "string",
@@ -138,6 +149,11 @@
                 "description": "Relative path to output bundle script within `./dist/stripts` folder.\n\nE.g.: `app.js`",
                 "type": "string",
                 "default": "app.js"
+              },
+              "includePolyfills": {
+                "description": "Include polyfills into the bundle",
+                "type": "boolean",
+                "default": false
               }
             }
           }
