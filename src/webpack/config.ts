@@ -174,10 +174,15 @@ const webpackItemsMap: IWebpackMapItem[] = appConf.webpackItemsMap || [defaultIt
 const webpackConfigs = webpackItemsMap.map(mapItem => {
   const filename = mapItem.target || defaultItemMap.target;
   const name = path.parse(filename).name;
+  const entry = [];
+  if (mapItem.includePolyfills) {
+    entry.push(require.resolve('./polyfills'));
+  }
+  entry.push(mapItem.entry || defaultItemMap.entry);
   return {
     ...webpackConfigDefaults,
     ...(mapItem.webpackConfig || {}),
-    entry: [ require.resolve('./polyfills'), mapItem.entry || defaultItemMap.entry ],
+    entry,
     output: {
       path: path.join(process.cwd(), appConf.distFolder, (appConf.modulePath || ''), '/scripts'),
       filename: filename,

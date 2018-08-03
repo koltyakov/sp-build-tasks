@@ -4,12 +4,6 @@ import { ILRSettings } from 'sp-live-reload/dist/interfaces';
 
 export interface IWebpackConfig extends Configuration {}
 
-export interface IWebpackMapItem {
-  entry: string;
-  target: string;
-  webpackConfig?: IWebpackConfig;
-}
-
 export interface IGulpConfigs {
   appConfig: IAppConfig;
   privateConf: IPrivateConfig;
@@ -40,8 +34,16 @@ export interface IAppConfig {
   customStyles?: IAssetMap | IAssetMap[];
   modulePath?: string;
   customData?: any;
-  webpackItemsMap?: Array<{ entry: string; target: string; }>;
+  webpackItemsMap?: IWebpackMapItem[];
   devtool?: Options.Devtool;
+}
+
+export interface IWebpackMapItem {
+  name?: string;
+  entry: string;
+  target: string;
+  webpackConfig?: IWebpackConfig;
+  includePolyfills?: boolean;
 }
 
 export interface ICustomActionDefinition {
@@ -52,6 +54,7 @@ export interface ICustomActionDefinition {
 }
 
 export interface IAssetMap {
+  name?: string;
   src: string | string[];
   dist: string;
 }
