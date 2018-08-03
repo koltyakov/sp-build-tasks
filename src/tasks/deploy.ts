@@ -126,7 +126,11 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
               payload.ScriptSrc = url;
             } else {
               payload.ScriptSrc = null;
-              payload.ScriptBlock = getCustomActionScriptBlock(url);
+              if (ca.namespace) {
+                payload.ScriptBlock = getCustomActionScriptBlockSod(url, ca.namespace, ca.dependencies);
+              } else {
+                payload.ScriptBlock = getCustomActionScriptBlock(url);
+              }
             }
 
             let scope: Web | Site = null;
@@ -176,26 +180,40 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
 };
 
+const trimMultiline = (str: string): string => {
+  return str.trim().split('\n').map(l => l.trim()).join('');
+};
+
 const getCustomActionScriptBlock = (scriptUri: string) => {
   const packageData = require(path.join(process.cwd(), 'package.json'));
   const assetsVersion = packageData.version + '_' + new Date().getTime();
   const ext = scriptUri.split('.').pop().toLowerCase();
-  return ext === 'js' ? `
-    (function() {
-      var headEl = document.getElementsByTagName('head')[0];
-      var scriptEl = document.createElement('script');
-      scriptEl.type = 'text/javascript';
-      scriptEl.src = '${scriptUri}?v=${assetsVersion}&ext=.js';
-      headEl.appendChild(scriptEl);
-    })();
-  `.trim().split('\n').map(l => l.trim()).join('') : `
-    (function() {
-      var headEl = document.getElementsByTagName('head')[0];
-      var styleEl = document.createElement('link');
-      styleEl.type = 'text/css';
-      styleEl.rel = 'stylesheet';
-      styleEl.href = '${scriptUri}?v=${assetsVersion}&ext=.css';
-      headEl.appendChild(styleEl);
-    })();
-  `.trim().split('\n').map(l => l.trim()).join('');
+  return ext === 'js' ?
+    // JavaScript
+    trimMultiline(`
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = "${scriptUri}?v=${assetsVersion}&ext=.js";
+      document.write(script.outerHTML);
+    `) :
+    // CSS
+    trimMultiline(`
+      var style = document.createElement("link");
+      style.type = "text/css";
+      style.rel = "stylesheet";
+      style.href = "${scriptUri}?v=${assetsVersion}&ext=.css";
+      document.write(script.style);
+    `);
+};
+
+const getCustomActionScriptBlockSod = (scriptUri: string, namespace: string, dependencies: string[] = []): string => {
+  const packageData = require(path.join(process.cwd(), 'package.json'));
+  const assetsVersion = packageData.version + '_' + new Date().getTime();
+  return trimMultiline(`
+    SP.SOD.registerSod("${namespace}", "${scriptUri}?v=${assetsVersion}&ext=.js");
+    ${dependencies.map(dependency => {
+      return `SP.SOD.registerSodDep("${namespace}", "${dependency}");`;
+    }).join('')}
+    SP.SOD.executeFunc("${namespace}", null, function() { /**/ });
+  `);
 };

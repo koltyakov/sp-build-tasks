@@ -51,6 +51,8 @@ export interface ICustomActionDefinition {
   scriptSrc: string;
   scope: 'web' | 'site';
   sequence: number;
+  namespace?: string;
+  dependencies?: string[];
 }
 
 export interface IAssetMap {

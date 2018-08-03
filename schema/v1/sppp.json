@@ -125,6 +125,18 @@
                 "description": "Custom action script sequence",
                 "type": "number",
                 "default": 100
+              },
+              "namespace": {
+                "description": "Script namespace, i.e. `react.js`",
+                "type": "string"
+              },
+              "dependencies": {
+                "description": "Script dependencies namespaces",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "description": "Namespace of dependency"
+                }
               }
             }
           }
