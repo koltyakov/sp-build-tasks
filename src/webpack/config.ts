@@ -171,27 +171,31 @@ const webpackConfigDefaults: IWebpackConfig =
 
 const webpackItemsMap: IWebpackMapItem[] = appConf.webpackItemsMap || [defaultItemMap];
 
-const webpackConfigs = webpackItemsMap.map(mapItem => {
-  const filename = mapItem.target || defaultItemMap.target;
-  const name = path.parse(filename).name;
-  const entry = [];
-  if (mapItem.includePolyfills) {
-    entry.push(require.resolve('./polyfills'));
-  }
-  entry.push(mapItem.entry || defaultItemMap.entry);
-  return {
-    ...webpackConfigDefaults,
-    ...(mapItem.webpackConfig || {}),
-    entry,
-    output: {
-      path: path.join(process.cwd(), appConf.distFolder, (appConf.modulePath || ''), '/scripts'),
-      filename: filename,
-      sourceMapFilename: `${name}/[name].js.map?v=[chunkhash:8]&e=.js.map`,
-      chunkFilename:  `${name}/[name].chunk.js?v=[chunkhash:8]&e=.chunk.js`,
-      publicPath: `${publishPath}/scripts/`,
-      ...((mapItem.webpackConfig || {}).output || {})
+const webpackConfigs = webpackItemsMap
+  .filter(mapItem => {
+    return mapItem.disable !== true;
+  })
+  .map(mapItem => {
+    const filename = mapItem.target || defaultItemMap.target;
+    const name = path.parse(filename).name;
+    const entry = [];
+    if (mapItem.includePolyfills) {
+      entry.push(require.resolve('./polyfills'));
     }
-  } as IWebpackConfig;
-});
+    entry.push(mapItem.entry || defaultItemMap.entry);
+    return {
+      ...webpackConfigDefaults,
+      ...(mapItem.webpackConfig || {}),
+      entry,
+      output: {
+        path: path.join(process.cwd(), appConf.distFolder, (appConf.modulePath || ''), '/scripts'),
+        filename: filename,
+        sourceMapFilename: `${name}/[name].js.map?v=[chunkhash:8]&e=.js.map`,
+        chunkFilename:  `${name}/[name].chunk.js?v=[chunkhash:8]&e=.chunk.js`,
+        publicPath: `${publishPath}/scripts/`,
+        ...((mapItem.webpackConfig || {}).output || {})
+      }
+    } as IWebpackConfig;
+  });
 
 module.exports = webpackConfigs;

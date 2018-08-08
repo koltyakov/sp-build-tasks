@@ -44,6 +44,7 @@ export interface IWebpackMapItem {
   target: string;
   webpackConfig?: IWebpackConfig;
   includePolyfills?: boolean;
+  disable?: boolean;
 }
 
 export interface ICustomActionDefinition {

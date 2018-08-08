@@ -166,6 +166,11 @@
                 "description": "Include polyfills into the bundle",
                 "type": "boolean",
                 "default": false
+              },
+              "disable": {
+                "description": "Disable entry from build",
+                "type": "boolean",
+                "default": true
               }
             }
           }
