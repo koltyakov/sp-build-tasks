@@ -214,13 +214,13 @@ Starts webparts and webpack tasks, also uses prodaction build configs.
 #### Live reload
 
 ```bash
-gulp reload:install
+gulp live-reload [--install]
 ```
 
 Installs live reload client as ScriptLink custom action to SPWeb.
 
 ```bash
-gulp reload:retract
+gulp live-reload --uninstall
 ```
 
 Retracts live reload custom action client.
@@ -228,21 +228,27 @@ Retracts live reload custom action client.
 #### Masterpage
 
 ```bash
-gulp masterpage:apply
+gulp masterpage [--install]
 ```
 
 Applies custom masterpage and logo to SPWeb.
 
 ```bash
-gulp masterpage:restore
+gulp masterpage --uninstall
 ```
 
 Restores default (seattle.masterpage) masterpage.
 
-#### Logotype
+#### Custom actions
 
 ```bash
-gulp logo:apply
+gulp custom-actions [--install]
 ```
 
-Applies custom logo to SPWeb.
+Provisions custom actions from `app.json` settings.
+
+```bash
+gulp custom-actions --uninstall
+```
+
+Removes custom actions based on project namespace prefix.
