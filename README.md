@@ -207,7 +207,7 @@ Parameter | Description
 gulp build --prod --webpack --webparts
 ```
 
-Starts webparts and webpack tasks, also uses prodaction build configs.
+Starts webparts and webpack tasks, also uses production build configs.
 
 ### Deployment
 
