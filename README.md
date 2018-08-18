@@ -162,7 +162,7 @@ gulp push --diff
 
 Uploads only files which size is different from those in SharePoint.
 
-#### Fetching files from SharePOint
+#### Fetching files from SharePoint
 
 ```bash
 gulp pull
