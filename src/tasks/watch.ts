@@ -121,8 +121,14 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         buildTasks.buildCustomCssTask();
       }
     });
-    $.watch([ ...['js', 'jsx', 'ts', 'tsx'].map(ext => `./src/scripts/**/*.${ext}`), '!./src/scripts/**/*.d.ts' ])
-      .once('data', () => webpackWatch());
+    $.watch([
+      // Watch `./src/stripts`'s folder scripts
+      ...['js', 'jsx', 'ts', 'tsx'].map(ext => `./src/scripts/**/*.${ext}`),
+      // Watch custom entries which can be outside `./src/stripts`
+      ...configs.appConfig.webpackItemsMap.map(c => c.entry),
+      // Ignore definitions
+      '!./src/scripts/**/*.d.ts'
+    ]).once('data', () => webpackWatch());
     $.watch('./src/webparts/**/*.hbs', vinyl => {
       if (vinyl.event !== 'unlink') {
         const build = getBuildInstance(configs);
