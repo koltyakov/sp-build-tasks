@@ -162,7 +162,7 @@ gulp push --diff
 
 Uploads only files which size is different from those in SharePoint.
 
-#### Fetching files from SharePOint
+#### Fetching files from SharePoint
 
 ```bash
 gulp pull
@@ -207,7 +207,7 @@ Parameter | Description
 gulp build --prod --webpack --webparts
 ```
 
-Starts webparts and webpack tasks, also uses prodaction build configs.
+Starts webparts and webpack tasks, also uses production build configs.
 
 ### Deployment
 
