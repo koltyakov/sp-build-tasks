@@ -48,23 +48,23 @@ const defaultItemMap: IWebpackMapItem = {
   target: 'app.js'
 };
 
-const cacheLoader = {
-  loader: 'cache-loader',
-  options: {
-    cacheDirectory: path.join(process.cwd(), 'cache')
-  }
-};
+// const cacheLoader = {
+//   loader: 'cache-loader',
+//   options: {
+//     cacheDirectory: path.join(process.cwd(), 'cache')
+//   }
+// };
 
 const rules: webpack.Rule[] = [
   {
     test: /\.ts(x?)$/,
     exclude: /(node_modules|dist)/,
-    use: [ cacheLoader, 'awesome-typescript-loader' ]
+    use: [ 'awesome-typescript-loader' ] // cacheLoader,
   },
   {
     test: /\.css$/,
     use: [
-      cacheLoader,
+      // cacheLoader,
       {
         loader: 'style-loader'
       },
@@ -80,7 +80,7 @@ const rules: webpack.Rule[] = [
   {
     test: /\.scss$/,
     use: [
-      cacheLoader,
+      // cacheLoader,
       {
         loader: 'style-loader'
       },

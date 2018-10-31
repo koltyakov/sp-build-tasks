@@ -59,13 +59,13 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     };
 
     sppurge(configs.privateConf as any, sppurgeOptions)
-      .then(res => {
-        if (res.statusCode) {
-          console.log('File has been deleted:', res.statusMessage);
-        } else {
-          console.log(res.statusCode, res.statusMessage);
-        }
-      })
+      // .then(res => {
+      //   if (res.statusCode) {
+      //     console.log('File has been deleted:', res.statusMessage);
+      //   } else {
+      //     console.log(res.statusCode, res.statusMessage);
+      //   }
+      // })
       .catch(err => {
         if ((err.error || { error: { code: '' } }).error.code.split(',')[0] === '-2146232832') {
           console.log('File has not been removed as it was not there in SharePoint.');
