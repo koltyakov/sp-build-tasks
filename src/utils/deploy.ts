@@ -33,7 +33,7 @@ export default class Deploy {
       }
       const methodUri = `${webUrl}/_api/web`;
       const webRelativeUrl = `/${webUrl.replace('https://', '').replace('http://', '').split('/').splice(1).join('/')}`;
-      const masterpageFullPath = `/${webRelativeUrl}/${spFolder}/${masterpagePath}`.replace(/\/\//g, '/');
+      const masterpageFullPath = `${webRelativeUrl}/${spFolder}/${masterpagePath}`.replace(/\/\//g, '/');
       request.requestDigest(webUrl)
         .then(digest => {
           return request.post(methodUri, {
