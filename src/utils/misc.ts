@@ -44,3 +44,11 @@ export class Debounce {
     this.timers[key] = setTimeout(cb, this.delay);
   }
 }
+
+export const parseObjectChain = <T>(cb: () => T): T => {
+  let result: T = null;
+  try {
+    result = cb();
+  } catch (ex) { /**/ }
+  return result;
+};

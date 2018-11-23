@@ -3,13 +3,19 @@ import * as fs from 'fs';
 import { AuthConfig } from 'node-sp-auth-config';
 import { IAuthOptions } from 'node-sp-auth';
 import { Gulp } from 'gulp';
+import * as minimist from 'minimist';
 
 import { ISPBuildSettings, IAppConfig, IGulpConfigs } from '../interfaces';
+import { parseObjectChain } from '../utils/misc';
 
 declare var global: any;
 
 const getConfigsData = (settings: ISPBuildSettings, forcePrompts: boolean = false): Promise<IGulpConfigs> => {
+  const args = process.argv.slice(3);
+  const params: any = minimist(args);
+
   const mapGulpConfigs = (appConfig: IAppConfig, privateConfig: any): IGulpConfigs => {
+    const siteUrl = parseObjectChain<string>(() => params.privateConfig.siteUrl) || privateConfig.siteUrl;
     const gulpConfigs: IGulpConfigs = {
       appConfig: {
         ...appConfig,
@@ -17,13 +23,13 @@ const getConfigsData = (settings: ISPBuildSettings, forcePrompts: boolean = fals
         deleteFiles: typeof appConfig.deleteFiles !== 'undefined' ? appConfig.deleteFiles : false
       },
       privateConf: {
-        siteUrl: privateConfig.siteUrl,
+        siteUrl,
         creds: {
           ...(privateConfig.authOptions as IAuthOptions)
         }
       },
       spSaveCoreOptions: {
-        siteUrl: privateConfig.siteUrl,
+        siteUrl,
         folder: appConfig.spFolder,
         flatten: false,
         checkin: true,
@@ -34,8 +40,8 @@ const getConfigsData = (settings: ISPBuildSettings, forcePrompts: boolean = fals
         base: path.resolve(appConfig.distFolder)
       },
       liveReload: {
-        siteUrl: privateConfig.siteUrl,
-        protocol: privateConfig.siteUrl.indexOf('https://') !== -1 ? 'https' : 'http',
+        siteUrl,
+        protocol: siteUrl.indexOf('https://') !== -1 ? 'https' : 'http',
         host: 'localhost',
         port: 3000,
         watchBase: path.join(process.cwd(), appConfig.distFolder.replace('./', '')),
