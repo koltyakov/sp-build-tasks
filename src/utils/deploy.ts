@@ -78,7 +78,7 @@ export default class Deploy {
       }
       const methodUri = `${webUrl}/_api/web`;
       const webRelativeUrl = `/${webUrl.replace('https://', '').replace('http://', '').split('/').splice(1).join('/')}`;
-      const logoFullPath = `/${webRelativeUrl}/${spFolder}/${logoPath}`.replace(/\/\//g, '/');
+      const logoFullPath = `${webRelativeUrl}/${spFolder}/${logoPath}`.replace(/\/\//g, '/');
       request.requestDigest(webUrl)
         .then(digest => {
           return request.post(methodUri, {
