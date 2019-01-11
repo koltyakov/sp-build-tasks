@@ -125,11 +125,9 @@ export interface ICopyAssets {
   dist: string;
 }
 
-export interface IMinifyContent {
-  content?: string;
-  srcPath?: string;
-  distPath: string;
-}
+export type IMinifyContent =
+  | { srcPath: string; distPath: string; }
+  | { content: string; distPath: string; };
 
 export interface IConcatFilesContent {
   filesArr: string[];

@@ -15,12 +15,10 @@ export default class Deploy {
   }
 
   public applyMasterpageToWeb (params: IApplyMasterpageToWeb = {}) {
-    let { webUrl, dist, spFolder, masterpagePath } = params;
-
-    dist = dist || this.settings.dist;
-    webUrl = webUrl || this.settings.siteUrl;
-    spFolder = spFolder || this.settings.spFolder || '';
-    masterpagePath = masterpagePath || '';
+    // const dist = params.dist || this.settings.dist;
+    const webUrl = params.webUrl || this.settings.siteUrl;
+    const spFolder = params.spFolder || this.settings.spFolder || '';
+    const masterpagePath = params.masterpagePath || '';
 
     const request = createRequest(this.settings.creds);
 
@@ -50,22 +48,18 @@ export default class Deploy {
             }
           });
         })
-        .then(response => {
+        .then(_ => {
           resolve(masterpageFullPath);
         })
-        .catch(err => {
-          reject(err);
-        });
+        .catch(reject);
     });
   }
 
   public applyLogotypeToWeb (params: IApplyLogotypeToWeb = {}) {
-    let { webUrl, dist, spFolder, logoPath } = params;
-
-    dist = dist || this.settings.dist;
-    webUrl = webUrl || this.settings.siteUrl;
-    spFolder = spFolder || this.settings.spFolder || '';
-    logoPath = logoPath || '';
+    // const dist: string = params.dist || this.settings.dist;
+    const webUrl: string = params.webUrl || this.settings.siteUrl;
+    const spFolder: string = params.spFolder || this.settings.spFolder || '';
+    const logoPath: string = params.logoPath || '';
 
     const request = createRequest(this.settings.creds);
 
@@ -94,12 +88,10 @@ export default class Deploy {
             }
           });
         })
-        .then(response => {
+        .then(_ => {
           resolve(logoFullPath);
         })
-        .catch(err => {
-          reject(err);
-        });
+        .catch(reject);
     });
 
   }

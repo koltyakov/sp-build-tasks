@@ -1,5 +1,5 @@
 import { Gulp } from 'gulp';
-import { Web } from '@pnp/sp';
+import { Web, sp } from '@pnp/sp';
 
 import { setupPnp } from '../utils/pnpjs';
 import { getConfigs } from './config';
@@ -13,8 +13,8 @@ export const featuresTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) =>
     (async () => {
 
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
-      const ctx = await setupPnp(configs);
-      const web = new Web(ctx.siteUrl);
+      const { siteUrl } = await setupPnp(configs);
+      const web = typeof siteUrl !== 'undefined' ? new Web(siteUrl) : sp.web;
 
       const mmdFeatureId = '87294c72-f260-42f3-a41b-981a2ffce37a';
       const feature = await web.features.getById(mmdFeatureId).get();

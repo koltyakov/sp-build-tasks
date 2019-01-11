@@ -73,7 +73,11 @@ export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         }
 
         if (!skipUpload) {
-          await spsave(configs.spSaveCoreOptions, configs.privateConf.creds, fileOptions);
+          await new Promise((resolve, reject) => {
+            spsave(configs.spSaveCoreOptions, configs.privateConf.creds, fileOptions)
+              .then(resolve)
+              .catch(reject);
+          });
         }
       }
 

@@ -45,8 +45,8 @@ export class Debounce {
   }
 }
 
-export const parseObjectChain = <T>(cb: () => T): T => {
-  let result: T = null;
+export const parseObjectChain = <T>(cb: () => T | null): T | null => {
+  let result: T | null = null;
   try {
     result = cb();
   } catch (ex) { /**/ }

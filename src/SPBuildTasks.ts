@@ -46,7 +46,9 @@ export class SPBuildTasks {
   private initGulpTasks() {
     const plugins = this.loadGulpPlugins();
     this.loadSPBuildGulpPlugins(plugins);
-    this.loadCustomGulpTasks(this.settings.taskPath, plugins, this.settings);
+    if (this.settings.taskPath) {
+      this.loadCustomGulpTasks(this.settings.taskPath, plugins, this.settings);
+    }
   }
 
   private loadSPBuildGulpPlugins(plugins?: IGulpPlugins) {
