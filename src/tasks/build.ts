@@ -225,7 +225,7 @@ export class BuildTasks {
       return;
     }
 
-    const files: IFile[] = this.mapHbsTemplates(walkFolders(source), source, target, 'html');
+    const files: IFile[] = this.mapHbsTemplates(walkFolders(source), './', target, 'html');
 
     if (files.length > 0) {
       await build.compileHbsTemplates({ files, data });
