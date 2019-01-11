@@ -55,7 +55,7 @@ const defaultItemMap: IWebpackMapItem = {
 //   }
 // };
 
-const rules: webpack.Rule[] = [
+const rules: webpack.RuleSetRule[] = [
   {
     test: /\.ts(x?)$/,
     exclude: /(node_modules|dist)/,
@@ -178,7 +178,7 @@ const webpackConfigs = webpackItemsMap
   .map(mapItem => {
     const filename = mapItem.target || defaultItemMap.target;
     const name = path.parse(filename).name;
-    const entry = [];
+    const entry: string[] = [];
     if (mapItem.includePolyfills) {
       entry.push(require.resolve('./polyfills'));
     }
@@ -191,7 +191,7 @@ const webpackConfigs = webpackItemsMap
         path: path.join(process.cwd(), appConf.distFolder, (appConf.modulePath || ''), '/scripts'),
         filename: filename,
         sourceMapFilename: `${name}/[name].js.map?v=[chunkhash:8]&e=.js.map`,
-        chunkFilename:  `${name}/[name].chunk.js?v=[chunkhash:8]&e=.chunk.js`,
+        chunkFilename: `${name}/[name].chunk.js?v=[chunkhash:8]&e=.chunk.js`,
         publicPath: `${publishPath}/scripts/`,
         ...((mapItem.webpackConfig || {}).output || {})
       }

@@ -43,32 +43,29 @@ export class Hashes {
       .length > 0;
   }
 
-  public async replaceHashedUrl(uri: string): Promise<string> {
-    let str = uri.toLowerCase();
-    const rules = Object.keys(this.hashes).filter(key => str.indexOf(key) !== -1);
+  public async replaceHashedUrl(uri: string): Promise<string | null> {
+    let str: string | null = uri.toLowerCase();
+    const rules = Object.keys(this.hashes).filter(key => (str || '').indexOf(key) !== -1);
     for (const key of rules) {
       const rule = this.hashes[key];
       if (rule.needReplacement) {
         if (typeof rule.value === 'undefined') {
-          await rule.get()
-          .then(res => rule.value = res)
-          .catch(error => {
+          rule.value = await rule.get().catch(error => {
             console.log(error);
-            rule.value = null;
+            return undefined;
           });
         }
-        if (rule.value === null) {
+        if (!rule.value) {
           str = null;
-        }
-        if (str !== null) {
-          str = str.replace(new RegExp(key.replace(/\//g, ''), 'ig'), rule.value);
+        } else {
+          str = (str || '').replace(new RegExp(key.replace(/\//g, ''), 'ig'), rule.value);
         }
       }
     }
     return str;
   }
 
-  private async getHubSiteUrl(): Promise<string> {
+  private async getHubSiteUrl(): Promise<string | null> {
     const { Url: siteAbsoluteUrl } = await this.sp.site.select('Url').get();
     const endpoint = `${siteAbsoluteUrl}/_api/web/hubsitedata(false)`;
 

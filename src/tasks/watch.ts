@@ -34,17 +34,19 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       gulp
         .src(filePath, { base: configs.watch.base })
         .pipe($.spsave(configs.spSaveCoreOptions, configs.privateConf.creds))
-        .pipe($.through.obj((chunk, enc, callback) => {
-          if (throughCallback && typeof throughCallback === 'function') {
+        .pipe($.through.obj((chunk, _enc, callback) => {
+          // if (throughCallback && typeof throughCallback === 'function') {
+          if (typeof throughCallback !== 'undefined') {
             const chunkPath = chunk.path;
             throughCallback(chunkPath);
           }
           saveQueue[filePath] -= 1;
           if (saveQueue[filePath] > 0) {
             delete saveQueue[filePath];
-            spsave(filePath);
+            spsave(filePath).then(_ => callback(null, chunk)).catch(console.warn);
+          } else {
+            callback(null, chunk);
           }
-          callback(null, chunk);
         }));
     }
   };
@@ -103,29 +105,33 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   const buildTasks = new BuildTasks(settings);
 
   const Watcher = function (configs: IGulpConfigs) {
-    $.watch(`./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.'), event => {
+    $.watch(`./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.'), async event => {
       if (event.event !== 'unlink') {
         // gulp.start('build:masterpage');
-        buildTasks.buildMasterpagesTask();
+        await buildTasks.buildMasterpagesTask();
       }
     });
-    $.watch('./src/masterpage/layouts/*.hbs', event => {
+    $.watch('./src/masterpage/layouts/*.hbs', async event => {
       if (event.event !== 'unlink') {
         // gulp.start('build:layouts');
-        buildTasks.buildLayoutsTask();
+        await buildTasks.buildLayoutsTask();
       }
     });
-    $.watch('./src/styles/**/*.scss', event => {
+    $.watch('./src/styles/**/*.scss', async event => {
       if (event.event !== 'unlink') {
         // gulp.start('build:css-custom');
-        buildTasks.buildCustomCssTask();
+        await buildTasks.buildCustomCssTask();
       }
     });
     $.watch([
       // Watch `./src/stripts`'s folder scripts
       ...['js', 'jsx', 'ts', 'tsx'].map(ext => `./src/scripts/**/*.${ext}`),
       // Watch custom entries which can be outside `./src/stripts`
-      ...configs.appConfig.webpackItemsMap.map(c => c.entry),
+      ...(
+        typeof configs.appConfig.webpackItemsMap !== 'undefined'
+          ? configs.appConfig.webpackItemsMap.map(c => c.entry)
+          : []
+      ),
       // Ignore definitions
       '!./src/scripts/**/*.d.ts'
     ]).once('data', () => webpackWatch());
@@ -163,26 +169,31 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     // }
   };
 
-  gulp.task('watch', cb => {
+  gulp.task('watch', _cb => {
     processStepMessage('Watch has been started');
     detectProdMode();
     (async () => {
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
-      $.watch(configs.watch.assets, (event) => {
+      $.watch(configs.watch.assets, async event => {
         if (event.event !== 'unlink') {
-          run(event.path, () => {
-            spsave(event.path);
+          await new Promise((resolve, reject) => {
+            run(event.path, () => {
+              spsave(event.path)
+                .then(_ => resolve())
+                .catch(reject);
+            });
           });
         } else if (configs.appConfig.deleteFiles) {
-          purge(event.path);
+          await purge(event.path);
         }
       });
       // tslint:disable-next-line:no-unused-expression
       new Watcher(configs);
-    })();
+    })()
+      .catch(console.warn);
   });
 
-  gulp.task('live', cb => {
+  gulp.task('live', _cb => {
     processStepMessage('Watch with reload is initiated');
     detectProdMode();
     (async () => {
@@ -190,24 +201,29 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       // const build = getBuildInstance(configs);
       const liveReload = new LiveReload(configs.liveReload);
       liveReload.runServer();
-      $.watch(configs.watch.assets, (event) => {
+      $.watch(configs.watch.assets, async event => {
         if (event.event !== 'unlink') {
-          run(event.path, () => {
-            spsave(event.path, (chunkPath: string) => {
-              let body: string;
-              if (chunkPath.toLowerCase().split('.').pop() === 'css') {
-                body = fs.readFileSync(chunkPath).toString();
-              }
-              liveReload.emitUpdatedPath(chunkPath, false, body);
+          await new Promise((resolve, reject) => {
+            run(event.path, () => {
+              spsave(event.path, (chunkPath: string) => {
+                let body: string = '';
+                if (chunkPath.toLowerCase().split('.').pop() === 'css') {
+                  body = fs.readFileSync(chunkPath).toString();
+                }
+                liveReload.emitUpdatedPath(chunkPath, false, body);
+              })
+                .then(_ => resolve())
+                .catch(reject);
             });
           });
         } else if (configs.appConfig.deleteFiles) {
-          purge(event.path);
+          await purge(event.path);
         }
       });
       // tslint:disable-next-line:no-unused-expression
       new Watcher(configs);
-    })();
+    })()
+      .catch(console.warn);
   });
 
 };

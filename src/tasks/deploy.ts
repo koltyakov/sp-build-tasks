@@ -104,15 +104,15 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         return;
       }
 
-      const ctx = await setupPnp(configs);
-      const web = new Web(ctx.siteUrl);
+      const { siteUrl } = await setupPnp(configs);
+      const web = typeof siteUrl !== 'undefined' ? new Web(siteUrl) : sp.web;
 
       if (install) {
         processStepMessage('Installing custom actions');
         const hashes = new Hashes({ sp, configs });
         for (const ca of customActions) {
           const url = await hashes.replaceHashedUrl(ca.scriptSrc);
-          if (url !== null) {
+          if (url) {
             const filename = url.split('/').pop();
             const actionTitle = `${moduleName}${ca.name ? ` - ${ca.name}` : ''} (${filename})`;
 
@@ -133,7 +133,7 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
               }
             }
 
-            let scope: Web | Site = null;
+            let scope: Web | Site | null = null;
 
             if (ca.scope === 'web') {
               scope = web;
@@ -184,26 +184,33 @@ const trimMultiline = (str: string): string => {
   return str.trim().split('\n').map(l => l.trim()).join('');
 };
 
-const getCustomActionScriptBlock = (scriptUri: string) => {
+const getCustomActionScriptBlock = (scriptUri: string): string => {
   const packageData = require(path.join(process.cwd(), 'package.json'));
   const assetsVersion = packageData.version + '_' + new Date().getTime();
-  const ext = scriptUri.split('.').pop().toLowerCase();
-  return ext === 'js' ?
+  const ext = scriptUri.split('.').pop();
+  if (typeof ext === 'undefined') {
+    return '';
+  }
+  if (ext.toLowerCase() === 'js') {
     // JavaScript
-    trimMultiline(`
+    return trimMultiline(`
       var script = document.createElement("script");
       script.type = "text/javascript";
       script.src = "${scriptUri}?v=${assetsVersion}&ext=.js";
       document.write(script.outerHTML);
-    `) :
+    `);
+  }
+  if (ext.toLowerCase() === 'css') {
     // CSS
-    trimMultiline(`
+    return trimMultiline(`
       var style = document.createElement("link");
       style.type = "text/css";
       style.rel = "stylesheet";
       style.href = "${scriptUri}?v=${assetsVersion}&ext=.css";
       document.write(script.style);
     `);
+  }
+  return '';
 };
 
 const getCustomActionScriptBlockSod = (scriptUri: string, namespace: string, dependencies: string[] = []): string => {

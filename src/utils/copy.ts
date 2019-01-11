@@ -43,7 +43,7 @@ export default class Copy {
   }
 
   public copyFolderRecursiveSync(source: string, target: string, skipFolder: boolean = false): void {
-    let files = [];
+    let files: string[] = [];
     const targetFolder = skipFolder ? path.resolve(target) : path.join(target, path.basename(source));
     if (!fs.existsSync(targetFolder)) {
       fs.mkdirSync(targetFolder);

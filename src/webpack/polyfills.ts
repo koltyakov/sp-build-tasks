@@ -1,15 +1,16 @@
 'use strict';
 
-declare const window;
+declare const window: any;
 
 /**
  * IE Issue:
  * "This browser lacks typed array (Uint8Array) support which is required by `buffer` v5.x.
  *  Use `buffer` v4.x if you require old browser support."
  */
+// tslint:disable-next-line
 if (typeof Uint8ClampedArray === 'undefined') {
   // tslint:disable-next-line:no-any
-  (window as any).Uint8ClampedArray = () => [];
+  window.Uint8ClampedArray = () => [];
 }
 
 import 'core-js/es6/array';
@@ -25,6 +26,7 @@ if (!window.location.origin) {
 }
 
 // Promise polyfill
+// tslint:disable-next-line
 if (typeof Promise === 'undefined') {
   require('promise/lib/rejection-tracking').enable();
   window.Promise = require('promise/lib/es6-extensions.js');

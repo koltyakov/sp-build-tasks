@@ -59,10 +59,10 @@ const getConfigsData = (settings: ISPBuildSettings, forcePrompts: boolean = fals
     return gulpConfigs;
   };
   return new Promise((resolve, reject) => {
-    global.spBuildAppConfig = global.spBuildAppConfig || require(path.resolve(settings.appConfig));
+    global.spBuildAppConfig = global.spBuildAppConfig || require(path.resolve(settings.appConfig || './config/app.json'));
     if (typeof global.spBuildContext === 'undefined') {
       const authConfig = new AuthConfig({
-        configPath: path.resolve(settings.privateConf),
+        configPath: path.resolve(settings.privateConf || './config/private.json'),
         encryptPassword: true,
         saveConfigOnDisk: true,
         forcePrompts: forcePrompts
@@ -82,7 +82,10 @@ const getConfigsData = (settings: ISPBuildSettings, forcePrompts: boolean = fals
 };
 
 const getCustomData = (settings: ISPBuildSettings, gulpConfigs: IGulpConfigs): Promise<IGulpConfigs> => {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
+    if (!settings.taskPath) {
+      return reject('No task path is defined');
+    }
     const customDataModulePath = path.join(process.cwd(), settings.taskPath, 'customDataLoader.js');
     if (fs.existsSync(customDataModulePath)) {
       const customDataLoader = require(customDataModulePath);

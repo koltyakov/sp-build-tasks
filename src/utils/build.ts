@@ -98,7 +98,7 @@ export default class Build {
         }
       `;
 
-      let less = null;
+      let less: any = null;
       try {
         less = require('less');
       } catch (ex) {
@@ -126,9 +126,9 @@ export default class Build {
 
   public buildCustomCssFromScss(params: IBuildCustomCssFromScss = {}): Promise<sass.Result> {
     return new Promise((resolve, reject) => {
-      let { file, data, outputStyle, outFile, sourceMap, sourceMapContents } = params;
-      data = data || file ? fs.readFileSync(file, this.settings.fileEncoding).toString() : null;
-      outputStyle = outputStyle || 'compressed';
+      const { file, outFile, sourceMap, sourceMapContents } = params;
+      const data: any = params.data || file ? fs.readFileSync(file as string, this.settings.fileEncoding).toString() : null;
+      const outputStyle: any = params.outputStyle || 'compressed';
       // Files lock issue workaraund
       setTimeout(() => {
         sass.render({ file, data, outputStyle, outFile, sourceMap, sourceMapContents }, (err, result) => {
@@ -163,8 +163,10 @@ export default class Build {
   }
 
   public minifyJsContent(params: IMinifyContent): uglifyJS.MinifyOutput {
-    let { content, srcPath, distPath } = params;
-    content = content || fs.readFileSync(srcPath, this.settings.fileEncoding);
+    const { distPath } = params;
+    const content = typeof (params as any).content !== 'undefined'
+      ? (params as any).content
+      : fs.readFileSync((params as any).srcPath, this.settings.fileEncoding);
     const minifiedContent = uglifyJS.minify(content, {
       compress: true,
       sourceMap: true,
@@ -183,13 +185,16 @@ export default class Build {
   }
 
   public minifyCssContent(params: IMinifyContent): CleanCSS.Output {
-    let { content, srcPath, distPath } = params;
-    content = content || fs.readFileSync(srcPath, this.settings.fileEncoding);
+    const { distPath } = params;
+    let minifiedContent: CleanCSS.Output = new CleanCSS({}).minify('');
+    const content = typeof (params as any).content !== 'undefined'
+      ? (params as any).content
+      : fs.readFileSync((params as any).srcPath, this.settings.fileEncoding);
     // level: { 1: { specialComments: 0 } }
-    const minifiedContent = new CleanCSS({}).minify(content);
+    minifiedContent = new CleanCSS({}).minify(content);
     if (distPath) {
       mkdirp.sync(path.dirname(distPath));
-      fs.writeFileSync(distPath, minifiedContent.styles, {
+      fs.writeFileSync(distPath, minifiedContent, {
         encoding: this.settings.fileEncoding
       });
     }
@@ -211,8 +216,8 @@ export default class Build {
   public compileHbsTemplate(params: ICompileHbsTemplate): Promise<{ targetBody: string; targetPath: string; }> {
     return new Promise((resolve, reject) => {
       let { source, target, data } = params;
-      const src = path.normalize(this.settings.src);
-      const dist = path.normalize(this.settings.dist);
+      const src = path.normalize(this.settings.src || './src');
+      const dist = path.normalize(this.settings.dist || './dist');
       source = path.normalize(source);
       target = path.normalize(target);
       if (source.indexOf(src) !== 0) {

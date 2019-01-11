@@ -11,7 +11,7 @@ import { walkFolders } from '../utils/misc';
 import { detectProdMode } from '../utils/env';
 import { processStepMessage } from '../utils/log';
 
-import { ISPBuildSettings, IGulpConfigs, IAssetMap } from '../interfaces';
+import { ISPBuildSettings, IGulpConfigs, IAssetMap, IFile } from '../interfaces';
 
 declare var global: any;
 
@@ -24,7 +24,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     const args = process.argv.slice(3);
     (async () => {
       processStepMessage(`Build (mode: ${mode})`);
-      if (!fs.existsSync(path.resolve(settings.privateConf))) {
+      if (!fs.existsSync(path.resolve(settings.privateConf || './config/private.json'))) {
         await getConfigs(settings);
       }
       const tasksInfo = [
@@ -84,12 +84,12 @@ export class BuildTasks {
   public buildJsLibsTask = async (): Promise<void> => {
     const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(this.settings);
     const build = getBuildInstance(configs);
-
-    const filesArr = configs.appConfig.bundleJSLibsFiles;
+    const filesArr = typeof configs.appConfig.bundleJSLibsFiles !== 'undefined'
+      ? configs.appConfig.bundleJSLibsFiles
+      : [];
     const distPath = configs.appConfig.distFolder + '/scripts/vendor.js';
     const content = await build.concatFilesContent({ filesArr });
     content && build.minifyJsContent({ content, distPath });
-
     return;
   }
 
@@ -115,14 +115,14 @@ export class BuildTasks {
   public buildCssLibsTask = async (): Promise<void> => {
     const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(this.settings);
     const build = getBuildInstance(configs);
-
-    const filesArr = configs.appConfig.bundleCSSLibsFiles;
+    const filesArr = typeof configs.appConfig.bundleCSSLibsFiles !== 'undefined'
+      ? configs.appConfig.bundleCSSLibsFiles
+      : [];
     const distPath = configs.appConfig.distFolder + '/styles/vendor.css';
     const content = await build.concatFilesContent({ filesArr });
     if (content) {
       build.minifyCssContent({ content, distPath });
     }
-
     return;
   }
 
@@ -139,8 +139,8 @@ export class BuildTasks {
       assetsArr.push({ ...defaultMap });
     } else if (!Array.isArray(configs.appConfig.customStyles)) {
       assetsArr.push({
-        src: (configs.appConfig.customStyles as IAssetMap).src || defaultMap.src,
-        dist: (configs.appConfig.customStyles as IAssetMap).dist || defaultMap.dist
+        src: configs.appConfig.customStyles.src || defaultMap.src,
+        dist: configs.appConfig.customStyles.dist || defaultMap.dist
       });
     } else {
       assetsArr = configs.appConfig.customStyles;
@@ -204,21 +204,7 @@ export class BuildTasks {
       return;
     }
 
-    const files = fs.readdirSync(source).map(file => {
-      let res = null;
-      const fileName = path.join(source, file);
-      const stat = fs.lstatSync(fileName);
-      if (!stat.isDirectory()) {
-        const fileParse = path.parse(fileName);
-        if (fileParse.ext === '.hbs') {
-          res = {
-            source: fileName,
-            target: path.join(target, fileParse.name + '.aspx')
-          };
-        }
-      }
-      return res;
-    }).filter(obj => obj !== null);
+    const files: IFile[] = this.mapHbsTemplates(fs.readdirSync(source), source, target, 'aspx');
 
     if (files.length > 0) {
       await build.compileHbsTemplates({ files, data });
@@ -239,19 +225,7 @@ export class BuildTasks {
       return;
     }
 
-    const files = walkFolders(source).map(file => {
-      let res = null;
-      const fileParse = path.parse(file);
-      const relativeFolder = fileParse.dir.replace(source, '');
-
-      if (fileParse.ext === '.hbs') {
-        res = {
-          source: file,
-          target: path.join(target, relativeFolder, fileParse.name + '.html')
-        };
-      }
-      return res;
-    }).filter(obj => obj !== null);
+    const files: IFile[] = this.mapHbsTemplates(walkFolders(source), source, target, 'html');
 
     if (files.length > 0) {
       await build.compileHbsTemplates({ files, data });
@@ -259,4 +233,19 @@ export class BuildTasks {
 
     return;
   }
+
+  private mapHbsTemplates(files: string[], source: string, target: string, ext: string): IFile[] {
+    return files
+      .map(file => path.join(source, file))
+      .filter(fileName => !fs.lstatSync(fileName).isDirectory())
+      .filter(fileName => path.parse(fileName).ext.toLowerCase() === '.hbs')
+      .map(filePath => {
+        const fileParse = path.parse(filePath);
+        return {
+          source: filePath,
+          target: path.join(target, `${fileParse.name}.${ext}`)
+        };
+      });
+  }
+
 }

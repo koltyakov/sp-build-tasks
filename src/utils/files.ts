@@ -4,6 +4,7 @@ import { Delete } from 'sppurge';
 import * as colors from 'colors';
 
 import { IDeploySettings } from '../interfaces';
+import { type } from 'os';
 
 export interface IFolderProcessItem {
   path: string;
@@ -76,70 +77,71 @@ export default class Files {
   }
 
   public getFiles = (foldersArr: IFolderProcessItem[] = [], filesArr: IFileProcessItem[] = []): Promise<IFileProcessItem[]> => {
-    return new Promise(resolve => {
-      this.getServerRelativeUrl().then(serverRelativeUrl => {
-        if (foldersArr.length === 0) {
-          foldersArr.push({
-            path: `${serverRelativeUrl}/${this.settings.spFolder}`.replace(/\/\//g, '/'),
-            processed: false
-          });
+    return this.getServerRelativeUrl().then(serverRelativeUrl => {
+      if (foldersArr.length === 0) {
+        foldersArr.push({
+          path: `${serverRelativeUrl}/${this.settings.spFolder}`.replace(/\/\//g, '/'),
+          processed: false
+        });
+      }
+      if (foldersArr.filter(folder => !folder.processed).length === 0) {
+        return filesArr;
+      } else {
+        const folder = foldersArr.find(folder => !folder.processed);
+        if (typeof folder === 'undefined') {
+          return [];
         }
-        if (foldersArr.filter(folder => !folder.processed).length === 0) {
-          resolve(filesArr);
-        } else {
-          const folder = foldersArr.find(folder => !folder.processed);
-
-          const requestUrl = `${this.settings.siteUrl}` +
-            `/_api/web/getFolderByServerRelativeUrl('${folder.path}')?` +
-              `$select=Files,Folders/ServerRelativeUrl,Folders/ItemCount&` +
-              `$expand=Files,Folders`;
-          this.spr.get(requestUrl, {
-            headers: {
-              'Accept': 'application/json; odata=verbose',
-              'Content-Type': 'application/json; odata=verbose'
-            }
-          }).then(content => {
-            folder.processed = true;
-            filesArr = filesArr.concat(content.body.d.Files.results.map(fileResp => {
-              return {
-                path: fileResp.ServerRelativeUrl,
-                relativePath: fileResp.ServerRelativeUrl.replace(`${serverRelativeUrl}/${this.settings.spFolder}/`.replace(/\/\//g, '/'), ''),
-                length: parseInt(fileResp.Length, 10)
-              };
-            }));
-            foldersArr = foldersArr.concat(content.body.d.Folders.results.map(folderResp => {
-              return {
-                path: folderResp.ServerRelativeUrl,
-                processed: folderResp.ItemCount === 0
-              };
-            }));
-            return resolve(this.getFiles(foldersArr, filesArr));
-          });
-        }
-      });
+        const requestUrl = `${this.settings.siteUrl}` +
+          `/_api/web/getFolderByServerRelativeUrl('${folder.path}')?` +
+            `$select=Files,Folders/ServerRelativeUrl,Folders/ItemCount&` +
+            `$expand=Files,Folders`;
+        return this.spr.get(requestUrl, {
+          headers: {
+            'Accept': 'application/json; odata=verbose',
+            'Content-Type': 'application/json; odata=verbose'
+          }
+        }).then(content => {
+          folder.processed = true;
+          filesArr = filesArr.concat(content.body.d.Files.results.map(fileResp => {
+            return {
+              path: fileResp.ServerRelativeUrl,
+              relativePath: fileResp.ServerRelativeUrl.replace(`${serverRelativeUrl}/${this.settings.spFolder}/`.replace(/\/\//g, '/'), ''),
+              length: parseInt(fileResp.Length, 10)
+            };
+          }));
+          foldersArr = foldersArr.concat(content.body.d.Folders.results.map(folderResp => {
+            return {
+              path: folderResp.ServerRelativeUrl,
+              processed: folderResp.ItemCount === 0
+            };
+          }));
+          return this.getFiles(foldersArr, filesArr);
+        });
+      }
     });
   }
 
-  public deleteFile = (filePath): Promise<void> => {
+  public deleteFile = (filePath: string): Promise<void> => {
     return this.sppurge.deleteFile({
       siteUrl: this.settings.siteUrl,
       creds: this.settings.creds
     }, filePath);
   }
 
-  public deleteFilesQueue = (filesQueue): Promise<void> => {
-    return new Promise(resolve => {
-      if (filesQueue.filter(file => !file.processed).length === 0) {
-        resolve();
-      } else {
-        const file = filesQueue.find(folder => !folder.processed);
-        console.log(`Deleting ${colors.red(file.path)}`);
-        this.deleteFile(file.path).then(_ => {
-          file.processed = true;
-          resolve(this.deleteFilesQueue(filesQueue));
-        });
+  public deleteFilesQueue = async (filesQueue: { path: string; processed: boolean; }[]): Promise<void> => {
+    if (filesQueue.filter(file => !file.processed).length === 0) {
+      return;
+    } else {
+      const file = filesQueue.find(folder => !folder.processed);
+      if (typeof file === 'undefined') {
+        return;
       }
-    });
+      console.log(`Deleting ${colors.red(file.path)}`);
+      await this.deleteFile(file.path);
+      file.processed = true;
+      await this.deleteFilesQueue(filesQueue);
+      return;
+    }
   }
 
 }
