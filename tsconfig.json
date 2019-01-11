@@ -12,7 +12,8 @@
     "newLine": "LF",
     "skipLibCheck": true,
     "types": ["node"],
-    "outDir": "dist"
+    "outDir": "dist",
+    "strictNullChecks": true
   },
   "exclude": [
     "node_modules",
