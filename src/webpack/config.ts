@@ -71,7 +71,6 @@ const rules: webpack.RuleSetRule[] = [
       {
         loader: 'css-loader',
         options: {
-          minimize: true,
           sourceMap: true
         }
       }
@@ -87,7 +86,6 @@ const rules: webpack.RuleSetRule[] = [
       {
         loader: 'css-loader',
         options: {
-          minimize: true,
           sourceMap: true
         }
       },
