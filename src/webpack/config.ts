@@ -99,10 +99,10 @@ const rules: webpack.RuleSetRule[] = [
   }
 ];
 
-let devtool: webpack.Options.Devtool = (process.env.SPBUILD_WEBPACK_DEVTOOL || appConf.devtool) as any;
+let devtool: webpack.Options.Devtool | undefined = (process.env.SPBUILD_WEBPACK_DEVTOOL || appConf.devtool) as any;
 devtool = typeof devtool !== 'undefined' ? devtool : 'source-map';
-if (`${devtool}` === 'none') {
-  devtool = false;
+if (`${devtool}` === 'none' || `${devtool}` === '') {
+  devtool = undefined;
 }
 
 const webpackConfigDevDefaults: IWebpackConfig = {
