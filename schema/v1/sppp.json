@@ -181,7 +181,7 @@
           "default": ""
         },
         "devtool": {
-          "description": "Webpack `devtool` option for development mode\n\nE.g.: `eval`",
+          "description": "Webpack `devtool` option for development mode\n\nE.g.: `eval`\n\nSee more: https://webpack.js.org/configuration/devtool/",
           "type": "string",
           "default": "cheap-eval-source-map"
         }

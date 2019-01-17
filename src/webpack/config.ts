@@ -71,7 +71,6 @@ const rules: webpack.RuleSetRule[] = [
       {
         loader: 'css-loader',
         options: {
-          minimize: true,
           sourceMap: true
         }
       }
@@ -87,7 +86,6 @@ const rules: webpack.RuleSetRule[] = [
       {
         loader: 'css-loader',
         options: {
-          minimize: true,
           sourceMap: true
         }
       },
@@ -101,10 +99,16 @@ const rules: webpack.RuleSetRule[] = [
   }
 ];
 
+let devtool: webpack.Options.Devtool | undefined = (process.env.SPBUILD_WEBPACK_DEVTOOL || appConf.devtool) as any;
+devtool = typeof devtool !== 'undefined' ? devtool : 'source-map';
+if (`${devtool}` === 'none' || `${devtool}` === '') {
+  devtool = undefined;
+}
+
 const webpackConfigDevDefaults: IWebpackConfig = {
   mode: 'development',
   cache: true,
-  devtool: appConf.devtool || 'source-map', // 'eval-source-map',
+  devtool, // : appConf.devtool || 'source-map', // 'eval-source-map',
   module: { rules },
   optimization: {
     minimizer: [
@@ -132,7 +136,7 @@ const webpackConfigDevDefaults: IWebpackConfig = {
 const webpackConfigProdDefaults: IWebpackConfig = {
   mode: 'production',
   cache: false,
-  devtool: 'source-map',
+  devtool, // : 'source-map',
   module: { rules },
   optimization: {
     minimizer: [
