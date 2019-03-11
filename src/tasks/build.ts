@@ -8,7 +8,7 @@ import * as Listr from 'listr';
 import { getConfigs } from './config';
 import Build from '../utils/build';
 import { walkFolders } from '../utils/misc';
-import { detectProdMode } from '../utils/env';
+import { detectProdMode, compileEnvHashedString } from '../utils/env';
 import { processStepMessage } from '../utils/log';
 
 import { ISPBuildSettings, IGulpConfigs, IAssetMap, IFile } from '../interfaces';
@@ -84,9 +84,8 @@ export class BuildTasks {
   public buildJsLibsTask = async (): Promise<void> => {
     const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(this.settings);
     const build = getBuildInstance(configs);
-    const filesArr = typeof configs.appConfig.bundleJSLibsFiles !== 'undefined'
-      ? configs.appConfig.bundleJSLibsFiles
-      : [];
+    const filesArr = (typeof configs.appConfig.bundleJSLibsFiles !== 'undefined'
+      ? configs.appConfig.bundleJSLibsFiles : []).map(compileEnvHashedString);
     const distPath = configs.appConfig.distFolder + '/scripts/vendor.js';
     const content = await build.concatFilesContent({ filesArr });
     content && build.minifyJsContent({ content, distPath });
@@ -115,9 +114,8 @@ export class BuildTasks {
   public buildCssLibsTask = async (): Promise<void> => {
     const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(this.settings);
     const build = getBuildInstance(configs);
-    const filesArr = typeof configs.appConfig.bundleCSSLibsFiles !== 'undefined'
-      ? configs.appConfig.bundleCSSLibsFiles
-      : [];
+    const filesArr = (typeof configs.appConfig.bundleCSSLibsFiles !== 'undefined'
+      ? configs.appConfig.bundleCSSLibsFiles : []).map(compileEnvHashedString);
     const distPath = configs.appConfig.distFolder + '/styles/vendor.css';
     const content = await build.concatFilesContent({ filesArr });
     if (content) {
@@ -151,7 +149,7 @@ export class BuildTasks {
         const distPath = path.join(process.cwd(), configs.appConfig.distFolder, (configs.appConfig.modulePath || ''), assets.dist);
         const sourceMapPath = distPath + '.map';
         const sourceMapFile = sourceMapPath.split('\\').pop();
-        const result = await build.buildCustomCssFromScss({ file: srcPath, sourceMap: sourceMapFile, sourceMapContents: true });
+        const result = await build.buildCustomCssFromScss({ file: compileEnvHashedString(srcPath), sourceMap: sourceMapFile, sourceMapContents: true });
         mkdirp.sync(path.dirname(distPath));
         fs.writeFileSync(
           distPath,
@@ -171,7 +169,8 @@ export class BuildTasks {
     const assetsToCopy = configs.appConfig.copyAssetsMap || [];
 
     for (const assets of assetsToCopy) {
-      build.copyAssets({ srcArrayOrPath: assets.src, dist: assets.dist });
+      const srcArrayOrPath = (typeof assets.src === 'string' ? [ assets.src ] : assets.src).map(compileEnvHashedString);
+      build.copyAssets({ srcArrayOrPath, dist: compileEnvHashedString(assets.dist) });
     }
 
     return;

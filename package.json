@@ -1,6 +1,7 @@
 {
   "name": "sp-build-tasks",
-  "version": "3.3.2",
+  "description": "SharePoint front-end projects automation and tasks tool-belt",
+  "version": "3.4.0",
   "author": "Andrew Koltyakov <andrew.koltyakov@gmail.com>",
   "main": "./dist/index.js",
   "typings": "./dist/index",

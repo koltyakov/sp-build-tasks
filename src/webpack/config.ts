@@ -15,6 +15,7 @@ import {
   IAppConfig,
   IPrivateConfig
 } from '../interfaces';
+import { compileEnvHashedString } from '../utils/env';
 
 interface IWebpackConfig extends IWebpackConfigOld {
   mode: 'development' | 'production';
@@ -190,7 +191,7 @@ const webpackConfigs = webpackItemsMap
     return {
       ...webpackConfigDefaults,
       ...(mapItem.webpackConfig || {}),
-      entry,
+      entry: entry.map(compileEnvHashedString),
       output: {
         path: path.join(process.cwd(), appConf.distFolder, (appConf.modulePath || ''), '/scripts'),
         filename: filename,
