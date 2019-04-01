@@ -26,7 +26,7 @@ npm i sp-build-tasks --save-dev
 // gulpfile.js
 
 const gulp = require('gulp');
-require('dotenv').load();
+require('dotenv').config();
 
 new (require('sp-build-tasks').SPBuildTasks)(gulp, {
   privateConf: process.env.PRIVATE_JSON || './config/private.json',
