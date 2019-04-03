@@ -13,7 +13,7 @@ if (typeof Uint8ClampedArray === 'undefined') {
   window.Uint8ClampedArray = () => [];
 }
 
-import 'core-js/es6/array';
+import 'core-js/es/array';
 import 'es6-map/implement';
 import 'es6-set/implement';
 import 'es6-weak-map/implement';
