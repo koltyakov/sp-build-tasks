@@ -104,7 +104,7 @@ if (`${devtool}` === 'none' || `${devtool}` === '') {
 }
 
 // Webpack dev server options
-const devServerPort = parseInt(process.env.WEBPACK_DEV_SERVER_PORT || '9090', 10);
+const devServerPort = parseInt(process.env.SPBUILD_WEBPACK_PORT || '9090', 10);
 const devServer = {
   contentBase: path.join(__dirname, appConf.distFolder),
   watchContentBase: true,

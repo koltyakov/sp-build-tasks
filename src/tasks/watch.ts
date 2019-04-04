@@ -177,24 +177,28 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   };
 
   gulp.task('watch', _cb => {
-    processStepMessage('Watch has been started');
+    const args = process.argv.slice(3);
+    const devServer = args.indexOf('--devServer') !== -1;
     detectProdMode();
     (async () => {
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
-      $.watch(configs.watch.assets, async event => {
-        if (event.event !== 'unlink') {
-          await new Promise((resolve, reject) => {
-            run(event.path, () => {
-              spsave(event.path)
-                .then(_ => resolve())
-                .catch(reject);
+      if (devServer) {
+        processStepMessage('Watch has been started');
+        $.watch(configs.watch.assets, async event => {
+          if (event.event !== 'unlink') {
+            await new Promise((resolve, reject) => {
+              run(event.path, () => {
+                spsave(event.path)
+                  .then(_ => resolve())
+                  .catch(reject);
+              });
             });
-          });
-        } else if (configs.appConfig.deleteFiles) {
-          await purge(event.path);
-        }
-      });
-      watchAssets(configs);
+          } else if (configs.appConfig.deleteFiles) {
+            await purge(event.path);
+          }
+        });
+      }
+      watchAssets(configs, devServer);
     })()
       .catch(console.warn);
   });
@@ -227,16 +231,6 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         }
       });
       watchAssets(configs);
-    })()
-      .catch(console.warn);
-  });
-
-  gulp.task('watch-devServer', _cb => {
-    // processStepMessage('Watch has been started');
-    detectProdMode();
-    (async () => {
-      const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
-      watchAssets(configs, true);
     })()
       .catch(console.warn);
   });
