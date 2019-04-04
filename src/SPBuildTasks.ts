@@ -37,7 +37,8 @@ export class SPBuildTasks {
       fs.writeFileSync(envPath,
         `PRIVATE_JSON=./config/private.json\n` +
         `TASKS_PATH=./tools/tasks\n` +
-        `APP_JSON=./config/app.json`,
+        `APP_JSON=./config/app.json\n` +
+        `SPBUILD_WEBPACK_PORT=9090`,
         { encoding: 'utf-8' }
       );
     }

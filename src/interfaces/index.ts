@@ -2,7 +2,10 @@ import { IAuthOptions } from 'node-sp-auth';
 import { Configuration, Options } from 'webpack';
 import { ILRSettings } from 'sp-live-reload/dist/interfaces';
 
-export interface IWebpackConfig extends Configuration {}
+export interface IWebpackConfig extends Configuration {
+  mode: 'development' | 'production';
+  devServer?: any;
+}
 
 export interface IGulpConfigs {
   appConfig: IAppConfig;
