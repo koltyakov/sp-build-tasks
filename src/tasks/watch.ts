@@ -104,37 +104,44 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   const buildTasks = new BuildTasks(settings);
 
-  const Watcher = function (configs: IGulpConfigs) {
+  const watchAssets = (configs: IGulpConfigs, devServer: boolean = false): void => {
+
     $.watch(`./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.'), async event => {
       if (event.event !== 'unlink') {
         // gulp.start('build:masterpage');
         await buildTasks.buildMasterpagesTask();
       }
     });
+
     $.watch('./src/masterpage/layouts/*.hbs', async event => {
       if (event.event !== 'unlink') {
         // gulp.start('build:layouts');
         await buildTasks.buildLayoutsTask();
       }
     });
+
     $.watch('./src/styles/**/*.scss', async event => {
       if (event.event !== 'unlink') {
         // gulp.start('build:css-custom');
         await buildTasks.buildCustomCssTask();
       }
     });
-    $.watch([
-      // Watch `./src/stripts`'s folder scripts
-      ...['js', 'jsx', 'ts', 'tsx'].map(ext => `./src/scripts/**/*.${ext}`),
-      // Watch custom entries which can be outside `./src/stripts`
-      ...(
-        typeof configs.appConfig.webpackItemsMap !== 'undefined'
-          ? configs.appConfig.webpackItemsMap.map(c => c.entry)
-          : []
-      ),
-      // Ignore definitions
-      '!./src/scripts/**/*.d.ts'
-    ]).once('data', () => webpackWatch());
+
+    if (!devServer) {
+      $.watch([
+        // Watch `./src/stripts`'s folder scripts
+        ...['js', 'jsx', 'ts', 'tsx'].map(ext => `./src/scripts/**/*.${ext}`),
+        // Watch custom entries which can be outside `./src/stripts`
+        ...(
+          typeof configs.appConfig.webpackItemsMap !== 'undefined'
+            ? configs.appConfig.webpackItemsMap.map(c => c.entry)
+            : []
+        ),
+        // Ignore definitions
+        '!./src/scripts/**/*.d.ts'
+      ]).once('data', () => webpackWatch());
+    }
+
     $.watch('./src/webparts/**/*.hbs', vinyl => {
       if (vinyl.event !== 'unlink') {
         const build = getBuildInstance(configs);
@@ -187,8 +194,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
           await purge(event.path);
         }
       });
-      // tslint:disable-next-line:no-unused-expression
-      new Watcher(configs);
+      watchAssets(configs);
     })()
       .catch(console.warn);
   });
@@ -220,8 +226,17 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
           await purge(event.path);
         }
       });
-      // tslint:disable-next-line:no-unused-expression
-      new Watcher(configs);
+      watchAssets(configs);
+    })()
+      .catch(console.warn);
+  });
+
+  gulp.task('watch-devServer', _cb => {
+    processStepMessage('Watch has been started');
+    detectProdMode();
+    (async () => {
+      const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+      watchAssets(configs, true);
     })()
       .catch(console.warn);
   });
