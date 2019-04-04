@@ -2,6 +2,7 @@ import * as webpack from 'webpack';
 import * as UglifyJSPlugin from 'uglifyjs-webpack-plugin';
 import * as path from 'path';
 import * as fs from 'fs';
+import RestProxy, { IProxySettings } from 'sp-rest-proxy/dist/RestProxy';
 
 import { TsConfigPathsPlugin } from 'awesome-typescript-loader';
 // import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
@@ -10,16 +11,12 @@ declare var global: any;
 
 import {
   IWebpackMapItem,
-  IWebpackConfig as IWebpackConfigOld,
+  IWebpackConfig,
   IGulpConfigs,
   IAppConfig,
   IPrivateConfig
 } from '../interfaces';
 import { compileEnvHashedString } from '../utils/env';
-
-interface IWebpackConfig extends IWebpackConfigOld {
-  mode: 'development' | 'production';
-}
 
 const configs: IGulpConfigs = global.gulpConfigs;
 let appConf: IAppConfig = (configs || { appConfig: null }).appConfig;
@@ -106,10 +103,42 @@ if (`${devtool}` === 'none' || `${devtool}` === '') {
   devtool = undefined;
 }
 
+// Webpack dev server options
+const devServerPort = parseInt(process.env.WEBPACK_DEV_SERVER_PORT || '9090', 10);
+const devServer = {
+  contentBase: path.join(__dirname, appConf.distFolder),
+  watchContentBase: true,
+  writeToDisk: true,
+  hot: true,
+  port: devServerPort,
+  before: (app, _server) => {
+    // Register SP API Proxy
+    const settings: IProxySettings = {
+      port: devServerPort,
+      authConfigSettings: {
+        authOptions: { ...privateConf, ...privateConf.creds },
+        saveConfigOnDisk: false
+      }
+    };
+    new RestProxy(settings, app).serveProxy();
+
+    // Register static assets under the publish path route
+    app.get(`${publishPath}/*`, (req: any, res: any, _next: any) => {
+      const filePath = path.join(
+        process.cwd(),
+        appConf.distFolder,
+        req.url.replace(publishPath, '').split('?')[0]
+      );
+      res.sendFile(filePath);
+    });
+  }
+};
+
 const webpackConfigDevDefaults: IWebpackConfig = {
   mode: 'development',
   cache: true,
   devtool, // : appConf.devtool || 'source-map', // 'eval-source-map',
+  devServer,
   module: { rules },
   optimization: {
     minimizer: [
@@ -138,6 +167,7 @@ const webpackConfigProdDefaults: IWebpackConfig = {
   mode: 'production',
   cache: false,
   devtool, // : 'source-map',
+  devServer,
   module: { rules },
   optimization: {
     minimizer: [
@@ -169,17 +199,12 @@ const webpackConfigProdDefaults: IWebpackConfig = {
   ]
 };
 
-const webpackConfigDefaults: IWebpackConfig =
-  process.env.NODE_ENV === 'production' ?
-    webpackConfigProdDefaults :
-    webpackConfigDevDefaults;
+const webpackConfigDefaults: IWebpackConfig = process.env.NODE_ENV === 'production' ? webpackConfigProdDefaults : webpackConfigDevDefaults;
 
 const webpackItemsMap: IWebpackMapItem[] = appConf.webpackItemsMap || [defaultItemMap];
 
 const webpackConfigs = webpackItemsMap
-  .filter(mapItem => {
-    return mapItem.disable !== true;
-  })
+  .filter(mapItem => mapItem.disable !== true)
   .map(mapItem => {
     const filename = mapItem.target || defaultItemMap.target;
     const name = path.parse(filename).name;
@@ -198,7 +223,7 @@ const webpackConfigs = webpackItemsMap
         sourceMapFilename: `${name}/[name].js.map?v=[chunkhash:8]&e=.js.map`,
         chunkFilename: `${name}/[name].chunk.js?v=[chunkhash:8]&e=.chunk.js`,
         publicPath: `${publishPath}/scripts/`,
-        ...((mapItem.webpackConfig || {}).output || {})
+        ...(mapItem.webpackConfig || { output: {} }).output
       }
     } as IWebpackConfig;
   });

@@ -232,7 +232,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   });
 
   gulp.task('watch-devServer', _cb => {
-    processStepMessage('Watch has been started');
+    // processStepMessage('Watch has been started');
     detectProdMode();
     (async () => {
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
