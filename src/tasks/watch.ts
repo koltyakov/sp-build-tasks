@@ -182,7 +182,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     detectProdMode();
     (async () => {
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
-      if (devServer) {
+      if (!devServer) {
         processStepMessage('Watch has been started');
         $.watch(configs.watch.assets, async event => {
           if (event.event !== 'unlink') {
