@@ -50,5 +50,6 @@ const startWebpackDevServer = () => {
       console.log(err);
       return;
     }
+    console.log(`Webpack Dev Server has been starter: http://localhost:${port}`);
   });
 };

@@ -153,7 +153,9 @@ export class BuildTasks {
         mkdirp.sync(path.dirname(distPath));
         fs.writeFileSync(
           distPath,
-          result.css.toString().replace('/*# sourceMappingURL=../../../', '/*# sourceMappingURL='),
+          result.css.toString()
+            .replace('/*# sourceMappingURL=../../../', '/*# sourceMappingURL=')
+            .replace('/*# sourceMappingURL=../../dist/styles/', '/*# sourceMappingURL='),
           { encoding: 'utf-8' }
         );
         fs.writeFileSync(sourceMapPath, result.map.toString(), { encoding: 'utf-8' });
