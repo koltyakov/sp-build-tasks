@@ -15,12 +15,9 @@ import { ISPBuildSettings, IGulpConfigs } from '../interfaces';
 
 declare var global: any;
 
-// interface IWatchCopyAssets { watch: string; basePath: string; }
-
 export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   const { run } = new Debounce(50);
-
   const saveQueue: any = {};
 
   const spsave = async (filePath: string, throughCallback?: (err: any) => void): Promise<void> => {
@@ -77,6 +74,70 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       });
   };
 
+  const buildTasks = new BuildTasks(settings);
+
+  gulp.task('watch', _cb => {
+    const args = process.argv.slice(3);
+    const devServer = args.indexOf('--devServer') !== -1;
+    detectProdMode();
+    (async () => {
+      const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+      if (!devServer) {
+        processStepMessage('Watch has been started');
+        $.watch(configs.watch.assets, async event => {
+          if (event.event !== 'unlink') {
+            await new Promise((resolve, reject) => {
+              run(event.path, () => {
+                spsave(event.path)
+                  .then(_ => resolve())
+                  .catch(reject);
+              });
+            });
+          } else if (configs.appConfig.deleteFiles) {
+            await purge(event.path);
+          }
+        });
+      }
+      watchAssets(buildTasks, configs, $, devServer);
+    })()
+      .catch(console.warn);
+  });
+
+  gulp.task('live', _cb => {
+    processStepMessage('Watch with reload is initiated');
+    detectProdMode();
+    (async () => {
+      const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
+      const liveReload = new LiveReload(configs.liveReload);
+      liveReload.runServer();
+      $.watch(configs.watch.assets, async event => {
+        if (event.event !== 'unlink') {
+          await new Promise((resolve, reject) => {
+            run(event.path, () => {
+              spsave(event.path, (chunkPath: string) => {
+                let body: string = '';
+                if (chunkPath.toLowerCase().split('.').pop() === 'css') {
+                  body = fs.readFileSync(chunkPath).toString();
+                }
+                liveReload.emitUpdatedPath(chunkPath, false, body);
+              })
+                .then(_ => resolve())
+                .catch(reject);
+            });
+          });
+        } else if (configs.appConfig.deleteFiles) {
+          await purge(event.path);
+        }
+      });
+      watchAssets(buildTasks, configs, $, false);
+    })()
+      .catch(console.warn);
+  });
+
+};
+
+export const watchAssets = (buildTasks: BuildTasks, configs: IGulpConfigs, $: any, devServer: boolean = false): void => {
+
   const webpackWatch = () => {
     let webpackConfigPath: string = path.join(process.cwd(), 'webpack.config.js');
     if (!fs.existsSync(webpackConfigPath)) {
@@ -102,137 +163,74 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
     });
   };
 
-  const buildTasks = new BuildTasks(settings);
-
-  const watchAssets = (configs: IGulpConfigs, devServer: boolean = false): void => {
-
-    $.watch(`./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.'), async event => {
-      if (event.event !== 'unlink') {
-        // gulp.start('build:masterpage');
-        await buildTasks.buildMasterpagesTask();
-      }
-    });
-
-    $.watch('./src/masterpage/layouts/*.hbs', async event => {
-      if (event.event !== 'unlink') {
-        // gulp.start('build:layouts');
-        await buildTasks.buildLayoutsTask();
-      }
-    });
-
-    $.watch('./src/styles/**/*.scss', async event => {
-      if (event.event !== 'unlink') {
-        // gulp.start('build:css-custom');
-        await buildTasks.buildCustomCssTask();
-      }
-    });
-
-    if (!devServer) {
-      $.watch([
-        // Watch `./src/stripts`'s folder scripts
-        ...['js', 'jsx', 'ts', 'tsx'].map(ext => `./src/scripts/**/*.${ext}`),
-        // Watch custom entries which can be outside `./src/stripts`
-        ...(
-          typeof configs.appConfig.webpackItemsMap !== 'undefined'
-            ? configs.appConfig.webpackItemsMap.map(c => c.entry)
-            : []
-        ),
-        // Ignore definitions
-        '!./src/scripts/**/*.d.ts'
-      ]).once('data', () => webpackWatch());
+  $.watch(`./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.'), async event => {
+    if (event.event !== 'unlink') {
+      // gulp.start('build:masterpage');
+      await buildTasks.buildMasterpagesTask();
     }
-
-    $.watch('./src/webparts/**/*.hbs', vinyl => {
-      if (vinyl.event !== 'unlink') {
-        const build = getBuildInstance(configs);
-        const data = mapProjectData(configs);
-        const targetFolder = configs.appConfig.distFolder + '/webparts';
-        const srcPath = path.relative('./src', vinyl.path);
-        const relPath = path.relative(path.join('./src', 'webparts'), vinyl.path);
-        const fileParse = path.parse(relPath);
-        const trgPath = path.join(targetFolder, path.dirname(relPath), fileParse.name + '.html');
-
-        build.compileHbsTemplate({
-          source: srcPath,
-          target: trgPath,
-          data: data
-        })
-          .then(_ => console.log('Webpart is compiled', trgPath))
-          .catch(console.log);
-      }
-    });
-
-    // const { copyAssetsMap } = configs.appConfig;
-    // if (copyAssetsMap) {
-    //   const watchAssets: IWatchCopyAssets[] = copyAssetsMap.reduce((res, assets) => {
-    //     let src: string[] = [];
-    //     if (typeof assets.src === 'string') {
-    //       src = [assets.src];
-    //     } else {
-    //       src = assets.src;
-    //     }
-    //     return res;
-    //   }, []);
-    // }
-  };
-
-  gulp.task('watch', _cb => {
-    const args = process.argv.slice(3);
-    const devServer = args.indexOf('--devServer') !== -1;
-    detectProdMode();
-    (async () => {
-      const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
-      if (!devServer) {
-        processStepMessage('Watch has been started');
-        $.watch(configs.watch.assets, async event => {
-          if (event.event !== 'unlink') {
-            await new Promise((resolve, reject) => {
-              run(event.path, () => {
-                spsave(event.path)
-                  .then(_ => resolve())
-                  .catch(reject);
-              });
-            });
-          } else if (configs.appConfig.deleteFiles) {
-            await purge(event.path);
-          }
-        });
-      }
-      watchAssets(configs, devServer);
-    })()
-      .catch(console.warn);
   });
 
-  gulp.task('live', _cb => {
-    processStepMessage('Watch with reload is initiated');
-    detectProdMode();
-    (async () => {
-      const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
-      // const build = getBuildInstance(configs);
-      const liveReload = new LiveReload(configs.liveReload);
-      liveReload.runServer();
-      $.watch(configs.watch.assets, async event => {
-        if (event.event !== 'unlink') {
-          await new Promise((resolve, reject) => {
-            run(event.path, () => {
-              spsave(event.path, (chunkPath: string) => {
-                let body: string = '';
-                if (chunkPath.toLowerCase().split('.').pop() === 'css') {
-                  body = fs.readFileSync(chunkPath).toString();
-                }
-                liveReload.emitUpdatedPath(chunkPath, false, body);
-              })
-                .then(_ => resolve())
-                .catch(reject);
-            });
-          });
-        } else if (configs.appConfig.deleteFiles) {
-          await purge(event.path);
-        }
-      });
-      watchAssets(configs);
-    })()
-      .catch(console.warn);
+  $.watch('./src/masterpage/layouts/*.hbs', async event => {
+    if (event.event !== 'unlink') {
+      // gulp.start('build:layouts');
+      await buildTasks.buildLayoutsTask();
+    }
   });
+
+  $.watch('./src/styles/**/*.scss', async event => {
+    if (event.event !== 'unlink') {
+      // gulp.start('build:css-custom');
+      await buildTasks.buildCustomCssTask();
+    }
+  });
+
+  if (!devServer) {
+    $.watch([
+      // Watch `./src/stripts`'s folder scripts
+      ...['js', 'jsx', 'ts', 'tsx'].map(ext => `./src/scripts/**/*.${ext}`),
+      // Watch custom entries which can be outside `./src/stripts`
+      ...(
+        typeof configs.appConfig.webpackItemsMap !== 'undefined'
+          ? configs.appConfig.webpackItemsMap.map(c => c.entry)
+          : []
+      ),
+      // Ignore definitions
+      '!./src/scripts/**/*.d.ts'
+    ]).once('data', () => webpackWatch());
+  }
+
+  $.watch('./src/webparts/**/*.hbs', vinyl => {
+    if (vinyl.event !== 'unlink') {
+      const build = getBuildInstance(configs);
+      const data = mapProjectData(configs);
+      const targetFolder = configs.appConfig.distFolder + '/webparts';
+      const srcPath = path.relative('./src', vinyl.path);
+      const relPath = path.relative(path.join('./src', 'webparts'), vinyl.path);
+      const fileParse = path.parse(relPath);
+      const trgPath = path.join(targetFolder, path.dirname(relPath), fileParse.name + '.html');
+
+      build.compileHbsTemplate({
+        source: srcPath,
+        target: trgPath,
+        data: data
+      })
+        .then(_ => console.log('Webpart is compiled', trgPath))
+        .catch(console.log);
+    }
+  });
+
+  // interface IWatchCopyAssets { watch: string; basePath: string; }
+  // const { copyAssetsMap } = configs.appConfig;
+  // if (copyAssetsMap) {
+  //   const watchAssets: IWatchCopyAssets[] = copyAssetsMap.reduce((res, assets) => {
+  //     let src: string[] = [];
+  //     if (typeof assets.src === 'string') {
+  //       src = [assets.src];
+  //     } else {
+  //       src = assets.src;
+  //     }
+  //     return res;
+  //   }, []);
+  // }
 
 };
