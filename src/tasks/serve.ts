@@ -41,8 +41,8 @@ const startWebpackDevServer = () => {
   if (!Array.isArray(webpackConfig)) {
     webpackConfig = [webpackConfig];
   }
-  const port = webpackConfig.pop().devServer.port || 9090;
-  const options = webpackConfig.pop().devServer;
+  const options = webpackConfig[webpackConfig.length - 1].devServer;
+  const port = options.port || 9090;
 
   const server = new WebpackDevServer(webpack(webpackConfig), options);
   server.listen(port, 'localhost', err => {
