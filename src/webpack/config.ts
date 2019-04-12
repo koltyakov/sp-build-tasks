@@ -3,6 +3,7 @@ import * as UglifyJSPlugin from 'uglifyjs-webpack-plugin';
 import * as path from 'path';
 import * as fs from 'fs';
 import RestProxy, { IProxySettings } from 'sp-rest-proxy/dist/RestProxy';
+import * as minimist from 'minimist';
 
 import { TsConfigPathsPlugin } from 'awesome-typescript-loader';
 // import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
@@ -17,6 +18,10 @@ import {
   IPrivateConfig
 } from '../interfaces';
 import { compileEnvHashedString } from '../utils/env';
+
+const args = minimist(process.argv.slice(2));
+const webpackTargets = (args.webpackTargets || '').split(',')
+  .map((t: string) => t.trim().toLowerCase());
 
 const configs: IGulpConfigs = global.gulpConfigs;
 let appConf: IAppConfig = (configs || { appConfig: null }).appConfig;
@@ -206,6 +211,12 @@ const webpackItemsMap: IWebpackMapItem[] = appConf.webpackItemsMap || [defaultIt
 
 const webpackConfigs = webpackItemsMap
   .filter(mapItem => mapItem.disable !== true)
+  .filter(mapItem => {
+    if (webpackTargets.length === 0) {
+      return true;
+    }
+    return webpackTargets.indexOf(mapItem.target.toLowerCase()) !== -1;
+  })
   .map(mapItem => {
     const filename = mapItem.target || defaultItemMap.target;
     const name = path.parse(filename).name;
