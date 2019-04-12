@@ -118,7 +118,8 @@ const devServer = {
       authConfigSettings: {
         authOptions: { ...privateConf, ...privateConf.creds },
         saveConfigOnDisk: false
-      }
+      },
+      strictRelativeUrls: true
     };
     new RestProxy(settings, app).serveProxy();
 
