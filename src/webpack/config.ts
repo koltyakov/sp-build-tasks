@@ -20,8 +20,9 @@ import {
 import { compileEnvHashedString } from '../utils/env';
 
 const args = minimist(process.argv.slice(2));
-const webpackTargets = (args.webpackTargets || '').split(',')
-  .map((t: string) => t.trim().toLowerCase());
+const webpackTargets = (args.webpackTargets as string || '').split(',')
+  .map(t => t.trim().toLowerCase())
+  .filter(t => t.length > 0);
 
 const configs: IGulpConfigs = global.gulpConfigs;
 let appConf: IAppConfig = (configs || { appConfig: null }).appConfig;
