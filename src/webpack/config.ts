@@ -6,7 +6,6 @@ import RestProxy, { IProxySettings } from 'sp-rest-proxy/dist/RestProxy';
 import * as minimist from 'minimist';
 
 import { TsConfigPathsPlugin } from 'awesome-typescript-loader';
-// import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 
 declare var global: any;
 
@@ -20,7 +19,7 @@ import {
 import { compileEnvHashedString } from '../utils/env';
 
 const args = minimist(process.argv.slice(2));
-const webpackTargets = (args.webpackTargets as string || '').split(',')
+const webpackTargets = (args['webpack-targets'] || '').split(',')
   .map(t => t.trim().toLowerCase())
   .filter(t => t.length > 0);
 
@@ -52,53 +51,25 @@ const defaultItemMap: IWebpackMapItem = {
   target: 'app.js'
 };
 
-// const cacheLoader = {
-//   loader: 'cache-loader',
-//   options: {
-//     cacheDirectory: path.join(process.cwd(), 'cache')
-//   }
-// };
-
 const rules: webpack.RuleSetRule[] = [
   {
     test: /\.ts(x?)$/,
     exclude: /(node_modules|dist)/,
-    use: [ 'awesome-typescript-loader' ] // cacheLoader,
+    use: [ 'awesome-typescript-loader' ]
   },
   {
     test: /\.css$/,
     use: [
-      // cacheLoader,
-      {
-        loader: 'style-loader'
-      },
-      {
-        loader: 'css-loader',
-        options: {
-          sourceMap: true
-        }
-      }
+      { loader: 'style-loader' },
+      { loader: 'css-loader', options: { sourceMap: true } }
     ]
   },
   {
     test: /\.scss$/,
     use: [
-      // cacheLoader,
-      {
-        loader: 'style-loader'
-      },
-      {
-        loader: 'css-loader',
-        options: {
-          sourceMap: true
-        }
-      },
-      {
-        loader: 'sass-loader',
-        options: {
-          sourceMap: true
-        }
-      }
+      { loader: 'style-loader' },
+      { loader: 'css-loader', options: { sourceMap: true } },
+      { loader: 'sass-loader', options: { sourceMap: true } }
     ]
   }
 ];
@@ -147,23 +118,6 @@ const webpackConfigDevDefaults: IWebpackConfig = {
   devtool, // : appConf.devtool || 'source-map', // 'eval-source-map',
   devServer,
   module: { rules },
-  optimization: {
-    minimizer: [
-      new UglifyJSPlugin({
-        cache: true,
-        parallel: true,
-        uglifyOptions: {
-          ecma: 5,
-          compress: false,
-          mangle: false,
-          output: {
-            comments: false
-          }
-        },
-        sourceMap: true
-      })
-    ]
-  },
   resolve: {
     extensions: [ '.ts', '.tsx', '.js', '.jsx' ],
     plugins: [ new TsConfigPathsPlugin() ]
@@ -216,17 +170,21 @@ const webpackConfigs = webpackItemsMap
     if (webpackTargets.length === 0) {
       return true;
     }
-    return webpackTargets.indexOf(mapItem.target.toLowerCase()) !== -1;
+    return (
+      webpackTargets.indexOf(mapItem.target.toLowerCase()) !== -1 ||
+      webpackTargets.indexOf((mapItem.name || '').toLowerCase()) !== -1
+    );
   })
   .map(mapItem => {
     const filename = mapItem.target || defaultItemMap.target;
     const name = path.parse(filename).name;
     const entry: string[] = [];
-    if (mapItem.includePolyfills) {
+    if (mapItem.includePolyfills === true) {
       entry.push(require.resolve('./polyfills'));
     }
     entry.push(mapItem.entry || defaultItemMap.entry);
     return {
+      name: mapItem.name,
       ...webpackConfigDefaults,
       ...(mapItem.webpackConfig || {}),
       entry: entry.map(compileEnvHashedString),

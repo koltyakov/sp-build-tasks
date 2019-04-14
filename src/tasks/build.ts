@@ -4,6 +4,7 @@ import * as mkdirp from 'mkdirp';
 import * as webpack from 'webpack';
 import { Gulp } from 'gulp';
 import * as Listr from 'listr';
+import * as minimist from 'minimist';
 
 import { getConfigs } from './config';
 import Build from '../utils/build';
@@ -92,21 +93,54 @@ export class BuildTasks {
     return;
   }
 
-  public buildWebpackTask = async (): Promise<void> => {
+  public buildWebpackTask = async (parallelism = 1): Promise<void> => {
+    const args = minimist(process.argv.slice(3));
     let webpackConfigPath: string = path.join(process.cwd(), 'webpack.config.js');
     if (!fs.existsSync(webpackConfigPath)) {
       webpackConfigPath = path.join(__dirname, '../webpack/config.js');
     }
     const webpackConfig = require(webpackConfigPath);
-    await new Promise((resolve, reject) => {
-      webpack(webpackConfig, (err, stats) => {
-        if (err) {
-          reject(err.message);
+    const webpackConfigs = Array.isArray(webpackConfig) ? webpackConfig : [ webpackConfig ];
+
+    // if (args['webpack-parallelism']) {
+    //   parallelism = parseInt(args['webpack-parallelism'], 10) || 1;
+    // }
+
+    console.log('');
+    let queueIndex = 0;
+    let confQueue: any[] = [];
+    for (const conf of webpackConfigs) {
+      confQueue = confQueue.concat(conf);
+      queueIndex += 1;
+      if (confQueue.length === parallelism || queueIndex === webpackConfigs.length) {
+        const bundlingItems = confQueue.map(c => {
+          const entries = Array.isArray(c.entry) ? c.entry : [ c.entry ];
+          if (c.name) {
+            return `${c.name} (${entries.join(', ')})`;
+          }
+          return `${entries.join(', ')}`;
+        });
+        if (bundlingItems.length === 1) {
+          console.log(`Bundling: ${bundlingItems[0]}`);
+        } else {
+          console.log(`Bundling: \n${bundlingItems.map(b => `  - ${b}`).join('\n')}`);
         }
-        console.log(stats.toString({ colors: true }));
-        resolve();
-      });
-    });
+        await new Promise((resolve, reject) => {
+          webpack(confQueue, (err, stats) => {
+            if (err) {
+              reject(err.message);
+            }
+            if (args['webpack-stats']) {
+              console.log(stats.toString({ colors: true }));
+            } else {
+              console.log(stats.toString('errors-only'));
+            }
+            resolve();
+          });
+        });
+        confQueue = [];
+      }
+    }
 
     return;
   }
