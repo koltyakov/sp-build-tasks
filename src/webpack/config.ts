@@ -165,7 +165,11 @@ const webpackConfigDefaults: IWebpackConfig = process.env.NODE_ENV === 'producti
 const webpackItemsMap: IWebpackMapItem[] = appConf.webpackItemsMap || [defaultItemMap];
 
 const webpackConfigs = webpackItemsMap
-  .filter(mapItem => mapItem.disable !== true)
+  .filter(mapItem => {
+    return webpackTargets.length !== 0
+      ? true
+      : mapItem.disable !== true; // do not filter disabled in strict mode
+  })
   .filter(mapItem => {
     if (webpackTargets.length === 0) {
       return true;
