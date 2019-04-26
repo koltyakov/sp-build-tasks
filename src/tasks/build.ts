@@ -260,7 +260,9 @@ export class BuildTasks {
       return;
     }
 
-    const files: IFile[] = this.mapHbsTemplates(walkFolders(source), './', target, 'html');
+    // const files: IFile[] = this.mapHbsTemplates(walkFolders(source), './', target, 'html');
+    const webpartsFiles = walkFolders(source).map(f => f.replace(`${source}/`, ''));
+    const files: IFile[] = this.mapHbsTemplates(webpartsFiles, source, target, 'html');
 
     if (files.length > 0) {
       await build.compileHbsTemplates({ files, data });
@@ -271,14 +273,13 @@ export class BuildTasks {
 
   private mapHbsTemplates(files: string[], source: string, target: string, ext: string): IFile[] {
     return files
-      .map(file => path.join(source, file))
-      .filter(fileName => !fs.lstatSync(fileName).isDirectory())
-      .filter(fileName => path.parse(fileName).ext.toLowerCase() === '.hbs')
-      .map(filePath => {
-        const fileParse = path.parse(filePath);
+      .map(file => [ path.join(source, file), file])
+      .filter(([ filePath ]) => !fs.lstatSync(filePath).isDirectory())
+      .filter(([ filePath ]) => path.parse(filePath).ext.toLowerCase() === '.hbs')
+      .map(([ filePath, file ]) => {
         return {
           source: filePath,
-          target: path.join(target, `${fileParse.name}.${ext}`)
+          target: path.join(target, `${file.replace('.hbs', '')}.${ext}`)
         };
       });
   }
