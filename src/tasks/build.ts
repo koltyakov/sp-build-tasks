@@ -42,7 +42,9 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       tasks = tasks.length > 0 ? tasks : tasksInfo;
       await new Listr(tasks).run();
       if (args.indexOf('--webpack') !== -1 || tasksInfo.length === tasks.length) {
-        await buildTasks.buildWebpackTask();
+        if (args.indexOf('--no-webpack') === -1) {
+          await buildTasks.buildWebpackTask();
+        }
       }
     })()
       .then(_ => cb())
