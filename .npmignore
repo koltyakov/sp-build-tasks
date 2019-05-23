@@ -2,8 +2,10 @@
 config/
 src/
 docs/
-.vscode/
 .github/
-tsconfig.json
+.vscode/
+tmp/
+test/
 tslint.json
-temp
+tsconfig.json
+azure-pipelines.yml

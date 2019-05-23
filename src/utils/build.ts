@@ -127,7 +127,7 @@ export default class Build {
   public buildCustomCssFromScss(params: IBuildCustomCssFromScss = {}): Promise<sass.Result> {
     return new Promise((resolve, reject) => {
       const { file, outFile, sourceMap, sourceMapContents } = params;
-      const data: any = params.data || file ? fs.readFileSync(file as string, this.settings.fileEncoding).toString() : null;
+      const data: any = params.data || file ? fs.readFileSync(file as string, { encoding: this.settings.fileEncoding }).toString() : null;
       const outputStyle: any = params.outputStyle || 'compressed';
       // Files lock issue workaraund
       setTimeout(() => {
@@ -149,7 +149,7 @@ export default class Build {
       if (filePath === 'bootstrap3') {
         content = await this.buildBootstrap3();
       } else {
-        content = fs.readFileSync(filePath, this.settings.fileEncoding).toString();
+        content = fs.readFileSync(filePath, { encoding: this.settings.fileEncoding }).toString();
       }
       concatedContent.push(content);
     }
@@ -166,7 +166,7 @@ export default class Build {
     const { distPath } = params;
     const content = typeof (params as any).content !== 'undefined'
       ? (params as any).content
-      : fs.readFileSync((params as any).srcPath, this.settings.fileEncoding);
+      : fs.readFileSync((params as any).srcPath, { encoding: this.settings.fileEncoding }).toString();
     const minifiedContent = uglifyJS.minify(content, {
       compress: true,
       sourceMap: true,
@@ -189,7 +189,7 @@ export default class Build {
     let minifiedContent: CleanCSS.Output = new CleanCSS({}).minify('');
     const content = typeof (params as any).content !== 'undefined'
       ? (params as any).content
-      : fs.readFileSync((params as any).srcPath, this.settings.fileEncoding);
+      : fs.readFileSync((params as any).srcPath, { encoding: this.settings.fileEncoding }).toString();
     // level: { 1: { specialComments: 0 } }
     minifiedContent = new CleanCSS({}).minify(content);
     if (distPath) {

@@ -1,0 +1,118 @@
+<%@ Page language="C#" MasterPageFile="~sitecollection/_catalogs/masterpage/Frankfurt/masterpage/frankfurt.master" Inherits="Microsoft.SharePoint.Publishing.PublishingLayoutPage,Microsoft.SharePoint.Publishing,Version=15.0.0.0,Culture=neutral,PublicKeyToken=71e9bce111e9429c" %>
+<%@ Register Tagprefix="SharePointWebControls" Namespace="Microsoft.SharePoint.WebControls" Assembly="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
+<%@ Register Tagprefix="WebPartPages" Namespace="Microsoft.SharePoint.WebPartPages" Assembly="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
+<%@ Register Tagprefix="PublishingWebControls" Namespace="Microsoft.SharePoint.Publishing.WebControls" Assembly="Microsoft.SharePoint.Publishing, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
+<%@ Register Tagprefix="PublishingNavigation" Namespace="Microsoft.SharePoint.Publishing.Navigation" Assembly="Microsoft.SharePoint.Publishing, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
+
+<asp:Content ContentPlaceholderID="PlaceHolderAdditionalPageHead" runat="server">
+  <SharePointWebControls:CssRegistration name="<% $SPUrl:~sitecollection/Style Library/~language/Themable/Core Styles/pagelayouts15.css %>" runat="server"/>
+  <PublishingWebControls:EditModePanel runat="server">
+    <!-- Styles for edit mode only-->
+    <SharePointWebControls:CssRegistration name="<% $SPUrl:~sitecollection/Style Library/~language/Themable/Core Styles/editmode15.css %>" After="<% $SPUrl:~sitecollection/Style Library/~language/Themable/Core Styles/pagelayouts15.css %>" runat="server" />
+  </PublishingWebControls:EditModePanel>
+  <SharePointWebControls:FieldValue id="PageStylesField" FieldName="HeaderStyleDefinitions" runat="server"/>
+  <script type="text/javascript" src="{{ publishPath }}/scripts/welcome.min.js?v={{ assetsVersion }}"></script>
+</asp:Content>
+<asp:Content ContentPlaceholderID="PlaceHolderPageTitle" runat="server">
+  <SharePointWebControls:FieldValue id="PageTitle" FieldName="Title" runat="server"/>
+</asp:Content>
+<asp:Content ContentPlaceholderID="PlaceHolderPageTitleInTitleArea" runat="server">
+  <SharePointWebControls:FieldValue FieldName="Title" runat="server"/>
+</asp:Content>
+<asp:Content ContentPlaceHolderId="PlaceHolderTitleBreadcrumb" runat="server">
+  <SharePointWebControls:ListSiteMapPath runat="server" SiteMapProviders="CurrentNavigationSwitchableProvider" RenderCurrentNodeAsLink="false" PathSeparator="" CssClass="s4-breadcrumb" NodeStyle-CssClass="s4-breadcrumbNode" CurrentNodeStyle-CssClass="s4-breadcrumbCurrentNode" RootNodeStyle-CssClass="s4-breadcrumbRootNode" NodeImageOffsetX=0 NodeImageOffsetY=289 NodeImageWidth=16 NodeImageHeight=16 NodeImageUrl="/_layouts/15/images/fgimg.png?rev=40" HideInteriorRootNodes="true" SkipLinkText="" />
+</asp:Content>
+<asp:Content ContentPlaceholderID="PlaceHolderMain" runat="server">
+  <style>
+    #sideNavBox { display: none; }
+    #contentBox { margin-left: 0px; width: 100%; }
+    #DeltaPlaceHolderMain { position: inherit !important; }
+  </style>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+  <div class="web-parts-grid no-wp-bg no-wp-padding">
+    <div class="container top-header-part">
+      <div class="table no-wp-spacing">
+        <div class="table-cell clock-placeholder">
+          <WebPartPages:WebPartZone runat="server" Title="Clock" ID="ClockWidget"/>
+        </div>
+        <div class="table-cell user-placeholder">
+          <WebPartPages:WebPartZone runat="server" Title="User" ID="UserHeader"/>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table no-wp-spacing">
+          <div class="table-cell">
+            <WebPartPages:WebPartZone runat="server" Title="Banner" ID="HeaderBanner"/>
+          </div>
+          <div class="table-cell wid-30 mg-lf-20 no-border">
+            <WebPartPages:WebPartZone runat="server" Title="Баннер" ID="HeaderSecondary"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-10">
+        <div class="row">
+          <div class="col-md-12 mg-bm-20">
+            <h2 class="wps-header">Main <span class="decor">news</span></h2>
+          </div>
+          <div class="col-md-12">
+            <div class="table no-wp-spacing">
+              <div class="table-cell">
+                <WebPartPages:WebPartZone runat="server" Title="News" ID="NewsPart" />
+              </div>
+              <div class="table-cell wid-20">
+                <WebPartPages:WebPartZone runat="server" Title="Today" ID="TodayPart" />
+                <WebPartPages:WebPartZone runat="server" Title="Word of the day" ID="WordOfADayPart" />
+                <WebPartPages:WebPartZone runat="server" Title="Horoscope" ID="HoroscopePart" />
+              </div>
+              <div class="table-cell wid-20">
+                <WebPartPages:WebPartZone runat="server" Title="Requests" ID="RequestsPart" />
+                <WebPartPages:WebPartZone runat="server" Title="Leave calendar" ID="LeaveCalendarPart" />
+                <WebPartPages:WebPartZone runat="server" Title="Kudu" ID="GreatingsPart" />
+              </div>
+              <div class="table-cell wid-20">
+                <WebPartPages:WebPartZone runat="server" Title="Birthdays" ID="BirthdaysPart" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 mg-bm-20">
+            <h2 class="wps-header">Live of the <span class="decor">company</span></h2>
+          </div>
+          <div class="col-md-12">
+            <div class="bottom-tiles">
+              <div class="table no-wp-spacing">
+                <div class="table-cell">
+                  <WebPartPages:WebPartZone runat="server" Title="Posts" ID="UsersPostsPart" />
+                </div>
+                <div class="table-cell wid-20">
+                  <WebPartPages:WebPartZone runat="server" Title="Videoblog" ID="VideosPart" />
+                </div>
+                <div class="table-cell wid-20">
+                  <WebPartPages:WebPartZone runat="server" Title="Spotlight" ID="PhotoOfADayPart" />
+                </div>
+                <div class="table-cell wid-20">
+                  <WebPartPages:WebPartZone runat="server" Title="Quizz" ID="ContestsPart" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <WebPartPages:WebPartZone runat="server" Title="Menu" ID="RightMenu" />
+      </div>
+    </div>
+  </div>
+  <SharePointWebControls:ScriptBlock runat="server">
+    if (typeof MSOLayout_MakeInvisibleIfEmpty === 'function') {
+      MSOLayout_MakeInvisibleIfEmpty();
+    }
+    SP.SOD.executeFunc('sp.js', 'SP.ClientContext', function () {});
+  </SharePointWebControls:ScriptBlock>
+</asp:Content>

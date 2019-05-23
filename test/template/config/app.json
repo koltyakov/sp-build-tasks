@@ -1,0 +1,50 @@
+{
+  "$schema": "../node_modules/sp-build-tasks/schema/v1/sppp.json",
+  "spFolder": "_catalogs/masterpage/spf",
+  "distFolder": "./dist",
+  "masterpageCodeName": "a_masterpage",
+  "platformVersion": "2016",
+  "copyAssetsMap": [
+    {
+      "name": "Static assets",
+      "src": [ "./src/images", "./src/fonts" ],
+      "dist": "./dist"
+    },
+    {
+      "name": "PnPjs",
+      "src": [
+        "./node_modules/@pnp/pnpjs/dist/pnpjs.es5.umd.bundle.min.js",
+        "./node_modules/@pnp/pnpjs/dist/pnpjs.es5.umd.bundle.min.js.map"
+      ],
+      "dist": "./dist/libs"
+    }
+  ],
+  "webpackItemsMap": [
+    {
+      "name": "Polyfills",
+      "entry": "./src/scripts/utils/polyfills.ts",
+      "target": "polyfills.js",
+      "includePolyfills": false
+    },
+    {
+      "name": "Application",
+      "entry": "./src/scripts/index.ts",
+      "target": "app.js",
+      "includePolyfills": false
+    }
+  ],
+  "bundleJSLibsFiles": [
+    "./src/libs/a_lib_a.js",
+    "./src/libs/a_lib_a.js"
+  ],
+  "bundleCSSLibsFiles": [
+    "./src/libs/a_lib_a.css",
+    "./src/libs/a_lib_a.css"
+  ],
+  "customStyles": [
+    {
+      "src": "styles/index.scss",
+      "dist": "styles/app.css"
+    }
+  ]
+}
