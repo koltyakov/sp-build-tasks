@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as Handlebars from 'handlebars';
 import * as path from 'path';
 import * as mkdirp from 'mkdirp';
-import * as uglifyJS from 'uglify-js';
+import * as UglifyJS from 'uglify-js';
 import * as CleanCSS from 'clean-css';
 import * as sass from 'node-sass';
 
@@ -155,31 +155,28 @@ export default class Build {
     }
     if (distPath) {
       mkdirp.sync(path.dirname(distPath));
-      fs.writeFileSync(distPath, concatedContent.join(this.EOL), {
-        encoding: this.settings.fileEncoding
-      });
+      fs.writeFileSync(distPath, concatedContent.join(this.EOL), { encoding: this.settings.fileEncoding });
     }
     return concatedContent.join(this.EOL);
   }
 
-  public minifyJsContent(params: IMinifyContent): uglifyJS.MinifyOutput {
+  public minifyJsContent(params: IMinifyContent): UglifyJS.MinifyOutput {
     const { distPath } = params;
     const content = typeof (params as any).content !== 'undefined'
       ? (params as any).content
       : fs.readFileSync((params as any).srcPath, { encoding: this.settings.fileEncoding }).toString();
-    const minifiedContent = uglifyJS.minify(content, {
+    const options: UglifyJS.CompressOptions & any = {
       compress: true,
       sourceMap: true,
       output: {
         comments: false
       },
       fromString: true
-    } as uglifyJS.CompressOptions & any);
-    if (distPath) {
+    };
+    const minifiedContent = UglifyJS.minify(content, options);
+    if (distPath && typeof minifiedContent.error === 'undefined') {
       mkdirp.sync(path.dirname(distPath));
-      fs.writeFileSync(distPath, minifiedContent.code, {
-        encoding: this.settings.fileEncoding
-      });
+      fs.writeFileSync(distPath, minifiedContent.code, { encoding: this.settings.fileEncoding });
     }
     return minifiedContent;
   }
@@ -194,9 +191,7 @@ export default class Build {
     minifiedContent = new CleanCSS({}).minify(content);
     if (distPath) {
       mkdirp.sync(path.dirname(distPath));
-      fs.writeFileSync(distPath, minifiedContent, {
-        encoding: this.settings.fileEncoding
-      });
+      fs.writeFileSync(distPath, minifiedContent.styles, { encoding: this.settings.fileEncoding });
     }
     return minifiedContent;
   }

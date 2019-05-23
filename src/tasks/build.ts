@@ -91,7 +91,12 @@ export class BuildTasks {
       ? configs.appConfig.bundleJSLibsFiles : []).map(compileEnvHashedString);
     const distPath = configs.appConfig.distFolder + '/scripts/vendor.js';
     const content = await build.concatFilesContent({ filesArr });
-    content && build.minifyJsContent({ content, distPath });
+    if (content) {
+      const res = build.minifyJsContent({ content, distPath });
+      if (res.error) {
+        return Promise.reject(res.error.message);
+      }
+    }
     return;
   }
 

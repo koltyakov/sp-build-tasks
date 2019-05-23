@@ -4,10 +4,12 @@ import * as path from 'path';
 import * as fs from 'fs';
 import RestProxy, { IProxySettings } from 'sp-rest-proxy/dist/RestProxy';
 import * as minimist from 'minimist';
+import * as dotenv from 'dotenv';
 
 import { TsConfigPathsPlugin } from 'awesome-typescript-loader';
 
 declare var global: any;
+dotenv.config();
 
 import {
   IWebpackMapItem,
@@ -28,10 +30,10 @@ let appConf: IAppConfig = (configs || { appConfig: null }).appConfig;
 let privateConf: IPrivateConfig = (configs || { privateConf: null }).privateConf;
 
 if (!appConf) {
-  appConf = require(path.join(process.cwd(), 'config/app.json'));
+  appConf = require(path.join(process.cwd(), process.env.APP_JSON || './config/app.json'));
 }
 if (!privateConf) {
-  privateConf = require(path.join(process.cwd(), 'config/private.json'));
+  privateConf = require(path.join(process.cwd(), process.env.PRIVATE_JSON || 'config/private.json'));
 }
 
 const publishPath: string = '/' + `${privateConf.siteUrl}/${appConf.spFolder}`

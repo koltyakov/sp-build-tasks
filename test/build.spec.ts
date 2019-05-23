@@ -7,9 +7,11 @@ import { runScript, wrapPromiseTest } from './index';
 const projFolder = path.join(__dirname, `./template`);
 const cdPath = path.relative(process.cwd(), projFolder).replace(/\\/g, '/');
 
+process.env.SPAUTH_ENV = 'production';
+
 describe(`SharePoint Build Tasks tests`, () => {
 
-  before('clean folder', function(done: Mocha.Done): void {
+  before('initiate project', function(done: Mocha.Done): void {
     this.timeout(30 * 1000);
     wrapPromiseTest(runScript(`cd ${cdPath} && rimraf ./dist ./tmp ./cache ./node_modules`), done);
   });
@@ -22,50 +24,50 @@ describe(`SharePoint Build Tasks tests`, () => {
 
   it(`should build: copy assets`, function(done: Mocha.Done): void {
     this.timeout(60 * 1000);
-    wrapPromiseTest(runScript(`cd ${cdPath} && npm run build --copy-assets`), done);
+    wrapPromiseTest(runScript(`cd ${cdPath} && gulp build --copy-assets`), done);
     // ToDo: add assert criterias
   });
 
   it(`should build: webparts`, function(done: Mocha.Done): void {
     this.timeout(60 * 1000);
-    wrapPromiseTest(runScript(`cd ${cdPath} && npm run build --webparts`), done);
+    wrapPromiseTest(runScript(`cd ${cdPath} && gulp build --webparts`), done);
     // ToDo: add assert criterias
   });
 
   it(`should build: masterpage`, function(done: Mocha.Done): void {
     this.timeout(60 * 1000);
-    wrapPromiseTest(runScript(`cd ${cdPath} && npm run build --masterpage`), done);
+    wrapPromiseTest(runScript(`cd ${cdPath} && gulp build --masterpage`), done);
     // ToDo: add assert criterias
   });
 
   it(`should build: layouts`, function(done: Mocha.Done): void {
     this.timeout(60 * 1000);
-    wrapPromiseTest(runScript(`cd ${cdPath} && npm run build --layouts`), done);
+    wrapPromiseTest(runScript(`cd ${cdPath} && gulp build --layouts`), done);
     // ToDo: add assert criterias
   });
 
   it(`should build: css custom`, function(done: Mocha.Done): void {
     this.timeout(60 * 1000);
-    wrapPromiseTest(runScript(`cd ${cdPath} && npm run build --css-custom`), done);
+    wrapPromiseTest(runScript(`cd ${cdPath} && gulp build --css-custom`), done);
     // ToDo: add assert criterias
   });
 
   it(`should build: css libs`, function(done: Mocha.Done): void {
     this.timeout(60 * 1000);
-    wrapPromiseTest(runScript(`cd ${cdPath} && npm run build --css-libs`), done);
+    wrapPromiseTest(runScript(`cd ${cdPath} && gulp build --css-libs`), done);
     // ToDo: add assert criterias
   });
 
   it(`should build: js libs`, function(done: Mocha.Done): void {
     this.timeout(60 * 1000);
-    wrapPromiseTest(runScript(`cd ${cdPath} && npm run build --js-libs`), done);
+    wrapPromiseTest(runScript(`cd ${cdPath} && gulp build --js-libs`), done);
     // ToDo: add assert criterias
   });
 
   it(`should build: webpack`, function(done: Mocha.Done): void {
     // slow task
     this.timeout(10 * 60 * 1000);
-    wrapPromiseTest(runScript(`cd ${cdPath} && npm run build --webpack`), done);
+    wrapPromiseTest(runScript(`cd ${cdPath} && gulp build --webpack`), done);
     // ToDo: add assert criterias
   });
 
@@ -77,7 +79,7 @@ describe(`SharePoint Build Tasks tests`, () => {
 
   it(`should build: everything but not webpack`, function(done: Mocha.Done): void {
     this.timeout(60 * 1000);
-    wrapPromiseTest(runScript(`cd ${cdPath} && npm run build --no-webpack`), done);
+    wrapPromiseTest(runScript(`cd ${cdPath} && gulp build --no-webpack`), done);
     // ToDo: add assert criterias
   });
 
