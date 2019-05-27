@@ -1,5 +1,6 @@
 import * as webpack from 'webpack';
-import * as UglifyJSPlugin from 'uglifyjs-webpack-plugin';
+// import * as UglifyJSPlugin from 'uglifyjs-webpack-plugin';
+import * as TerserPlugin from 'terser-webpack-plugin';
 import * as path from 'path';
 import * as fs from 'fs';
 import RestProxy, { IProxySettings } from 'sp-rest-proxy/dist/RestProxy';
@@ -134,18 +135,22 @@ const webpackConfigProdDefaults: IWebpackConfig = {
   module: { rules },
   optimization: {
     minimizer: [
-      new UglifyJSPlugin({
+      // new UglifyJSPlugin({
+      //   cache: true,
+      //   parallel: true,
+      //   uglifyOptions: {
+      //     ecma: 5,
+      //     compress: true,
+      //     mangle: true,
+      //     output: {
+      //       comments: false
+      //     }
+      //   },
+      //   sourceMap: true
+      // })
+      new TerserPlugin({
         cache: true,
-        parallel: true,
-        uglifyOptions: {
-          ecma: 5,
-          compress: true,
-          mangle: true,
-          output: {
-            comments: false
-          }
-        },
-        sourceMap: true
+        parallel: true
       })
     ]
   },
