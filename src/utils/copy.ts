@@ -21,6 +21,11 @@ export default class Copy {
     if (skipFolder) {
       source = source.replace('/*', '');
     }
+    if (source.split('|').length > 1) { // copy with file rename `./path-to-file/old_name.js|new_name.js`
+      const parts = source.split('|');
+      source = parts[0];
+      target = path.join(target, parts[1]);
+    }
     if (fs.existsSync(source)) {
       if (fs.lstatSync(source).isDirectory()) {
         this.copyFolderRecursiveSync(source, target, skipFolder);

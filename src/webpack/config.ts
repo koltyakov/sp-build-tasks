@@ -7,7 +7,8 @@ import RestProxy, { IProxySettings } from 'sp-rest-proxy/dist/RestProxy';
 import * as minimist from 'minimist';
 import * as dotenv from 'dotenv';
 
-import { TsConfigPathsPlugin } from 'awesome-typescript-loader';
+// import { TsConfigPathsPlugin } from 'awesome-typescript-loader';
+import { TsconfigPathsPlugin as TsConfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 
 declare var global: any;
 dotenv.config();
@@ -58,7 +59,15 @@ const rules: webpack.RuleSetRule[] = [
   {
     test: /\.ts(x?)$/,
     exclude: /(node_modules|dist)/,
-    use: [ 'awesome-typescript-loader' ]
+    // use: [ 'awesome-typescript-loader' ]
+    // { loader: 'awesome-typescript-loader', options: { sourceMap: true, useCache: true, useBabel: true, useTranspileModule: true } }
+    use: [{
+      loader : 'ts-loader',
+      options: {
+        transpileOnly: true,
+        happyPackMode: true
+      }
+    }]
   },
   {
     test: /\.css$/,

@@ -12,7 +12,7 @@ interface IHash {
   [key: string]: IHashedValue;
 }
 
-interface IHashesProps {
+export interface IHashesProps {
   sp: SPRest;
   configs: IGulpConfigs;
 }

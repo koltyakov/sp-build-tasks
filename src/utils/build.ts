@@ -200,9 +200,7 @@ export default class Build {
     const { srcArrayOrPath, dist } = params;
     mkdirp.sync(dist);
     if (Array.isArray(srcArrayOrPath)) {
-      srcArrayOrPath.forEach(src => {
-        this.copy.copyFileOrFolderSync(src, dist);
-      });
+      srcArrayOrPath.forEach(src => this.copy.copyFileOrFolderSync(src, dist));
     } else {
       this.copy.copyFileOrFolderSync(srcArrayOrPath, dist);
     }

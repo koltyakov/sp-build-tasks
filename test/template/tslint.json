@@ -43,7 +43,8 @@
         "@containers",
         "@domain",
         "sp-rest-proxy",
-        "sp-build-tasks"
+        "sp-build-tasks",
+        "@pnp"
       ]
     ],
     "jsx-no-lambda": false,
