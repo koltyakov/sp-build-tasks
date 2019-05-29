@@ -163,15 +163,14 @@ export default class Build {
   public minifyJsContent(params: IMinifyContent): UglifyJS.MinifyOutput {
     const { distPath } = params;
     const content = typeof (params as any).content !== 'undefined'
-      ? (params as any).content
+      ? (params as any).content as string
       : fs.readFileSync((params as any).srcPath, { encoding: this.settings.fileEncoding }).toString();
     const options: UglifyJS.CompressOptions & any = {
       compress: true,
       sourceMap: true,
       output: {
         comments: false
-      },
-      fromString: true
+      }
     };
     const minifiedContent = UglifyJS.minify(content, options);
     if (distPath && typeof minifiedContent.error === 'undefined') {

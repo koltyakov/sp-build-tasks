@@ -94,7 +94,7 @@ export class BuildTasks {
     if (content) {
       const res = build.minifyJsContent({ content, distPath });
       if (res.error) {
-        return Promise.reject(res.error.message);
+        throw new Error(res.error.message);
       }
     }
     return;
