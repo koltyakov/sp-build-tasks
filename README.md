@@ -1,6 +1,7 @@
 # sp-build-tasks
 
 [![NPM](https://nodei.co/npm/sp-build-tasks.png?mini=true&downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/sp-build-tasks/)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkoltyakov%2Fsp-build-tasks.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkoltyakov%2Fsp-build-tasks?ref=badge_shield)
 
 [![npm version](https://badge.fury.io/js/sp-build-tasks.svg)](https://badge.fury.io/js/sp-build-tasks)
 [![Downloads](https://img.shields.io/npm/dm/sp-build-tasks.svg)](https://www.npmjs.com/package/sp-build-tasks)
@@ -253,3 +254,7 @@ gulp custom-actions --uninstall
 ```
 
 Removes custom actions based on project namespace prefix.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkoltyakov%2Fsp-build-tasks.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkoltyakov%2Fsp-build-tasks?ref=badge_large)
