@@ -1,7 +1,7 @@
 {
   "name": "sp-build-tasks",
   "description": "SharePoint front-end projects automation and tasks tool-belt",
-  "version": "3.7.5",
+  "version": "3.7.6",
   "author": "Andrew Koltyakov <andrew.koltyakov@gmail.com>",
   "main": "./dist/index.js",
   "typings": "./dist/index",
@@ -43,7 +43,7 @@
     "gulp": "^4.0.2",
     "gulp-load-plugins": "^1.6.0",
     "gulp-spsave": "^3.1.1",
-    "gulp-watch": "^5.0.1",
+    "gulp-watch": "git+https://github.com/bartw/gulp-watch",
     "handlebars": "^4.1.2",
     "listr": "^0.14.3",
     "minimist": "^1.2.0",
