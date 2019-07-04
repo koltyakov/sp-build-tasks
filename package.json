@@ -10,7 +10,9 @@
     "tslint": "tslint -p .",
     "tsc": "tsc -p .",
     "clean": "rimraf ./dist ./tmp",
-    "test": "mocha --opts ./test/mocha.opts || ECHO."
+    "test": "mocha --opts ./test/mocha.opts || ECHO.",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "bugs": {
     "url": "https://github.com/koltyakov/sp-build-tasks/issues"
@@ -72,7 +74,8 @@
     "webpack": "^4.35.0",
     "webpack-cli": "^3.3.4",
     "webpack-dev-server": "^3.7.2",
-    "whatwg-fetch": "^3.0.0"
+    "whatwg-fetch": "^3.0.0",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
@@ -95,5 +98,6 @@
     "rimraf": "^2.6.3",
     "ts-node": "^8.3.0",
     "tslint-config-standard": "^8.0.1"
-  }
+  },
+  "snyk": true
 }
