@@ -1,7 +1,7 @@
 {
   "name": "sp-build-tasks",
   "description": "SharePoint front-end projects automation and tasks tool-belt",
-  "version": "3.7.9",
+  "version": "3.8.0",
   "author": "Andrew Koltyakov <andrew.koltyakov@gmail.com>",
   "main": "./dist/index.js",
   "typings": "./dist/index",
@@ -42,6 +42,7 @@
     "es6-map": "^0.1.5",
     "es6-set": "^0.1.5",
     "es6-weak-map": "^2.0.3",
+    "fork-ts-checker-webpack-plugin": "^1.5.0",
     "gulp": "^4.0.2",
     "gulp-load-plugins": "^2.0.1",
     "gulp-spsave": "^3.1.1",
@@ -56,6 +57,7 @@
     "node-sp-auth-config": "^2.6.7",
     "promise": "^8.0.3",
     "sass-loader": "^7.3.1",
+    "snyk": "^1.217.3",
     "source-map-explorer": "^2.0.1",
     "sp-live-reload": "^3.0.9",
     "sp-pnp-node": "^2.1.6",
@@ -74,13 +76,13 @@
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.7",
     "webpack-dev-server": "^3.8.0",
-    "whatwg-fetch": "^3.0.0",
-    "snyk": "^1.217.3"
+    "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.0",
     "@types/clean-css": "^4.2.1",
     "@types/core-js": "^2.5.2",
+    "@types/dotenv": "^6.1.1",
     "@types/es6-weak-map": "^1.2.0",
     "@types/gulp": "4.0.6",
     "@types/gulp-load-plugins": "0.0.31",
@@ -90,6 +92,7 @@
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.7.2",
     "@types/node-sass": "^4.11.0",
+    "@types/terser-webpack-plugin": "^1.2.1",
     "@types/uglify-js": "^3.0.4",
     "@types/webpack": "^4.39.0",
     "chai": "^4.2.0",
