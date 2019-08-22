@@ -76,7 +76,7 @@ export const mapProjectData = (configs: IGulpConfigs) => {
 };
 
 export const getBuildInstance = (settings: IGulpConfigs): Build => {
-  global.build = global.build || new Build({ dist: settings.appConfig.distFolder });
+  global.build = global.build || new Build({ dist: settings.appConfig.distFolder, fileEncoding: 'utf-8' });
   return global.build;
 };
 

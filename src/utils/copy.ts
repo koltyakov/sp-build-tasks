@@ -1,13 +1,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { IBuildSettings } from '../interfaces';
+import { IBuildInitSettings, IBuildSettings } from '../interfaces';
 
 export default class Copy {
 
   private settings: IBuildSettings;
 
-  constructor (settings: IBuildSettings = {}) {
+  constructor (settings: IBuildInitSettings = {}) {
     this.settings = {
       ...settings,
       src: settings.src || './src',

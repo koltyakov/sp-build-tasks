@@ -101,10 +101,16 @@ export interface IKeyVal {
   [key: string]: any;
 }
 
-export interface IBuildSettings {
+export interface IBuildInitSettings {
   src?: string;
   dist?: string;
   fileEncoding?: string;
+}
+
+export interface IBuildSettings {
+  src: string;
+  dist: string;
+  fileEncoding: string;
 }
 
 export interface IFile {
