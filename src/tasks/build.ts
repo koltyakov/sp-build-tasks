@@ -185,12 +185,13 @@ export class BuildTasks {
       assetsArr = configs.appConfig.customStyles;
     }
     for (const assets of assetsArr) {
-      const srcPath = path.join(process.cwd(), 'src', (assets as any).src);
+      const srcPathString = compileEnvHashedString((assets as any).src);
+      const srcPath = path.join(process.cwd(), 'src', srcPathString);
       if (fs.existsSync(srcPath)) {
         const distPath = path.join(process.cwd(), configs.appConfig.distFolder, (configs.appConfig.modulePath || ''), assets.dist);
         const sourceMapPath = distPath + '.map';
         const sourceMapFile = sourceMapPath.split('\\').pop();
-        const result = await build.buildCustomCssFromScss({ file: compileEnvHashedString(srcPath), sourceMap: sourceMapFile, sourceMapContents: true });
+        const result = await build.buildCustomCssFromScss({ file: srcPath, sourceMap: sourceMapFile, sourceMapContents: true });
         mkdirp.sync(path.dirname(distPath));
         fs.writeFileSync(
           distPath,
