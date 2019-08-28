@@ -9,7 +9,7 @@ import * as sass from 'node-sass';
 import Copy from './copy';
 
 import {
-  IBuildSettings,
+  IBuildInitSettings, IBuildSettings,
   ICompileHbsTemplates, ICompileHbsTemplate,
   ICopyAssets, IMinifyContent,
   IConcatFilesContent, IBuildCustomCssFromScss
@@ -21,7 +21,7 @@ export default class Build {
   private copy: Copy;
   private EOL: string = '\n';
 
-  constructor(settings: IBuildSettings = {}) {
+  constructor(settings: IBuildInitSettings = {}) {
     this.settings = {
       ...settings,
       src: settings.src || './src',
@@ -127,7 +127,7 @@ export default class Build {
   public buildCustomCssFromScss(params: IBuildCustomCssFromScss = {}): Promise<sass.Result> {
     return new Promise((resolve, reject) => {
       const { file, outFile, sourceMap, sourceMapContents } = params;
-      const data: any = params.data || file ? fs.readFileSync(file as string, { encoding: this.settings.fileEncoding }).toString() : null;
+      const data: any = params.data || file ? fs.readFileSync(file as string, this.settings.fileEncoding).toString() : null;
       const outputStyle: any = params.outputStyle || 'compressed';
       // Files lock issue workaraund
       setTimeout(() => {
@@ -155,7 +155,7 @@ export default class Build {
     }
     if (distPath) {
       mkdirp.sync(path.dirname(distPath));
-      fs.writeFileSync(distPath, concatedContent.join(this.EOL), { encoding: this.settings.fileEncoding });
+      fs.writeFileSync(distPath, concatedContent.join(this.EOL), this.settings.fileEncoding);
     }
     return concatedContent.join(this.EOL);
   }

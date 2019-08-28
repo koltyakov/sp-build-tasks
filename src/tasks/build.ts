@@ -20,13 +20,13 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   const buildTasks = new BuildTasks(settings);
 
-  gulp.task('build', cb => {
+  gulp.task('build', (cb) => {
     const mode = detectProdMode();
     const args = process.argv.slice(3);
     (async () => {
       processStepMessage(`Build (mode: ${mode})`);
       if (!fs.existsSync(path.resolve(settings.privateConf || './config/private.json'))) {
-        await getConfigs(settings);
+        await getConfigs(settings, false);
       }
       const tasksInfo = [
         { key: '--copy-assets', title: 'Copy Assets', task: buildTasks.buildCopyAssetsTask },
@@ -47,7 +47,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         }
       }
     })()
-      .then(_ => cb())
+      .then(() => cb())
       .catch(cb);
   });
 
@@ -76,7 +76,7 @@ export const mapProjectData = (configs: IGulpConfigs) => {
 };
 
 export const getBuildInstance = (settings: IGulpConfigs): Build => {
-  global.build = global.build || new Build({ dist: settings.appConfig.distFolder });
+  global.build = global.build || new Build({ dist: settings.appConfig.distFolder, fileEncoding: 'utf-8' });
   return global.build;
 };
 

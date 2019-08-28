@@ -1,6 +1,7 @@
 import * as webpack from 'webpack';
 // import * as UglifyJSPlugin from 'uglifyjs-webpack-plugin';
 import * as TerserPlugin from 'terser-webpack-plugin';
+import * as ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import * as path from 'path';
 import * as fs from 'fs';
 import RestProxy, { IProxySettings } from 'sp-rest-proxy/dist/RestProxy';
@@ -65,7 +66,8 @@ const rules: webpack.RuleSetRule[] = [
       loader : 'ts-loader',
       options: {
         transpileOnly: true,
-        happyPackMode: true
+        happyPackMode: true,
+        experimentalWatchApi: true
       }
     }]
   },
@@ -133,7 +135,10 @@ const webpackConfigDevDefaults: IWebpackConfig = {
   resolve: {
     extensions: [ '.ts', '.tsx', '.js', '.jsx' ],
     plugins: [ new TsConfigPathsPlugin() ]
-  }
+  },
+  plugins: [
+    new ForkTsCheckerWebpackPlugin({ checkSyntacticErrors: true })
+  ]
 };
 
 const webpackConfigProdDefaults: IWebpackConfig = {
@@ -144,19 +149,6 @@ const webpackConfigProdDefaults: IWebpackConfig = {
   module: { rules },
   optimization: {
     minimizer: [
-      // new UglifyJSPlugin({
-      //   cache: true,
-      //   parallel: true,
-      //   uglifyOptions: {
-      //     ecma: 5,
-      //     compress: true,
-      //     mangle: true,
-      //     output: {
-      //       comments: false
-      //     }
-      //   },
-      //   sourceMap: true
-      // })
       new TerserPlugin({
         cache: true,
         parallel: true
@@ -168,6 +160,7 @@ const webpackConfigProdDefaults: IWebpackConfig = {
     plugins: [ new TsConfigPathsPlugin() ]
   },
   plugins: [
+    new ForkTsCheckerWebpackPlugin({ checkSyntacticErrors: true }),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production')
