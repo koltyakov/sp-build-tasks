@@ -14,7 +14,7 @@ describe(`SharePoint Build Tasks tests`, () => {
 
   before('initiate project', function(done: Mocha.Done): void {
     this.timeout(30 * 1000);
-    wrapPromiseTest(runScript(`cd ${cdPath} && rimraf ./dist ./tmp ./cache ./node_modules && rm package-lock.json`), done);
+    wrapPromiseTest(runScript(`cd ${cdPath} && rimraf ./dist ./tmp ./cache ./node_modules package-lock.json`), done);
   });
 
   it(`should restore project dependencies`, function(done: Mocha.Done): void {
