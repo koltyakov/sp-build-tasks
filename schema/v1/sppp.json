@@ -184,6 +184,41 @@
           "description": "Webpack `devtool` option for development mode\n\nE.g.: `eval`\n\nSee more: https://webpack.js.org/configuration/devtool/",
           "type": "string",
           "default": "cheap-eval-source-map"
+        },
+        "filesMetaData": {
+          "description": "gulp-spsave filesMetaData property, see more https://github.com/s-KaiNet/gulp-spsave",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [ "fileName", "metadata" ],
+            "properties": {
+              "fileName": {
+                "description": "File name with extention (without path)\n\nE.g.: `app.js`",
+                "type": "string"
+              },
+              "metadata": {
+                "description": "REST API metadata object",
+                "type": "object",
+                "required": [ "__metadata" ],
+                "properties": {
+                  "__metadata": {
+                    "description": "SharePoint REST API OData entity type",
+                    "type": "object",
+                    "required": [ "type" ],
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "^.*$": {
+                  "additionalProperties": true,
+                  "additionalItems": true
+                }
+              }
+            }
+          }
         }
       }
     },

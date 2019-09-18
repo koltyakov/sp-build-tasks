@@ -33,7 +33,8 @@ const getConfigsData = (settings: ISPBuildSettings, forcePrompts: boolean = fals
         folder: appConfig.spFolder,
         flatten: false,
         checkin: true,
-        checkinType: 1
+        checkinType: 1,
+        filesMetaData: appConfig.filesMetaData
       },
       watch: {
         assets: path.resolve(appConfig.distFolder) + '/**/*.*',

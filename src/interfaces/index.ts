@@ -1,4 +1,5 @@
 import { IAuthOptions } from 'node-sp-auth';
+import { ICoreOptions as ISPSaveCoreOptions, IFileMetaData } from 'spsave';
 import { Configuration, Options } from 'webpack';
 import { ILRSettings } from 'sp-live-reload/dist/interfaces';
 
@@ -10,7 +11,10 @@ export interface IWebpackConfig extends Configuration {
 export interface IGulpConfigs {
   appConfig: IAppConfig;
   privateConf: IPrivateConfig;
-  spSaveCoreOptions: any;
+  spSaveCoreOptions: ISPSaveCoreOptions & {
+    folder?: string;
+    flatten?: boolean;
+  };
   watch: IWatchSettings;
   liveReload: ILRSettings;
 }
@@ -35,6 +39,7 @@ export interface IAppConfig {
   copyAssetsMap?: IAssetMap[];
   customActions?: ICustomActionDefinition[];
   customStyles?: IAssetMap | IAssetMap[];
+  filesMetaData?: IFileMetaData[];
   modulePath?: string;
   customData?: any;
   webpackItemsMap?: IWebpackMapItem[];

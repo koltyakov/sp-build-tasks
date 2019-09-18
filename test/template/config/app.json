@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/sp-build-tasks/schema/v1/sppp.json",
-  "spFolder": "_catalogs/masterpage/spf",
+  "spFolder": "_catalogs/masterpage/spf-module",
   "distFolder": "./dist",
   "masterpageCodeName": "a_masterpage",
   "platformVersion": "2016",
@@ -52,6 +52,17 @@
     {
       "src": "styles/index.scss",
       "dist": "styles/app.css"
+    }
+  ],
+  "filesMetaData": [
+    {
+      "fileName": "app.js",
+      "metadata": {
+        "__metadata": {
+          "type": "SP.Data.OData__x005f_catalogs_x002f_masterpageItem"
+        },
+        "Title": "Custom title"
+      }
     }
   ]
 }
