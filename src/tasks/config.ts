@@ -65,7 +65,8 @@ const getConfigsData = (settings: ISPBuildSettings, forcePrompts: boolean = fals
         configPath: path.resolve(settings.privateConf || './config/private.json'),
         encryptPassword: true,
         saveConfigOnDisk: true,
-        forcePrompts
+        forcePrompts,
+        headlessMode: !forcePrompts
       });
       authConfig.getContext()
         .then(context => {
