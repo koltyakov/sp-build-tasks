@@ -58,7 +58,7 @@
     "promise": "^8.0.3",
     "resolve-url-loader": "^3.1.0",
     "sass-loader": "^7.3.1",
-    "snyk": "^1.228.5",
+    "snyk": "^1.230.5",
     "source-map-explorer": "^2.1.0",
     "sp-live-reload": "^3.0.9",
     "sp-pnp-node": "^2.1.7",

@@ -10,4 +10,18 @@ ignore:
     - gulp-watch > anymatch > micromatch > braces:
         reason: None given
         expires: '2019-09-21T08:41:18.659Z'
-patch: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-HTTPSPROXYAGENT-469131:
+    - snyk > proxy-agent > https-proxy-agent:
+        patched: '2019-10-04T07:13:22.815Z'
+    - snyk > proxy-agent > pac-proxy-agent > https-proxy-agent:
+        patched: '2019-10-04T07:13:22.815Z'
+    - sp-live-reload > snyk > proxy-agent > https-proxy-agent:
+        patched: '2019-10-04T07:13:22.815Z'
+    - sp-pnp-node > snyk > proxy-agent > https-proxy-agent:
+        patched: '2019-10-04T07:13:22.815Z'
+    - sp-live-reload > snyk > proxy-agent > pac-proxy-agent > https-proxy-agent:
+        patched: '2019-10-04T07:13:22.815Z'
+    - sp-pnp-node > snyk > proxy-agent > pac-proxy-agent > https-proxy-agent:
+        patched: '2019-10-04T07:13:22.815Z'
