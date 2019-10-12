@@ -1,0 +1,20 @@
+{
+  "$schema": "../node_modules/sp-build-tasks/schema/v2/sppp.json",
+  "spFolder": "_catalogs/masterpage/spf-module",
+  "distFolder": "./dist",
+  "webpackItemsMap": [
+    {
+      "entry": "./src/scripts/entry_1.ts",
+      "target": "wp1/target_1.js",
+      "includePolyfills": true
+    },
+    {
+      "entry": "./src/scripts/entry_2.ts",
+      "target": "wp2/target_2.js"
+    },
+    {
+      "entry": "./src/scripts/entry_3.ts",
+      "target": "wp3/target_3.js"
+    }
+  ]
+}

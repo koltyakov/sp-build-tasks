@@ -14,6 +14,7 @@ if (typeof Uint8ClampedArray === 'undefined') {
 }
 
 import 'core-js/es/array';
+import 'core-js/stable/object/assign';
 import 'es6-map/implement';
 import 'es6-set/implement';
 import 'es6-weak-map/implement';

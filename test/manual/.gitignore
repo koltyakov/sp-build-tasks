@@ -1,0 +1,7 @@
+node_modules/
+config/private.*
+config/not-private.json
+dist/
+tmp/
+cache/
+package-lock.json

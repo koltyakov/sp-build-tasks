@@ -123,7 +123,7 @@ export class BuildTasks {
         const bundlingItems = confQueue.map((c) => {
           const entries = Array.isArray(c.entry) ? c.entry : [ c.entry ];
           if (c.name) {
-            return `${c.name} (${entries.join(', ')})`;
+            return `${c.name}`; // (${entries.join(', ')})`;
           }
           return `${entries.join(', ')}`;
         });

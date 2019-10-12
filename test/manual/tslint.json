@@ -1,0 +1,44 @@
+{
+  "extends": [
+    "tslint:latest",
+    "tslint-config-standard"
+  ],
+  "linterOptions": {
+    "exclude": [
+      "config/**/*.js",
+      "tools/**/*.js",
+      "tools/**/*.ts",
+      "provisioning/**/*.js",
+      "node_modules/**/*.ts"
+    ]
+  },
+  "rules": {
+    "quotemark": [
+      true,
+      "single",
+      "jsx-single"
+    ],
+    "indent": [
+      true,
+      "spaces",
+      2
+    ],
+    "semicolon": [
+      true,
+      "always",
+      "ignore-interfaces"
+    ],
+    "ordered-imports": false,
+    "object-literal-sort-keys": false,
+    "space-before-function-paren": false,
+    "no-empty-interface": false,
+    "trailing-comma": true,
+    "jsx-no-lambda": false,
+    "jsx-no-multiline-js": false,
+    "arrow-parens": true,
+    "max-line-length": [
+      true,
+      120
+    ]
+  }
+}
