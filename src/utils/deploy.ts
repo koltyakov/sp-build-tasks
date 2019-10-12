@@ -33,7 +33,7 @@ export default class Deploy {
       const webRelativeUrl = `/${webUrl.replace('https://', '').replace('http://', '').split('/').splice(1).join('/')}`;
       const masterpageFullPath = `${webRelativeUrl}/${spFolder}/${masterpagePath}`.replace(/\/\//g, '/');
       request.requestDigest(webUrl)
-        .then(digest => {
+        .then((digest) => {
           return request.post(methodUri, {
             headers: {
               'X-RequestDigest': digest,
@@ -48,7 +48,7 @@ export default class Deploy {
             }
           });
         })
-        .then(_ => {
+        .then(() => {
           resolve(masterpageFullPath);
         })
         .catch(reject);
@@ -74,7 +74,7 @@ export default class Deploy {
       const webRelativeUrl = `/${webUrl.replace('https://', '').replace('http://', '').split('/').splice(1).join('/')}`;
       const logoFullPath = `${webRelativeUrl}/${spFolder}/${logoPath}`.replace(/\/\//g, '/');
       request.requestDigest(webUrl)
-        .then(digest => {
+        .then((digest) => {
           return request.post(methodUri, {
             headers: {
               'X-RequestDigest': digest,
@@ -88,7 +88,7 @@ export default class Deploy {
             }
           });
         })
-        .then(_ => {
+        .then(() => {
           resolve(logoFullPath);
         })
         .catch(reject);

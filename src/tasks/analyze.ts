@@ -13,7 +13,7 @@ declare var global: any;
 
 export const analyzeTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
-  gulp.task('analyze', cb => {
+  gulp.task('analyze', (cb) => {
     (async () => {
       processStepMessage('Analyze Webpack Bundle');
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
@@ -35,7 +35,7 @@ export const analyzeTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => 
           console.log(`No source map found in ${target}`);
         }
       }
-    })().then(_ => cb()).catch(cb);
+    })().then(() => cb()).catch(cb);
   });
 
 };

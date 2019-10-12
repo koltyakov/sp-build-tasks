@@ -70,7 +70,7 @@ const getConfigsData = (settings: ISPBuildSettings, forcePrompts: boolean = fals
         headlessMode: !forcePrompts
       });
       authConfig.getContext()
-        .then(context => {
+        .then((context) => {
           global.spBuildContext = context;
           global.gulpConfigs = mapGulpConfigs(global.spBuildAppConfig, global.spBuildContext);
           resolve(global.gulpConfigs);
@@ -93,7 +93,7 @@ const getCustomData = (settings: ISPBuildSettings, gulpConfigs: IGulpConfigs): P
       const customDataLoader = require(customDataModulePath);
       if (customDataLoader && typeof customDataLoader === 'function') {
         customDataLoader(settings, gulpConfigs)
-          .then(customData => {
+          .then((customData) => {
             global.gulpConfigs = {
               ...gulpConfigs,
               appConfig: {
@@ -105,7 +105,7 @@ const getCustomData = (settings: ISPBuildSettings, gulpConfigs: IGulpConfigs): P
             };
             resolve(global.gulpConfigs);
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(err);
             resolve(gulpConfigs);
           });
@@ -117,17 +117,17 @@ const getCustomData = (settings: ISPBuildSettings, gulpConfigs: IGulpConfigs): P
 };
 
 export const getConfigs = (settings: ISPBuildSettings, force: boolean = false): Promise<IGulpConfigs> => {
-  return getConfigsData(settings, force).then(conf => getCustomData(settings, conf));
+  return getConfigsData(settings, force).then((conf) => getCustomData(settings, conf));
 };
 
 const execConfigTask = (settings: ISPBuildSettings, force: boolean, cb: (err?: any) => void) => {
-  getConfigs(settings, force).then(_ => cb()).catch(cb);
+  getConfigs(settings, force).then(() => cb()).catch(cb);
 };
 
 export const configTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
-  gulp.task('config', cb => {
+  gulp.task('config', (cb) => {
     const args = process.argv.slice(3);
-    const force = args.filter(arg => arg.toLowerCase() === '--init').length > 0;
+    const force = args.filter((arg) => arg.toLowerCase() === '--init').length > 0;
     execConfigTask(settings, force, cb);
   });
 };

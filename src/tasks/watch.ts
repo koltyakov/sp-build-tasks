@@ -40,7 +40,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
           saveQueue[filePath] -= 1;
           if (saveQueue[filePath] > 0) {
             delete saveQueue[filePath];
-            spsave(filePath).then(_ => callback(null, chunk)).catch(console.warn);
+            spsave(filePath).then(() => callback(null, chunk)).catch(console.warn);
           } else {
             callback(null, chunk);
           }
@@ -65,7 +65,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       //     console.log(res.statusCode, res.statusMessage);
       //   }
       // })
-      .catch(err => {
+      .catch((err) => {
         if ((err.error || { error: { code: '' } }).error.code.split(',')[0] === '-2146232832') {
           console.log('File has not been removed as it was not there in SharePoint.');
         } else {
@@ -76,7 +76,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   const buildTasks = new BuildTasks(settings);
 
-  gulp.task('watch', _cb => {
+  gulp.task('watch', () => {
     const args = process.argv.slice(3);
     const devServer = args.indexOf('--devServer') !== -1;
     detectProdMode();
@@ -84,12 +84,12 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
       if (!devServer) {
         processStepMessage('Watch has been started');
-        $.watch(configs.watch.assets, async event => {
+        $.watch(configs.watch.assets, async (event) => {
           if (event.event !== 'unlink') {
             await new Promise((resolve, reject) => {
               run(event.path, () => {
                 spsave(event.path)
-                  .then(_ => resolve())
+                  .then(() => resolve())
                   .catch(reject);
               });
             });
@@ -103,14 +103,14 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       .catch(console.warn);
   });
 
-  gulp.task('live', _cb => {
+  gulp.task('live', () => {
     processStepMessage('Watch with reload is initiated');
     detectProdMode();
     (async () => {
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
       const liveReload = new LiveReload(configs.liveReload);
       liveReload.runServer();
-      $.watch(configs.watch.assets, async event => {
+      $.watch(configs.watch.assets, async (event) => {
         if (event.event !== 'unlink') {
           await new Promise((resolve, reject) => {
             run(event.path, () => {
@@ -121,7 +121,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
                 }
                 liveReload.emitUpdatedPath(chunkPath, false, body);
               })
-                .then(_ => resolve())
+                .then(() => resolve())
                 .catch(reject);
             });
           });
@@ -147,7 +147,7 @@ export const watchAssets = (buildTasks: BuildTasks, configs: IGulpConfigs, $: an
     if (!Array.isArray(webpackConfig)) {
       webpackConfig = [webpackConfig];
     }
-    webpackConfig = webpackConfig.map(w => {
+    webpackConfig = webpackConfig.map((w) => {
       return {
         ...w,
         watch: true,
@@ -163,21 +163,21 @@ export const watchAssets = (buildTasks: BuildTasks, configs: IGulpConfigs, $: an
     });
   };
 
-  $.watch(`./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.'), async event => {
+  $.watch(`./src/masterpage/${configs.appConfig.masterpageCodeName}.${configs.appConfig.platformVersion || '___'}.hbs`.replace('.___.', '.'), async (event) => {
     if (event.event !== 'unlink') {
       // gulp.start('build:masterpage');
       await buildTasks.buildMasterpagesTask();
     }
   });
 
-  $.watch('./src/masterpage/layouts/*.hbs', async event => {
+  $.watch('./src/masterpage/layouts/*.hbs', async (event) => {
     if (event.event !== 'unlink') {
       // gulp.start('build:layouts');
       await buildTasks.buildLayoutsTask();
     }
   });
 
-  $.watch('./src/styles/**/*.scss', async event => {
+  $.watch('./src/styles/**/*.scss', async (event) => {
     if (event.event !== 'unlink') {
       // gulp.start('build:css-custom');
       await buildTasks.buildCustomCssTask();
@@ -187,11 +187,11 @@ export const watchAssets = (buildTasks: BuildTasks, configs: IGulpConfigs, $: an
   if (!devServer) {
     $.watch([
       // Watch `./src/stripts`'s folder scripts
-      ...['js', 'jsx', 'ts', 'tsx'].map(ext => `./src/scripts/**/*.${ext}`),
+      ...['js', 'jsx', 'ts', 'tsx'].map((ext) => `./src/scripts/**/*.${ext}`),
       // Watch custom entries which can be outside `./src/stripts`
       ...(
         typeof configs.appConfig.webpackItemsMap !== 'undefined'
-          ? configs.appConfig.webpackItemsMap.map(c => c.entry)
+          ? configs.appConfig.webpackItemsMap.map((c) => c.entry)
           : []
       ),
       // Ignore definitions
@@ -199,7 +199,7 @@ export const watchAssets = (buildTasks: BuildTasks, configs: IGulpConfigs, $: an
     ]).once('data', () => webpackWatch());
   }
 
-  $.watch('./src/webparts/**/*.hbs', vinyl => {
+  $.watch('./src/webparts/**/*.hbs', (vinyl) => {
     if (vinyl.event !== 'unlink') {
       const build = getBuildInstance(configs);
       const data = mapProjectData(configs);
@@ -214,7 +214,7 @@ export const watchAssets = (buildTasks: BuildTasks, configs: IGulpConfigs, $: an
         target: trgPath,
         data: data
       })
-        .then(_ => console.log('Webpart is compiled', trgPath))
+        .then(() => console.log('Webpart is compiled', trgPath))
         .catch(console.log);
     }
   });

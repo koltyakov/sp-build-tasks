@@ -39,18 +39,18 @@ export class Hashes {
   public isHashedUrl(uri: string): boolean {
     const str = uri.toLowerCase();
     return Object.keys(this.hashes)
-      .filter(key => str.indexOf(key) !== -1)
+      .filter((key) => str.indexOf(key) !== -1)
       .length > 0;
   }
 
   public async replaceHashedUrl(uri: string): Promise<string | null> {
     let str: string | null = uri.toLowerCase();
-    const rules = Object.keys(this.hashes).filter(key => (str || '').indexOf(key) !== -1);
+    const rules = Object.keys(this.hashes).filter((key) => (str || '').indexOf(key) !== -1);
     for (const key of rules) {
       const rule = this.hashes[key];
       if (rule.needReplacement) {
         if (typeof rule.value === 'undefined') {
-          rule.value = await rule.get().catch(error => {
+          rule.value = await rule.get().catch((error) => {
             console.log(error);
             return undefined;
           });
@@ -70,8 +70,8 @@ export class Hashes {
     const endpoint = `${siteAbsoluteUrl}/_api/web/hubsitedata(false)`;
 
     const siteHubData = await this.client.get(endpoint)
-      .then(r => r.json())
-      .then(data => {
+      .then((r) => r.json())
+      .then((data) => {
         if (typeof data['odata.error'] !== 'undefined') {
           throw Error(data['odata.error'].message.value);
         }

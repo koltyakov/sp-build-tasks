@@ -31,30 +31,30 @@ const applyLogo = async (settings: ISPBuildSettings) => {
 
 export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
-  gulp.task('live-reload', cb => {
+  gulp.task('live-reload', (cb) => {
     (async () => {
       const args = process.argv.slice(3);
-      const install = args.filter(arg => arg.toLowerCase() === '--uninstall').length === 0;
+      const install = args.filter((arg) => arg.toLowerCase() === '--uninstall').length === 0;
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
       const liveReload = new ReloadProvisioning(configs.liveReload);
       if (install) {
         processStepMessage('Installing live reload to site collection');
-        await liveReload.provisionMonitoringAction().then(_ => {
+        await liveReload.provisionMonitoringAction().then(() => {
           console.log('Custom action has been installed');
         });
       } else {
         processStepMessage('Retracting live reload from site collection');
-        await liveReload.retractMonitoringAction().then(_ => {
+        await liveReload.retractMonitoringAction().then(() => {
           console.log('Custom action has been retracted');
         });
       }
-    })().then(_ => cb()).catch(cb);
+    })().then(() => cb()).catch(cb);
   });
 
-  gulp.task('masterpage', cb => {
+  gulp.task('masterpage', (cb) => {
     const args = process.argv.slice(3);
     (async () => {
-      const install = args.filter(arg => arg.toLowerCase() === '--uninstall').length === 0;
+      const install = args.filter((arg) => arg.toLowerCase() === '--uninstall').length === 0;
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
 
       const deploy = new Deploy({
@@ -71,7 +71,7 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         if (typeof configs.appConfig.masterpagePath !== 'undefined') {
           await deploy.applyMasterpageToWeb({
             masterpagePath: configs.appConfig.masterpagePath
-          }).then(masterpageFullPath => {
+          }).then((masterpageFullPath) => {
             console.log('Masterpage has been applied: ' + masterpageFullPath);
           });
         } else {
@@ -83,17 +83,17 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         await deploy.applyMasterpageToWeb({
           spFolder: '/',
           masterpagePath: '_catalogs/masterpage/seattle.master'
-        }).then(masterpageFullPath => {
+        }).then((masterpageFullPath) => {
           console.log('Masterpage has been applied: ' + masterpageFullPath);
         });
       }
-    })().then(_ => cb()).catch(cb);
+    })().then(() => cb()).catch(cb);
   });
 
-  gulp.task('custom-actions', cb => {
+  gulp.task('custom-actions', (cb) => {
     const args = process.argv.slice(3);
     (async () => {
-      const install = args.filter(arg => arg.toLowerCase() === '--uninstall').length === 0;
+      const install = args.filter((arg) => arg.toLowerCase() === '--uninstall').length === 0;
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
 
       const customActions = configs.appConfig.customActions || [];
@@ -147,12 +147,12 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
               const actions = await scope.userCustomActions.filter(`Title eq '${encodeURIComponent(actionTitle)}'`).get();
               if (actions.length === 0) {
                 await scope.userCustomActions.add(payload)
-                  .then(_ => console.log(`${actionTitle} has been added`))
-                  .catch(err => console.log(err.data.responseBody.error.message.value));
+                  .then(() => console.log(`${actionTitle} has been added`))
+                  .catch((err) => console.log(err.data.responseBody.error.message.value));
               } else {
                 await scope.userCustomActions.getById(actions[0].Id).update(payload)
-                  .then(_ => console.log(`${actionTitle} has been updated`))
-                  .catch(err => console.log(err.data.responseBody.error.message.value));
+                  .then(() => console.log(`${actionTitle} has been updated`))
+                  .catch((err) => console.log(err.data.responseBody.error.message.value));
               }
             }
 
@@ -166,22 +166,22 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         const siteActions = await sp.site.userCustomActions.filter(`startswith(Title,'${moduleName} ')`).get();
         for (const ca of webActions) {
           await web.userCustomActions.getById(ca.Id).delete()
-            .then(_ => console.log(`${ca.Title} has been deleted`))
-            .catch(err => console.log(err.data.responseBody.error.message.value));
+            .then(() => console.log(`${ca.Title} has been deleted`))
+            .catch((err) => console.log(err.data.responseBody.error.message.value));
         }
         for (const ca of siteActions) {
           await sp.site.userCustomActions.getById(ca.Id).delete()
-            .then(_ => console.log(`${ca.Title} has been deleted`))
-            .catch(err => console.log(err.data.responseBody.error.message.value));
+            .then(() => console.log(`${ca.Title} has been deleted`))
+            .catch((err) => console.log(err.data.responseBody.error.message.value));
         }
       }
-    })().then(_ => cb()).catch(cb);
+    })().then(() => cb()).catch(cb);
   });
 
 };
 
 const trimMultiline = (str: string): string => {
-  return str.trim().split('\n').map(l => l.trim()).join('');
+  return str.trim().split('\n').map((l) => l.trim()).join('');
 };
 
 const getCustomActionScriptBlock = (scriptUri: string): string => {
@@ -218,7 +218,7 @@ const getCustomActionScriptBlockSod = (scriptUri: string, namespace: string, dep
   const assetsVersion = packageData.version + '_' + new Date().getTime();
   return trimMultiline(`
     SP.SOD.registerSod("${namespace}", "${scriptUri}?v=${assetsVersion}&ext=.js");
-    ${dependencies.map(dependency => {
+    ${dependencies.map((dependency) => {
       return `SP.SOD.registerSodDep("${namespace}", "${dependency}");`;
     }).join('')}
     SP.SOD.executeFunc("${namespace}", null, function() { /**/ });

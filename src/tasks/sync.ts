@@ -14,7 +14,7 @@ declare var global: any;
 
 export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
-  gulp.task('pull', cb => {
+  gulp.task('pull', (cb) => {
     (async () => {
       processStepMessage('Fetching files from SharePoint');
 
@@ -25,13 +25,13 @@ export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       };
 
       await sppull(configs.privateConf, options);
-    })().then(_ => cb()).catch(cb);
+    })().then(() => cb()).catch(cb);
   });
 
-  gulp.task('push', cb => {
+  gulp.task('push', (cb) => {
     const args = process.argv.slice(3);
     (async () => {
-      const diff = args.filter(arg => arg.toLowerCase() === '--diff').length > 0;
+      const diff = args.filter((arg) => arg.toLowerCase() === '--diff').length > 0;
 
       processStepMessage(`Publishing assets to SharePoint${ diff ? ' (incremental mode)' : '' }`);
 
@@ -53,7 +53,7 @@ export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
       for (const localFilePath of localFiles) {
         const localFileRelPath = path.relative(configs.appConfig.distFolder, localFilePath).replace(/\\/g, '/');
-        const remoteFile = remoteFiles.find(rf => rf.relativePath === localFileRelPath);
+        const remoteFile = remoteFiles.find((rf) => rf.relativePath === localFileRelPath);
         const fileContent = fs.readFileSync(localFilePath);
 
         const fileOptions = {
@@ -81,7 +81,7 @@ export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         }
       }
 
-    })().then(_ => cb()).catch(cb);
+    })().then(() => cb()).catch(cb);
   });
 
 };
@@ -89,7 +89,7 @@ export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 const walkSync = (dir: string, filelist: string[]): string[] => {
   let files = fs.readdirSync(dir);
   filelist = filelist || [];
-  files.forEach(file => {
+  files.forEach((file) => {
     let filePath = path.join(dir, file);
     if (fs.statSync(filePath).isDirectory()) {
       filelist = walkSync(filePath, filelist);

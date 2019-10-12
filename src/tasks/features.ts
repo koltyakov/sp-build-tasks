@@ -9,7 +9,7 @@ declare var global: any;
 
 export const featuresTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
-  gulp.task('features:disable-mds', cb => {
+  gulp.task('features:disable-mds', (cb) => {
     (async () => {
 
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
@@ -25,7 +25,7 @@ export const featuresTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) =>
         console.log('MDS is already deactivated');
       }
 
-    })().then(_ => cb()).catch(cb);
+    })().then(() => cb()).catch(cb);
   });
 
 };

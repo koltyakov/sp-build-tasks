@@ -19,7 +19,7 @@ export const serveTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
   const buildTasks = new BuildTasks(settings);
 
-  gulp.task('serve', _cb => {
+  gulp.task('serve', () => {
     processStepMessage('Starting Webpack Dev Server');
     detectProdMode();
     (async () => {
@@ -60,7 +60,7 @@ const startWebpackDevServer = () => {
 
   const server = new WebpackDevServer(webpack(webpackConfig), options);
 
-  server.listen(port, 'localhost', err => {
+  server.listen(port, 'localhost', (err) => {
     if (err) {
       console.log(err);
       return;

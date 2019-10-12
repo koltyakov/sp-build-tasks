@@ -25,8 +25,8 @@ import { compileEnvHashedString } from '../utils/env';
 
 const args = minimist(process.argv.slice(2));
 const webpackTargets = (args['webpack-targets'] || '').split(',')
-  .map(t => t.trim().toLowerCase())
-  .filter(t => t.length > 0);
+  .map((t) => t.trim().toLowerCase())
+  .filter((t) => t.length > 0);
 
 const configs: IGulpConfigs = global.gulpConfigs;
 let appConf: IAppConfig = (configs || { appConfig: null }).appConfig;
@@ -45,7 +45,7 @@ const publishPath: string = '/' + `${privateConf.siteUrl}/${appConf.spFolder}`
 let defaultEntryExt = 'ts';
 const defEntryRoot = './src/scripts';
 
-[ 'js', 'jsx', 'ts', 'tsx' ].forEach(ext => {
+[ 'js', 'jsx', 'ts', 'tsx' ].forEach((ext) => {
   if (fs.existsSync(path.join(process.cwd(), defEntryRoot, `index.${ext}`))) {
     defaultEntryExt = ext;
   }
@@ -174,12 +174,12 @@ const webpackConfigDefaults: IWebpackConfig = process.env.NODE_ENV === 'producti
 const webpackItemsMap: IWebpackMapItem[] = appConf.webpackItemsMap || [defaultItemMap];
 
 const webpackConfigs = webpackItemsMap
-  .filter(mapItem => {
+  .filter((mapItem) => {
     return webpackTargets.length !== 0
       ? true
       : mapItem.disable !== true; // do not filter disabled in strict mode
   })
-  .filter(mapItem => {
+  .filter((mapItem) => {
     if (webpackTargets.length === 0) {
       return true;
     }
@@ -188,7 +188,7 @@ const webpackConfigs = webpackItemsMap
       webpackTargets.indexOf((mapItem.name || '').toLowerCase()) !== -1
     );
   })
-  .map(mapItem => {
+  .map((mapItem) => {
     const filename = mapItem.target || defaultItemMap.target;
     const name = path.parse(filename).name;
     const entry: string[] = [];

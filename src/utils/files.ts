@@ -58,7 +58,7 @@ export default class Files {
   }
 
   public getServerRelativeUrl = (): Promise<string> => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       if (typeof global['serverRelativeUrl'] !== 'undefined') {
         resolve(global['serverRelativeUrl']);
       } else {
@@ -68,7 +68,7 @@ export default class Files {
             'Accept': 'application/json; odata=verbose',
             'Content-Type': 'application/json; odata=verbose'
           }
-        }).then(webProps => {
+        }).then((webProps) => {
           global['serverRelativeUrl'] = webProps.body.d.ServerRelativeUrl;
           resolve(webProps.body.d.ServerRelativeUrl);
         });
@@ -77,17 +77,17 @@ export default class Files {
   }
 
   public getFiles = (foldersArr: IFolderProcessItem[] = [], filesArr: IFileProcessItem[] = []): Promise<IFileProcessItem[]> => {
-    return this.getServerRelativeUrl().then(serverRelativeUrl => {
+    return this.getServerRelativeUrl().then((serverRelativeUrl) => {
       if (foldersArr.length === 0) {
         foldersArr.push({
           path: `${serverRelativeUrl}/${this.settings.spFolder}`.replace(/\/\//g, '/'),
           processed: false
         });
       }
-      if (foldersArr.filter(folder => !folder.processed).length === 0) {
+      if (foldersArr.filter((folder) => !folder.processed).length === 0) {
         return filesArr;
       } else {
-        const folder = foldersArr.find(folder => !folder.processed);
+        const folder = foldersArr.find((folder) => !folder.processed);
         if (typeof folder === 'undefined') {
           return [];
         }
@@ -100,16 +100,16 @@ export default class Files {
             'Accept': 'application/json; odata=verbose',
             'Content-Type': 'application/json; odata=verbose'
           }
-        }).then(content => {
+        }).then((content) => {
           folder.processed = true;
-          filesArr = filesArr.concat(content.body.d.Files.results.map(fileResp => {
+          filesArr = filesArr.concat(content.body.d.Files.results.map((fileResp) => {
             return {
               path: fileResp.ServerRelativeUrl,
               relativePath: fileResp.ServerRelativeUrl.replace(`${serverRelativeUrl}/${this.settings.spFolder}/`.replace(/\/\//g, '/'), ''),
               length: parseInt(fileResp.Length, 10)
             };
           }));
-          foldersArr = foldersArr.concat(content.body.d.Folders.results.map(folderResp => {
+          foldersArr = foldersArr.concat(content.body.d.Folders.results.map((folderResp) => {
             return {
               path: folderResp.ServerRelativeUrl,
               processed: folderResp.ItemCount === 0
@@ -129,10 +129,10 @@ export default class Files {
   }
 
   public deleteFilesQueue = async (filesQueue: { path: string; processed: boolean; }[]): Promise<void> => {
-    if (filesQueue.filter(file => !file.processed).length === 0) {
+    if (filesQueue.filter((file) => !file.processed).length === 0) {
       return;
     } else {
-      const file = filesQueue.find(folder => !folder.processed);
+      const file = filesQueue.find((folder) => !folder.processed);
       if (typeof file === 'undefined') {
         return;
       }

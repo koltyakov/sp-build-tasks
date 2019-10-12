@@ -88,7 +88,7 @@ export default class Build {
         'responsive-utilities',
         'theme'
       ];
-      const bootstrapPaths = bootstrapFiles.map(fileName => {
+      const bootstrapPaths = bootstrapFiles.map((fileName) => {
         return path.join(bootstrapRoot, '/', fileName + '.less');
       });
       let content = await this.concatFilesContent({ filesArr: bootstrapPaths });
@@ -199,7 +199,7 @@ export default class Build {
     const { srcArrayOrPath, dist } = params;
     mkdirp.sync(dist);
     if (Array.isArray(srcArrayOrPath)) {
-      srcArrayOrPath.forEach(src => this.copy.copyFileOrFolderSync(src, dist));
+      srcArrayOrPath.forEach((src) => this.copy.copyFileOrFolderSync(src, dist));
     } else {
       this.copy.copyFileOrFolderSync(srcArrayOrPath, dist);
     }

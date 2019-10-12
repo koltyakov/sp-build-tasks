@@ -38,7 +38,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         { key: '--js-libs', title: 'Build JavaScript DLLs', task: buildTasks.buildJsLibsTask },
         { key: '--webpack', title: 'Starting Webpack build', task: () => Promise.resolve() }
       ];
-      let tasks = tasksInfo.filter(task => args.indexOf(task.key) !== -1);
+      let tasks = tasksInfo.filter((task) => args.indexOf(task.key) !== -1);
       tasks = tasks.length > 0 ? tasks : tasksInfo;
       await new Listr(tasks).run();
       if (args.indexOf('--webpack') !== -1 || tasksInfo.length === tasks.length) {
@@ -120,7 +120,7 @@ export class BuildTasks {
       confQueue = confQueue.concat(conf);
       queueIndex += 1;
       if (confQueue.length === parallelism || queueIndex === webpackConfigs.length) {
-        const bundlingItems = confQueue.map(c => {
+        const bundlingItems = confQueue.map((c) => {
           const entries = Array.isArray(c.entry) ? c.entry : [ c.entry ];
           if (c.name) {
             return `${c.name} (${entries.join(', ')})`;
@@ -130,7 +130,7 @@ export class BuildTasks {
         if (bundlingItems.length === 1) {
           console.log(`Bundling: ${bundlingItems[0]}`);
         } else {
-          console.log(`Bundling: \n${bundlingItems.map(b => `  - ${b}`).join('\n')}`);
+          console.log(`Bundling: \n${bundlingItems.map((b) => `  - ${b}`).join('\n')}`);
         }
         await new Promise((resolve, reject) => {
           webpack(confQueue, (err, stats) => {
@@ -269,7 +269,7 @@ export class BuildTasks {
     }
 
     // const files: IFile[] = this.mapHbsTemplates(walkFolders(source), './', target, 'html');
-    const webpartsFiles = walkFolders(source).map(f => f.replace(`${source}/`, ''));
+    const webpartsFiles = walkFolders(source).map((f) => f.replace(`${source}/`, ''));
     const files: IFile[] = this.mapHbsTemplates(webpartsFiles, source, target, 'html');
 
     if (files.length > 0) {
@@ -281,7 +281,7 @@ export class BuildTasks {
 
   private mapHbsTemplates(files: string[], source: string, target: string, ext: string): IFile[] {
     return files
-      .map(file => [ path.join(source, file), file])
+      .map((file) => [ path.join(source, file), file])
       .filter(([ filePath ]) => !fs.lstatSync(filePath).isDirectory())
       .filter(([ filePath ]) => path.parse(filePath).ext.toLowerCase() === '.hbs')
       .map(([ filePath, file ]) => {
