@@ -53,7 +53,7 @@ const webpackConfigs = webpackItemsMap
     }
     webpackCnfg[0].entry = {
       ...(webpackCnfg[0].entry || {} as any),
-      [mapItem.target]: output
+      [compileEnvHashedString(mapItem.target)]: output.map(compileEnvHashedString)
     };
     return webpackCnfg;
   }, [webpackConfigDefaults]);
