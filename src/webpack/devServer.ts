@@ -9,7 +9,8 @@ export const getDevServerOpts = (appConf: IAppConfig, privateConf: IPrivateConfi
     contentBase: path.join(process.cwd(), appConf.distFolder),
     watchContentBase: true,
     writeToDisk: true,
-    hot: true,
+    // hot: true, // causes conflicts with multiple assets loading the same map files
+    hot: false,
     port: devServerPort,
     before: (app) => { // (app, server) => {
       // Register SP API Proxy

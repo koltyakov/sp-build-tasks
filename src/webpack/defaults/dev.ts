@@ -28,7 +28,9 @@ export const getWebpackConfigDefaults = (appConf: IAppConfig, privateConf: IPriv
       plugins: [ new TsConfigPathsPlugin() ]
     },
     plugins: [
-      new ForkTsCheckerWebpackPlugin({ checkSyntacticErrors: true })
+      new ForkTsCheckerWebpackPlugin({
+        checkSyntacticErrors: true
+      })
     ]
   };
 
