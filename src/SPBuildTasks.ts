@@ -39,7 +39,8 @@ export class SPBuildTasks {
         `PRIVATE_JSON=./config/private.json\n` +
         `TASKS_PATH=./tools/tasks\n` +
         `APP_JSON=./config/app.json\n` +
-        `SPBUILD_WEBPACK_PORT=9090`,
+        `SPBUILD_WEBPACK_PORT=9090\n` +
+        `SPPP_ASSETS_LOCATION=SPWeb`,
         { encoding: 'utf-8' }
       );
     }
