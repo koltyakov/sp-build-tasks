@@ -190,14 +190,14 @@ export class BuildTasks {
       if (fs.existsSync(srcPath)) {
         const distPath = path.join(process.cwd(), configs.appConfig.distFolder, (configs.appConfig.modulePath || ''), assets.dist);
         const sourceMapPath = distPath + '.map';
-        const sourceMapFile = sourceMapPath.split('\\').pop();
+        const { name, ext } = path.parse(sourceMapPath);
+        const sourceMapFile = `${name}${ext}`;
         const result = await build.buildCustomCssFromScss({ file: srcPath, sourceMap: sourceMapFile, sourceMapContents: true });
         mkdirp.sync(path.dirname(distPath));
+        const re = new RegExp(`(sourceMappingURL=)(.*?)(${sourceMapFile})`, 'g');
         fs.writeFileSync(
           distPath,
-          result.css.toString()
-            .replace('/*# sourceMappingURL=../../../', '/*# sourceMappingURL=')
-            .replace('/*# sourceMappingURL=../../dist/styles/', '/*# sourceMappingURL='),
+          result.css.toString().replace(re, '$1$3'),
           { encoding: 'utf-8' }
         );
         fs.writeFileSync(sourceMapPath, result.map.toString(), { encoding: 'utf-8' });
