@@ -14,7 +14,7 @@ steps:
   displayName: 'Global dependencies'
 
 - script: |
-    npm install
+    npm ci
     npm run build
   displayName: 'Dependencies & Build'
 
