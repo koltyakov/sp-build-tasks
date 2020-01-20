@@ -50,7 +50,7 @@
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "node-gyp": "^6.1.0",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.13.1",
     "node-sp-auth": "^2.5.7",
     "node-sp-auth-config": "^2.9.2",
     "promise": "^8.0.3",
