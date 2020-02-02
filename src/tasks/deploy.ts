@@ -1,6 +1,6 @@
 import { Gulp } from 'gulp';
 import * as path from 'path';
-import { sp, Web, Site } from '@pnp/sp';
+import { sp, Web, IWeb, ISite } from '@pnp/sp-commonjs';
 import { ReloadProvisioning } from 'sp-live-reload';
 
 import Deploy from '../utils/deploy';
@@ -105,7 +105,7 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       }
 
       const { siteUrl } = await setupPnp(configs);
-      const web = typeof siteUrl !== 'undefined' ? new Web(siteUrl) : sp.web;
+      const web = typeof siteUrl !== 'undefined' ? Web(siteUrl) : sp.web;
 
       if (install) {
         processStepMessage('Installing custom actions');
@@ -133,7 +133,7 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
               }
             }
 
-            let scope: Web | Site | null = null;
+            let scope: IWeb | ISite | null = null;
 
             if (ca.scope === 'web') {
               scope = web;

@@ -1,4 +1,4 @@
-import { SPRest, SPHttpClient } from '@pnp/sp';
+import { SPRest, SPHttpClient } from '@pnp/sp-commonjs';
 
 import { IGulpConfigs } from '../interfaces';
 

@@ -1,4 +1,4 @@
-import { sp } from '@pnp/sp';
+import { sp } from '@pnp/sp-commonjs';
 import { PnpNode, IPnpNodeSettings } from 'sp-pnp-node';
 
 import { IGulpConfigs } from '../interfaces';
