@@ -1,7 +1,7 @@
 {
   "name": "sp-build-tasks",
   "description": "SharePoint front-end projects automation and tasks tool-belt",
-  "version": "3.14.0",
+  "version": "3.14.1",
   "author": "Andrew Koltyakov <andrew.koltyakov@gmail.com>",
   "main": "./dist/index.js",
   "typings": "./dist/index",
@@ -55,7 +55,7 @@
     "node-sp-auth-config": "^2.9.2",
     "promise": "^8.0.3",
     "resolve-url-loader": "^3.1.1",
-    "sass-loader": "7.3.1",
+    "sass-loader": "^8.0.2",
     "source-map-explorer": "^2.3.1",
     "sp-live-reload": "^3.1.0",
     "sp-pnp-node": "^2.2.0",
