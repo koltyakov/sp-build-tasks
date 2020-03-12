@@ -20,15 +20,15 @@ export const getWebpackRules = (): webpack.RuleSetRule[] => {
       test: /\.css$/,
       use: [
         { loader: 'style-loader' },
-        { loader: 'css-loader', options: { sourceMap: true } }
+        { loader: 'css-loader', options: { sourceMap: true, url: false } }
       ]
     },
     {
       test: /\.scss$/,
       use: [
         { loader: 'style-loader' },
-        { loader: 'css-loader', options: { sourceMap: true } },
-        { loader: 'sass-loader', options: { sourceMap: true } }
+        { loader: 'css-loader', options: { sourceMap: true, url: false } },
+        { loader: 'sass-loader' }
       ]
     }
   ];
