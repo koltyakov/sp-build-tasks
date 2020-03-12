@@ -47,7 +47,7 @@
     "gulp-watch": "^5.0.1",
     "handlebars": "^4.7.2",
     "listr": "^0.14.3",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.2",
     "mkdirp": "^1.0.3",
     "node-gyp": "^6.1.0",
     "node-sass": "^4.13.1",
