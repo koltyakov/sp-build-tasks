@@ -20,11 +20,10 @@
   "author": "Andrew Koltyakov <andrew.koltyakov@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@pnp/pnpjs": "^1.3.6"
+    "@pnp/pnpjs": "^1.3.9"
   },
   "devDependencies": {
-    "@types/sharepoint": "^2016.1.5",
     "sp-build-tasks": "file:../..",
-    "tslint-config-standard": "^8.0.1"
+    "tslint-config-standard": "^9.0.0"
   }
 }
