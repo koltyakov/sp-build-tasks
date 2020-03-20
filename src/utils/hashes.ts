@@ -55,11 +55,7 @@ export class Hashes {
             return undefined;
           });
         }
-        if (!rule.value) {
-          str = null;
-        } else {
-          str = (str || '').replace(new RegExp(key.replace(/\//g, ''), 'ig'), rule.value);
-        }
+        str = !rule.value ? null : (str || '').replace(new RegExp(key.replace(/\//g, ''), 'ig'), rule.value);
       }
     }
     return str;

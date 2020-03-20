@@ -40,20 +40,21 @@ const webpackConfigs = webpackItemsMap
       entry.push(require.resolve('../polyfills'));
     }
     entry.push(mapItem.entry || defaultItemMap.entry);
-    return {
+    const conf: IWebpackConfig = {
       name: mapItem.name,
       ...webpackConfigDefaults,
       ...(mapItem.webpackConfig || {}),
       entry: entry.map(compileEnvHashedString),
       output: {
         path: path.join(process.cwd(), appConf.distFolder, (appConf.modulePath || ''), '/scripts'),
-        filename: filename,
+        filename,
         sourceMapFilename: `${name}/[name].js.map?v=[chunkhash:8]&e=.js.map`,
         chunkFilename: `${name}/[name].chunk.js?v=[chunkhash:8]&e=.chunk.js`,
         publicPath: `${publishPath}/scripts/`,
         ...(mapItem.webpackConfig || { output: {} }).output
       }
-    } as IWebpackConfig;
+    };
+    return conf;
   });
 
 module.exports = webpackConfigs;

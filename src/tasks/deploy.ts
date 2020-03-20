@@ -126,11 +126,9 @@ export const deployTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
               payload.ScriptSrc = url;
             } else {
               payload.ScriptSrc = null;
-              if (ca.namespace) {
-                payload.ScriptBlock = getCustomActionScriptBlockSod(url, ca.namespace, ca.dependencies);
-              } else {
-                payload.ScriptBlock = getCustomActionScriptBlock(url);
-              }
+              payload.ScriptBlock = ca.namespace
+                ? getCustomActionScriptBlockSod(url, ca.namespace, ca.dependencies)
+                : getCustomActionScriptBlock(url);
             }
 
             let scope: IWeb | ISite | null = null;

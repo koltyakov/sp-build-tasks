@@ -28,8 +28,8 @@ export const analyzeTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => 
           sourceMap = `${configs.appConfig.distFolder}/scripts/${sourceMap.split('?')[0]}`;
           if (existsSync(sourceMap)) {
             const res = await execPromise(`${join(process.cwd(), 'node_modules/.bin', 'source-map-explorer')} ${target} ${sourceMap}`);
-            res.stdout && console.log(`${res.stdout}`);
-            res.stderr && console.log(`${res.stderr}`);
+            if (res.stdout) console.log(`${res.stdout}`);
+            if (res.stderr) console.log(`${res.stderr}`);
           }
         } else {
           console.log(`No source map found in ${target}`);

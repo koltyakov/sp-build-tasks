@@ -212,7 +212,7 @@ export const watchAssets = (buildTasks: BuildTasks, configs: IGulpConfigs, $: an
       build.compileHbsTemplate({
         source: srcPath,
         target: trgPath,
-        data: data
+        data
       })
         .then(() => console.log('Webpart is compiled', trgPath))
         .catch(console.log);

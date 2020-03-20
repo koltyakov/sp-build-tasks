@@ -2,6 +2,7 @@
   "siteUrl": "https://contoso.sharepoint.com/sites/project",
   "strategy": "UserCredentials",
   "username": "user.name@contoso.onmicrosoft.com",
-  "password": "not-a-secret",
-  "online": "true"
+  "password": "14ab15c46e7903aabdf77b0866fc71c10cee6dc5557972e0b695253c54569fc29f6057a662082d0f20469691c999af7d7nLOoyQ7UsReA30PQyVPlQ==",
+  "online": "true",
+  "custom": {}
 }

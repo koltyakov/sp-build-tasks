@@ -1,8 +1,5 @@
 {
-  "extends": [
-    "tslint:latest",
-    "tslint-config-standard"
-  ],
+  "extends": "tslint:latest",
   "linterOptions": {
     "exclude": [
       "config/**/*.js",

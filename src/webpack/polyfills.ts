@@ -29,7 +29,9 @@ if (!window.location.origin) {
 // Promise polyfill
 // tslint:disable-next-line
 if (typeof Promise === 'undefined') {
+  // tslint:disable-next-line: no-var-requires
   require('promise/lib/rejection-tracking').enable();
+  // tslint:disable-next-line: no-var-requires
   window.Promise = require('promise/lib/es6-extensions.js');
 }
 

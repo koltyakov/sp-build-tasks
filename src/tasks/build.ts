@@ -18,7 +18,7 @@ declare var global: any;
 
 export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
-  const buildTasks = new BuildTasks(settings);
+  const bt = new BuildTasks(settings);
 
   gulp.task('build', (cb) => {
     const mode = detectProdMode();
@@ -29,13 +29,13 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         await getConfigs(settings, false);
       }
       const tasksInfo = [
-        { key: '--copy-assets', title: 'Copy Assets', task: buildTasks.buildCopyAssetsTask },
-        { key: '--webparts', title: 'Build CEWPs', task: buildTasks.buildWebpartsTask },
-        { key: '--masterpage', title: 'Build Masterpages', task: buildTasks.buildMasterpagesTask },
-        { key: '--layouts', title: 'Build Layouts', task: buildTasks.buildLayoutsTask },
-        { key: '--css-custom', title: 'Build Custom CSS', task: buildTasks.buildCustomCssTask },
-        { key: '--css-libs', title: 'Build CSS Libraries', task: buildTasks.buildCssLibsTask },
-        { key: '--js-libs', title: 'Build JavaScript DLLs', task: buildTasks.buildJsLibsTask },
+        { key: '--copy-assets', title: 'Copy Assets', task: bt.buildCopyAssetsTask },
+        { key: '--webparts', title: 'Build CEWPs', task: bt.buildWebpartsTask },
+        { key: '--masterpage', title: 'Build Masterpages', task: bt.buildMasterpagesTask },
+        { key: '--layouts', title: 'Build Layouts', task: bt.buildLayoutsTask },
+        { key: '--css-custom', title: 'Build Custom CSS', task: bt.buildCustomCssTask },
+        { key: '--css-libs', title: 'Build CSS Libraries', task: bt.buildCssLibsTask },
+        { key: '--js-libs', title: 'Build JavaScript DLLs', task: bt.buildJsLibsTask },
         { key: '--webpack', title: 'Starting Webpack build', task: () => Promise.resolve() }
       ];
       let tasks = tasksInfo.filter((task) => args.indexOf(task.key) !== -1);
@@ -43,7 +43,7 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       await new Listr(tasks).run();
       if (args.indexOf('--webpack') !== -1 || tasksInfo.length === tasks.length) {
         if (args.indexOf('--no-webpack') === -1) {
-          await buildTasks.buildWebpackTask();
+          await bt.buildWebpackTask();
         }
       }
     })()
@@ -200,7 +200,9 @@ export class BuildTasks {
           result.css.toString().replace(re, '$1$3'),
           { encoding: 'utf-8' }
         );
-        fs.writeFileSync(sourceMapPath, result.map.toString(), { encoding: 'utf-8' });
+        if (result?.map) {
+          fs.writeFileSync(sourceMapPath, result.map.toString(), { encoding: 'utf-8' });
+        }
       }
     }
 

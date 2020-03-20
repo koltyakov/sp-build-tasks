@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as mkdirp from 'mkdirp';
 import * as UglifyJS from 'uglify-js';
 import * as CleanCSS from 'clean-css';
-import * as sass from 'node-sass';
+import * as sass from 'sass';
 
 import Copy from './copy';
 
@@ -100,6 +100,7 @@ export default class Build {
 
       let less: any = null;
       try {
+        // tslint:disable-next-line: no-implicit-dependencies
         less = require('less');
       } catch (ex) {
         console.log('`npm i -D less` is required to build Bootstrap 3');
@@ -145,12 +146,9 @@ export default class Build {
     const { filesArr, distPath } = params;
     const concatedContent: string[] = [];
     for (const filePath of (filesArr || [])) {
-      let content = '';
-      if (filePath === 'bootstrap3') {
-        content = await this.buildBootstrap3();
-      } else {
-        content = fs.readFileSync(filePath, { encoding: this.settings.fileEncoding }).toString();
-      }
+      const content = filePath === 'bootstrap3'
+        ? await this.buildBootstrap3()
+        : fs.readFileSync(filePath, { encoding: this.settings.fileEncoding }).toString();
       concatedContent.push(content);
     }
     if (distPath) {

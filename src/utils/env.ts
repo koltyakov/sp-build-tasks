@@ -3,11 +3,7 @@ export const detectProdMode = (): string => {
   const prod = args.filter((arg) => {
     return [ '--ship', '--prod' ].indexOf(arg.toLowerCase()) !== -1;
   }).length > 0;
-  if (prod) {
-    process.env.NODE_ENV = 'production';
-  } else {
-    process.env.NODE_ENV = 'development';
-  }
+  process.env.NODE_ENV = prod ? 'production' : 'development';
   return process.env.NODE_ENV;
 };
 
@@ -25,6 +21,6 @@ export const compileEnvHashedString = (template: string): string => {
     matches.push([new RegExp(`{{${repl}}}`, 'g'), value]);
     match = r.exec(template);
   }
-  matches.forEach(([r, v]) => template = template.replace(r, v));
+  matches.forEach(([re, v]) => template = template.replace(re, v));
   return template;
 };

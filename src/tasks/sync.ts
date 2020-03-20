@@ -1,7 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { Gulp } from 'gulp';
-const sppull = require('sppull').sppull;
 import { spsave } from 'spsave';
 
 import Files, { IFileProcessItem } from './../utils/files';
@@ -24,6 +23,7 @@ export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         dlRootFolder: configs.appConfig.distFolder
       };
 
+      const { sppull } = require('sppull');
       await sppull(configs.privateConf, options);
     })().then(() => cb()).catch(cb);
   });
@@ -87,10 +87,10 @@ export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 };
 
 const walkSync = (dir: string, filelist: string[]): string[] => {
-  let files = fs.readdirSync(dir);
+  const files = fs.readdirSync(dir);
   filelist = filelist || [];
   files.forEach((file) => {
-    let filePath = path.join(dir, file);
+    const filePath = path.join(dir, file);
     if (fs.statSync(filePath).isDirectory()) {
       filelist = walkSync(filePath, filelist);
     } else {

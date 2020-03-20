@@ -4,7 +4,6 @@ import { Delete } from 'sppurge';
 import * as colors from 'colors';
 
 import { IDeploySettings } from '../interfaces';
-import { type } from 'os';
 
 export interface IFolderProcessItem {
   path: string;
@@ -58,9 +57,10 @@ export default class Files {
   }
 
   public getServerRelativeUrl = (): Promise<string> => {
+    let serverRelativeUrl: string | undefined = (global as any).serverRelativeUrl;
     return new Promise((resolve) => {
-      if (typeof global['serverRelativeUrl'] !== 'undefined') {
-        resolve(global['serverRelativeUrl']);
+      if (typeof serverRelativeUrl !== 'undefined') {
+        resolve(serverRelativeUrl);
       } else {
         const requestUrl = `${this.settings.siteUrl}/_api/web?$select=ServerRelativeUrl`;
         this.spr.get(requestUrl, {
@@ -69,7 +69,7 @@ export default class Files {
             'Content-Type': 'application/json; odata=verbose'
           }
         }).then((webProps) => {
-          global['serverRelativeUrl'] = webProps.body.d.ServerRelativeUrl;
+          serverRelativeUrl = webProps.body.d.ServerRelativeUrl;
           resolve(webProps.body.d.ServerRelativeUrl);
         });
       }
@@ -87,7 +87,7 @@ export default class Files {
       if (foldersArr.filter((folder) => !folder.processed).length === 0) {
         return filesArr;
       } else {
-        const folder = foldersArr.find((folder) => !folder.processed);
+        const folder = foldersArr.find((f) => !f.processed);
         if (typeof folder === 'undefined') {
           return [];
         }
