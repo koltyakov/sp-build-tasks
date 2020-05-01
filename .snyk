@@ -1,0 +1,156 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - node-sp-auth > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-request > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - spsave > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - gulp-spsave > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - source-map-explorer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - node-sp-auth-config > inquirer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-request > node-sp-auth > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-live-reload > node-sp-auth > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-rest-proxy > node-sp-auth > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppull > node-sp-auth > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppurge > node-sp-auth > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - node-sp-auth-config > node-sp-auth > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - spsave > sp-request > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-live-reload > sp-request > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-rest-proxy > sp-request > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppull > sp-request > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppurge > sp-request > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - gulp-spsave > spsave > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-live-reload > spsave > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - webpack-dev-server > http-proxy-middleware > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - node-sp-auth > node-sp-auth-config > inquirer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-pnp-node > node-sp-auth-config > inquirer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-rest-proxy > node-sp-auth-config > inquirer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppull > node-sp-auth-config > inquirer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - spsave > sp-request > node-sp-auth > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-live-reload > sp-request > node-sp-auth > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-rest-proxy > sp-request > node-sp-auth > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppull > sp-request > node-sp-auth > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppurge > sp-request > node-sp-auth > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-pnp-node > node-sp-auth-config > node-sp-auth > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-rest-proxy > node-sp-auth-config > node-sp-auth > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppull > node-sp-auth-config > node-sp-auth > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-request > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-live-reload > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - gulp-spsave > spsave > sp-request > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-live-reload > spsave > sp-request > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - webpack-dev-server > portfinder > async > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-request > node-sp-auth > node-sp-auth-config > inquirer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-live-reload > node-sp-auth > node-sp-auth-config > inquirer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-rest-proxy > node-sp-auth > node-sp-auth-config > inquirer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppull > node-sp-auth > node-sp-auth-config > inquirer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppurge > node-sp-auth > node-sp-auth-config > inquirer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - gulp-spsave > spsave > sp-request > node-sp-auth > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-live-reload > spsave > sp-request > node-sp-auth > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-request > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-live-reload > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-rest-proxy > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppull > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppurge > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - node-sp-auth-config > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - spsave > sp-request > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-live-reload > sp-request > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-rest-proxy > sp-request > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppull > sp-request > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppurge > sp-request > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - spsave > sp-request > node-sp-auth > node-sp-auth-config > inquirer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-live-reload > sp-request > node-sp-auth > node-sp-auth-config > inquirer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-rest-proxy > sp-request > node-sp-auth > node-sp-auth-config > inquirer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppull > sp-request > node-sp-auth > node-sp-auth-config > inquirer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppurge > sp-request > node-sp-auth > node-sp-auth-config > inquirer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - spsave > sp-request > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-live-reload > sp-request > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-rest-proxy > sp-request > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppull > sp-request > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppurge > sp-request > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-pnp-node > node-sp-auth-config > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-rest-proxy > node-sp-auth-config > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sppull > node-sp-auth-config > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - gulp-spsave > spsave > sp-request > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-live-reload > spsave > sp-request > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - gulp-spsave > spsave > sp-request > node-sp-auth > node-sp-auth-config > inquirer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-live-reload > spsave > sp-request > node-sp-auth > node-sp-auth-config > inquirer > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - gulp-spsave > spsave > sp-request > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
+    - sp-live-reload > spsave > sp-request > node-sp-auth > request-promise > request-promise-core > lodash:
+        patched: '2020-05-01T07:13:43.049Z'
