@@ -109,13 +109,13 @@ export interface IKeyVal {
 export interface IBuildInitSettings {
   src?: string;
   dist?: string;
-  fileEncoding?: string;
+  fileEncoding?: 'ascii' | 'utf8' | 'utf-8' | 'utf16le' | 'ucs2' | 'ucs-2' | 'base64' | 'latin1' | 'binary' | 'hex' | null | undefined;
 }
 
 export interface IBuildSettings {
   src: string;
   dist: string;
-  fileEncoding: string;
+  fileEncoding: 'ascii' | 'utf8' | 'utf-8' | 'utf16le' | 'ucs2' | 'ucs-2' | 'base64' | 'latin1' | 'binary' | 'hex' | null | undefined;
 }
 
 export interface IFile {
