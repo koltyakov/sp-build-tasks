@@ -117,6 +117,7 @@ const getFileContent = async (filePath: string, configs: IGulpConfigs): Promise<
   // Update .html's publish paths:
   //  - `href="(.*){{ spFolder }}` -> `href="{{ publishPath }}`
   //  - `src="(.*){{ spFolder }}` -> `src="{{ publishPath }}`
+  //  - `<!-- (.*){{ spFolder }}` -> `<!-- {{ publishPath }}`
   if (filePath.toLowerCase().split('.').slice(-1)[0] === 'html') {
     const html = await readFileAsync<string>(filePath, 'utf8');
 
@@ -128,6 +129,7 @@ const getFileContent = async (filePath: string, configs: IGulpConfigs): Promise<
     const tera: [ RegExp, string ][] = [
       [ new RegExp(`href="(.*)${configs.appConfig.spFolder}`, 'gi'), `href="${publishPath}` ],
       [ new RegExp(`src="(.*)${configs.appConfig.spFolder}`, 'gi'), `href="${publishPath}` ],
+      [ new RegExp(`<!-- (.*)${configs.appConfig.spFolder}`, 'gi'), `<!-- ${publishPath}` ]
     ];
 
     const data = tera.reduce((d, t) => d.replace(t[0], t[1]), html);
