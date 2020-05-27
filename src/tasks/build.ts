@@ -55,7 +55,9 @@ export const buildTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
 
 export const mapProjectData = (configs: IGulpConfigs) => {
   const serverPath: string = configs.privateConf.siteUrl.split('/').splice(0, 3).join('/');
-  const publishPath: string = `${configs.privateConf.siteUrl}/${configs.appConfig.spFolder}`.replace(serverPath, '');
+  const publishPath: string = `${configs.privateConf.siteUrl}/${configs.appConfig.spFolder}`
+    .replace(serverPath, '')
+    .replace(/\/\//g, '/');
 
   const packageData = require(path.join(process.cwd(), 'package.json'));
   const data = {

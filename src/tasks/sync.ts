@@ -41,7 +41,7 @@ export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       let remoteFiles: IFileProcessItem[] = [];
 
       if (diff) {
-        // Incrementall mode
+        // Incremental mode
         const utils = new Files({
           siteUrl: configs.privateConf.siteUrl,
           creds: configs.privateConf.creds,
@@ -54,7 +54,7 @@ export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       for (const localFilePath of localFiles) {
         const localFileRelPath = path.relative(configs.appConfig.distFolder, localFilePath).replace(/\\/g, '/');
         const remoteFile = remoteFiles.find((rf) => rf.relativePath === localFileRelPath);
-        const fileContent = fs.readFileSync(localFilePath);
+        const fileContent = await getFileContent(localFilePath, configs);
 
         const fileOptions = {
           folder: `${configs.appConfig.spFolder}/${
@@ -98,4 +98,42 @@ const walkSync = (dir: string, filelist: string[]): string[] => {
     }
   });
   return filelist;
+};
+
+const readFileAsync = <T extends string | Buffer>(filePath: string, encoding: BufferEncoding | null): Promise<T> => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(filePath, { encoding }, (err, data: T) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(data);
+    });
+  });
+};
+
+const getFileContent = async (filePath: string, configs: IGulpConfigs): Promise<Buffer> => {
+  // Replacement rules
+
+  // Update .html's publish paths:
+  //  - `href="(.*){{ spFolder }}` -> `href="{{ publishPath }}`
+  //  - `src="(.*){{ spFolder }}` -> `src="{{ publishPath }}`
+  if (filePath.toLowerCase().split('.').slice(-1)[0] === 'html') {
+    const html = await readFileAsync<string>(filePath, 'utf8');
+
+    const serverPath: string = configs.privateConf.siteUrl.split('/').splice(0, 3).join('/');
+    const publishPath: string = `${configs.privateConf.siteUrl}/${configs.appConfig.spFolder}`
+      .replace(serverPath, '')
+      .replace(/\/\//g, '/');
+
+    const tera: [ RegExp, string ][] = [
+      [ new RegExp(`href="(.*)${configs.appConfig.spFolder}`, 'gi'), `href="${publishPath}` ],
+      [ new RegExp(`src="(.*)${configs.appConfig.spFolder}`, 'gi'), `href="${publishPath}` ],
+    ];
+
+    const data = tera.reduce((d, t) => d.replace(t[0], t[1]), html);
+    return Buffer.from(data, 'utf8');
+  }
+
+  // Return as is
+  return readFileAsync(filePath, null);
 };
