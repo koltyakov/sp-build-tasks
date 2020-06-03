@@ -1,7 +1,7 @@
 {
   "name": "sp-build-tasks",
   "description": "SharePoint front-end projects automation and tasks tool-belt",
-  "version": "3.15.5",
+  "version": "3.15.6",
   "author": "Andrew Koltyakov <andrew.koltyakov@gmail.com>",
   "main": "./dist/index.js",
   "typings": "./dist/index",
@@ -10,7 +10,7 @@
     "lint": "tslint -p .",
     "tsc": "tsc -p .",
     "clean": "rimraf ./dist ./tmp",
-    "preinstall": "npx npm-force-resolutions",
+    "resolutions": "npx npm-force-resolutions && npm i",
     "test": "mocha --config ./test/.mocharc.json || ECHO."
   },
   "bugs": {
