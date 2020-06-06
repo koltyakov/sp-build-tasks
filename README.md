@@ -131,6 +131,8 @@ gulp watch
 Watch for changes in `./src` folder, compiles .ts, .hbs and .scss to `./dist`.
 Watch for changes in `./dist` and uploads to target SharePoint folder.
 
+Use `--skipSync` flag to skip any upload to SharePoint assets, e.g. if you need external tools (like [gosip sync](https://github.com/koltyakov/gosip-sandbox/tree/master/samples/sync)) to be used instead of embeded.
+
 #### Watch with SharePoint pages live reload
 
 ```bash

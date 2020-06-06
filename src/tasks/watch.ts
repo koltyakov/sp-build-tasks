@@ -79,10 +79,11 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
   gulp.task('watch', () => {
     const args = process.argv.slice(3);
     const devServer = args.indexOf('--devServer') !== -1;
+    const skipSync = devServer || args.indexOf('--skipSync') !== -1;
     detectProdMode();
     (async () => {
       const configs: IGulpConfigs = global.gulpConfigs || await getConfigs(settings);
-      if (!devServer) {
+      if (!skipSync) {
         processStepMessage('Watch has been started');
         $.watch(configs.watch.assets, async (event) => {
           if (event.event !== 'unlink') {

@@ -2,7 +2,6 @@
   "siteUrl": "https://contoso.sharepoint.com/sites/project",
   "strategy": "UserCredentials",
   "username": "user.name@contoso.onmicrosoft.com",
-  "password": "14ab15c46e7903aabdf77b0866fc71c10cee6dc5557972e0b695253c54569fc29f6057a662082d0f20469691c999af7d7nLOoyQ7UsReA30PQyVPlQ==",
-  "online": "true",
-  "custom": {}
+  "password": "6482d539b556b96d6359d6388a0ecb318eff789e30494bc183ad81fb90baccf115767a5884eb96f8c58ed99442317acbSOIHYVdyZ1FbsE4JENUfWVm2OaqSnohBvaI4aHfos2ZXE8Be9ZQ1xKnq/6DD3TfpYMQUj8tWZ82hWnTGrOT0j39lWM4T0JDfRaRqEsiDdn9+jmMPmrDmQABYGQTm8oVfEayBUnZKx+gf3kLlGbPFfOBKtDYWs+TKVOTLPpfkNGw=",
+  "online": "true"
 }
