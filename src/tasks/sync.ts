@@ -128,7 +128,7 @@ const getFileContent = async (filePath: string, configs: IGulpConfigs): Promise<
 
     const tera: [ RegExp, string ][] = [
       [ new RegExp(`href="(.*)${configs.appConfig.spFolder}`, 'gi'), `href="${publishPath}` ],
-      [ new RegExp(`src="(.*)${configs.appConfig.spFolder}`, 'gi'), `href="${publishPath}` ],
+      [ new RegExp(`src="(.*)${configs.appConfig.spFolder}`, 'gi'), `src="${publishPath}` ],
       [ new RegExp(`<!-- (.*)${configs.appConfig.spFolder}`, 'gi'), `<!-- ${publishPath}` ]
     ];
 
