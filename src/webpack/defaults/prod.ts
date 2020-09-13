@@ -1,7 +1,7 @@
 import webpack = require('webpack');
-import * as ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import { TsconfigPathsPlugin as TsConfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
-import * as TerserPlugin from 'terser-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
 
 import { getWebpackRules } from '../rules';
 import { getDevServerOpts } from '../devServer';
@@ -37,7 +37,9 @@ export const getWebpackConfigDefaults = (appConf: IAppConfig, privateConf: IPriv
       plugins: [ new TsConfigPathsPlugin() ]
     },
     plugins: [
-      new ForkTsCheckerWebpackPlugin({ checkSyntacticErrors: true }),
+      new ForkTsCheckerWebpackPlugin({
+        // checkSyntacticErrors: true
+      }),
       new webpack.DefinePlugin({
         'process.env': {
           NODE_ENV: JSON.stringify('production')

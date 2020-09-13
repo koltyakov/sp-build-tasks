@@ -1,10 +1,10 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import * as mkdirp from 'mkdirp';
-import * as webpack from 'webpack';
+import webpack from 'webpack';
 import { Gulp } from 'gulp';
-import * as Listr from 'listr';
-import * as minimist from 'minimist';
+import Listr from 'listr';
+import minimist from 'minimist';
 
 import { getConfigs } from './config';
 import Build from '../utils/build';

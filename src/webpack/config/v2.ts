@@ -1,5 +1,5 @@
 import * as path from 'path';
-import * as minimist from 'minimist';
+import minimist from 'minimist';
 
 import { compileEnvHashedString } from '../../utils/env';
 import { getWebpackConfigDefaults } from '../defaults';

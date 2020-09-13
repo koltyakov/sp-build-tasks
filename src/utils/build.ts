@@ -3,7 +3,7 @@ import * as Handlebars from 'handlebars';
 import * as path from 'path';
 import * as mkdirp from 'mkdirp';
 import * as UglifyJS from 'uglify-js';
-import * as CleanCSS from 'clean-css';
+import CleanCSS from 'clean-css';
 import * as sass from 'sass';
 
 import Copy from './copy';

@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import { Gulp } from 'gulp';
-import * as webpack from 'webpack';
+import webpack from 'webpack';
 import sppurge, { IOptions as IPurgeOptions } from 'sppurge';
 import { LiveReload } from 'sp-live-reload';
 

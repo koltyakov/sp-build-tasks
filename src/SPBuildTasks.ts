@@ -1,5 +1,5 @@
 import { ISPBuildSettings } from './interfaces';
-import * as loadGulpPlugins from 'gulp-load-plugins';
+import loadGulpPlugins from 'gulp-load-plugins';
 import * as fs from 'fs';
 import * as path from 'path';
 

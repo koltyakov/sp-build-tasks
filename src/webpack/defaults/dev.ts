@@ -1,5 +1,5 @@
 import webpack = require('webpack');
-import * as ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import { TsconfigPathsPlugin as TsConfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 
 import { getWebpackRules } from '../rules';
@@ -29,7 +29,7 @@ export const getWebpackConfigDefaults = (appConf: IAppConfig, privateConf: IPriv
     },
     plugins: [
       new ForkTsCheckerWebpackPlugin({
-        checkSyntacticErrors: true
+        // checkSyntacticErrors: true
       })
     ]
   };

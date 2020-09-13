@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import { AuthConfig } from 'node-sp-auth-config';
 import { IAuthOptions } from 'node-sp-auth';
 import { Gulp } from 'gulp';
-import * as minimist from 'minimist';
+import minimist from 'minimist';
 
 import { ISPBuildSettings, IAppConfig, IGulpConfigs } from '../interfaces';
 import { parseObjectChain } from '../utils/misc';

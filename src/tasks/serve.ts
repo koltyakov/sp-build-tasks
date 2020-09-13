@@ -1,9 +1,9 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import { Gulp } from 'gulp';
-import * as webpack from 'webpack';
-import * as WebpackDevServer from 'webpack-dev-server';
-import * as minimist from 'minimist';
+import webpack from 'webpack';
+import WebpackDevServer from 'webpack-dev-server';
+import minimist from 'minimist';
 
 import { processStepMessage } from '../utils/log';
 import { getConfigs } from './config';

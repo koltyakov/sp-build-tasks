@@ -13,7 +13,8 @@
     "skipLibCheck": true,
     "types": ["node"],
     "outDir": "dist",
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "esModuleInterop": true
   },
   "exclude": [
     "node_modules",
