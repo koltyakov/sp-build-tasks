@@ -102,6 +102,7 @@
     "ts-node": "^9.0.0"
   },
   "resolutions": {
-    "anymatch": "3.1.1"
+    "anymatch": "3.1.1",
+    "yargs-parser": ">=13.1.2"
   }
 }
