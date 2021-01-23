@@ -1,4 +1,5 @@
 import { SPRest, SPHttpClient } from '@pnp/sp-commonjs';
+import { Runtime } from '@pnp/common-commonjs';
 
 import { IGulpConfigs } from '../interfaces';
 
@@ -33,7 +34,7 @@ export class Hashes {
   public constructor(props: IHashesProps) {
     this.sp = props.sp;
     this.configs = props.configs;
-    this.client = new SPHttpClient();
+    this.client = new SPHttpClient(new Runtime());
   }
 
   public isHashedUrl(uri: string): boolean {

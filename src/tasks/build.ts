@@ -134,7 +134,7 @@ export class BuildTasks {
         } else {
           console.log(`Bundling: \n${bundlingItems.map((b) => `  - ${b}`).join('\n')}`);
         }
-        await new Promise((resolve, reject) => {
+        await new Promise<void>((resolve, reject) => {
           webpack(confQueue, (err, stats) => {
             if (err) {
               reject(err.message);

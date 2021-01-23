@@ -87,7 +87,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         processStepMessage('Watch has been started');
         $.watch(configs.watch.assets, async (event) => {
           if (event.event !== 'unlink') {
-            await new Promise((resolve, reject) => {
+            await new Promise<void>((resolve, reject) => {
               run(event.path, () => {
                 spsave(event.path)
                   .then(() => resolve())
@@ -113,7 +113,7 @@ export const watchTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
       liveReload.runServer();
       $.watch(configs.watch.assets, async (event) => {
         if (event.event !== 'unlink') {
-          await new Promise((resolve, reject) => {
+          await new Promise<void>((resolve, reject) => {
             run(event.path, () => {
               spsave(event.path, (chunkPath: string) => {
                 let body: string = '';
