@@ -142,7 +142,7 @@ export class BuildTasks {
             if (args['webpack-stats']) {
               console.log(stats.toString({ colors: true }));
             } else {
-              console.log(stats.toString('errors-only'));
+              console.error(stats.toString('errors-only'));
             }
             resolve();
           });
