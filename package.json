@@ -48,7 +48,7 @@
     "gulp-load-plugins": "^2.0.6",
     "gulp-spsave": "^4.0.0",
     "gulp-watch": "^5.0.1",
-    "handlebars": "^4.7.6",
+    "handlebars": "^4.7.7",
     "listr": "^0.14.3",
     "minimist": "^1.2.5",
     "mkdirp": "^1.0.4",
