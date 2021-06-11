@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Gulp } from 'gulp';
 import { spsave } from 'spsave';
+import sppull from 'sppull';
 
 import Files, { IFileProcessItem } from './../utils/files';
 
@@ -23,8 +24,7 @@ export const syncTasks = (gulp: Gulp, $: any, settings: ISPBuildSettings) => {
         dlRootFolder: configs.appConfig.distFolder
       };
 
-      const { sppull } = require('sppull');
-      await sppull(configs.privateConf, options);
+      await sppull.download(configs.privateConf, options);
     })().then(() => cb()).catch(cb);
   });
 
