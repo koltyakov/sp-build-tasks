@@ -55,7 +55,7 @@
     "node-sp-auth": "^3.0.1",
     "node-sp-auth-config": "^3.0.1",
     "promise": "^8.1.0",
-    "resolve-url-loader": "^3.1.2",
+    "resolve-url-loader": "^4.0.0",
     "sass": "^1.32.5",
     "sass-loader": "^10.1.1",
     "source-map-explorer": "^2.5.2",
