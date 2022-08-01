@@ -62,7 +62,7 @@
     "sp-live-reload": "^4.0.0",
     "sp-pnp-node": "^3.0.1",
     "sp-request": "^3.0.0",
-    "sp-rest-proxy": "^3.0.6",
+    "sp-rest-proxy": "^3.2.0",
     "sppull": "^2.7.0",
     "sppurge": "^3.0.0",
     "spsave": "^4.0.2",
