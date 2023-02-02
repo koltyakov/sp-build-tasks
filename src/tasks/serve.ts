@@ -45,11 +45,11 @@ const startWebpackDevServer = () => {
   if (!Array.isArray(webpackConfig)) {
     webpackConfig = [webpackConfig];
   }
-  const options = webpackConfig[webpackConfig.length - 1].devServer;
+  const options: WebpackDevServer.Configuration = webpackConfig[webpackConfig.length - 1].devServer;
   const port = options.port || 9090;
-  if (typeof options.stats === 'undefined') {
-    options.stats = 'errors-only';
-  }
+  // if (typeof options.stats === 'undefined') {
+  //   options.stats = 'errors-only';
+  // }
 
   if (webpackConfig.length > 4) {
     console.log(
