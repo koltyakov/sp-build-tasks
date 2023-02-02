@@ -1,7 +1,7 @@
 {
   "name": "sp-build-tasks",
   "description": "SharePoint front-end projects automation and tasks tool-belt",
-  "version": "3.19.1",
+  "version": "3.19.3",
   "author": "Andrew Koltyakov <andrew.koltyakov@gmail.com>",
   "main": "./dist/index.js",
   "typings": "./dist/index",
@@ -76,7 +76,7 @@
     "uglify-js": "^3.12.5",
     "webpack": "^4.46.0",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^3.11.3",
+    "webpack-dev-server": "^4.11.1",
     "whatwg-fetch": "^3.6.2"
   },
   "devDependencies": {
@@ -90,13 +90,13 @@
     "@types/minimist": "^1.2.1",
     "@types/mkdirp": "^1.0.1",
     "@types/mocha": "^8.2.0",
-    "@types/node": "^14.14.22",
+    "@types/node": "^18.11.18",
     "@types/node-sass": "^4.11.1",
     "@types/sass": "^1.16.0",
     "@types/terser-webpack-plugin": "^4.2.0",
     "@types/uglify-js": "^3.11.1",
     "@types/webpack": "^4.41.26",
-    "@types/webpack-dev-server": "^3.11.1",
+    "@types/webpack-dev-server": "^4.7.2",
     "chai": "^4.2.0",
     "mocha": "^10.0.0",
     "rimraf": "^3.0.2",
