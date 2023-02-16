@@ -10,7 +10,7 @@ steps:
     versionSpec: '18.x'
   displayName: 'Install Node.js'
 
-- script: npm install -g rimraf gulp-cli
+- script: npm install -g rimraf gulp-cli tslint
   displayName: 'Global dependencies'
 
 - script: |
