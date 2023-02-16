@@ -1,6 +1,6 @@
 import { IAuthOptions } from 'node-sp-auth';
 import { ICoreOptions as ISPSaveCoreOptions, IFileMetaData } from 'spsave';
-import { Configuration, Options } from 'webpack';
+import { Configuration } from 'webpack';
 import { ILRSettings } from 'sp-live-reload/dist/interfaces';
 
 export interface IWebpackConfig extends Configuration {
@@ -43,7 +43,7 @@ export interface IAppConfig {
   modulePath?: string;
   customData?: any;
   webpackItemsMap?: IWebpackMapItem[];
-  devtool?: Options.Devtool;
+  devtool?: string | false | undefined;
 }
 
 export interface IWebpackMapItem {

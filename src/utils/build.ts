@@ -1,10 +1,10 @@
 import * as fs from 'fs';
 import * as Handlebars from 'handlebars';
 import * as path from 'path';
-import * as mkdirp from 'mkdirp';
+import mkdirp from 'mkdirp';
 import * as UglifyJS from 'uglify-js';
 import CleanCSS from 'clean-css';
-import * as sass from 'sass';
+import sass from 'sass';
 
 import Copy from './copy';
 
@@ -125,7 +125,7 @@ export default class Build {
     return compiledCss;
   }
 
-  public buildCustomCssFromScss(params: IBuildCustomCssFromScss = {}): Promise<sass.Result> {
+  public buildCustomCssFromScss(params: IBuildCustomCssFromScss = {}): Promise<sass.LegacyResult | undefined> {
     return new Promise((resolve, reject) => {
       const { file, outFile, sourceMap, sourceMapContents } = params;
       const data: any = params.data || file ? fs.readFileSync(file as string, this.settings.fileEncoding).toString() : null;

@@ -11,7 +11,7 @@ export const getWebpackConfigDefaults = (appConf: IAppConfig, privateConf: IPriv
 
   const rules: webpack.RuleSetRule[] = getWebpackRules();
 
-  let devtool: webpack.Options.Devtool | undefined = (process.env.SPBUILD_WEBPACK_DEVTOOL || appConf.devtool) as any;
+  let devtool: string | false | undefined = process.env.SPBUILD_WEBPACK_DEVTOOL || appConf.devtool;
   devtool = typeof devtool !== 'undefined' ? devtool : 'source-map';
   if (`${devtool}` === 'none' || `${devtool}` === '') {
     devtool = undefined;
@@ -27,6 +27,7 @@ export const getWebpackConfigDefaults = (appConf: IAppConfig, privateConf: IPriv
       extensions: [ '.ts', '.tsx', '.js', '.jsx' ],
       plugins: [ new TsConfigPathsPlugin() ]
     },
+    target: 'web',
     plugins: [
       new ForkTsCheckerWebpackPlugin({
         // checkSyntacticErrors: true

@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import * as mkdirp from 'mkdirp';
+import mkdirp from 'mkdirp';
 import webpack from 'webpack';
 import { Gulp } from 'gulp';
 import Listr from 'listr';
@@ -140,9 +140,9 @@ export class BuildTasks {
               reject(err.message);
             }
             if (args['webpack-stats']) {
-              console.log(stats.toString({ colors: true }));
+              console.log(stats?.toString({ colors: true }));
             } else {
-              console.error(stats.toString('errors-only'));
+              console.error(stats?.toString('errors-only'));
             }
             resolve();
           });
@@ -197,11 +197,13 @@ export class BuildTasks {
         const result = await build.buildCustomCssFromScss({ file: srcPath, sourceMap: sourceMapFile, sourceMapContents: true });
         mkdirp.sync(path.dirname(distPath));
         const re = new RegExp(`(sourceMappingURL=)(.*?)(${sourceMapFile})`, 'g');
-        fs.writeFileSync(
-          distPath,
-          result.css.toString().replace(re, '$1$3'),
-          { encoding: 'utf-8' }
-        );
+        if (result) {
+          fs.writeFileSync(
+            distPath,
+            result.css.toString().replace(re, '$1$3'),
+            { encoding: 'utf-8' }
+          );
+        }
         if (result?.map) {
           fs.writeFileSync(sourceMapPath, result.map.toString(), { encoding: 'utf-8' });
         }
