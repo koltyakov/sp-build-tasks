@@ -160,7 +160,7 @@ export const watchAssets = (buildTasks: BuildTasks, configs: IGulpConfigs, $: an
       };
     });
     webpack(webpackConfig, (err, stats) => {
-      console.log(err || stats.toString({ colors: true }));
+      console.log(err || stats?.toString({ colors: true }));
     });
   };
 

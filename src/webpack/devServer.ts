@@ -4,15 +4,23 @@ import { IAppConfig, IPrivateConfig } from '../interfaces';
 import WebpackDevServer from 'webpack-dev-server';
 
 export const getDevServerOpts = (appConf: IAppConfig, privateConf: IPrivateConfig, publishPath: string): WebpackDevServer.Configuration => {
-  // Webpack dev server options
+    // Webpack dev server options
   const devServerPort = parseInt(process.env.SPBUILD_WEBPACK_PORT || '9090', 10);
   const devServerOptions: WebpackDevServer.Configuration = {
     static: { directory: path.join(process.cwd(), appConf.distFolder) },
-    // hot: true, // causes conflicts with multiple assets loading the same map files
-    hot: false,
+    hot: true,
+    watchFiles: [
+      path.join(process.cwd(), appConf.distFolder, '/webparts/**/*'),
+      path.join(process.cwd(), appConf.distFolder, '/styles/**/*'),
+      path.join(process.cwd(), appConf.distFolder, '/libs/**/*'),
+      path.join(process.cwd(), appConf.distFolder, '/images/**/*'),
+      path.join(process.cwd(), appConf.distFolder, '/fonts/**/*'),
+    ],
+    liveReload: true,
+    allowedHosts: 'all',
     port: devServerPort,
-    onBeforeSetupMiddleware: ({ app }) => {
-      if (!app) return;
+    setupMiddlewares: (middlewares, devServer) => {
+      if (!devServer.app) return middlewares;
 
       // Register SP API Proxy
       const settings: IProxySettings = {
@@ -23,10 +31,10 @@ export const getDevServerOpts = (appConf: IAppConfig, privateConf: IPrivateConfi
         },
         strictRelativeUrls: true
       };
-      new RestProxy(settings, app).serveProxy();
+      new RestProxy(settings, devServer.app).serveProxy();
 
       // Register static assets under the publish path route
-      app.get(`${publishPath}/*`, (req: any, res: any, _next: any) => {
+      devServer.app.get(`${publishPath}/*`, (req: any, res: any, _next: any) => {
         const filePath = path.join(
           process.cwd(),
           appConf.distFolder,
@@ -34,6 +42,8 @@ export const getDevServerOpts = (appConf: IAppConfig, privateConf: IPrivateConfi
         );
         res.sendFile(filePath);
       });
+
+      return middlewares;
     }
   };
   return devServerOptions;

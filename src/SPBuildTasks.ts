@@ -90,7 +90,7 @@ export class SPBuildTasks {
   private loadGulpPlugins(): IGulpPlugins {
     return loadGulpPlugins({
       pattern: [
-        'gulp-*', 'gulp.*', 'del', 'through2'
+        'gulp-*', 'gulp.*', 'through2'
       ],
       rename: {
         'through2': 'through'
