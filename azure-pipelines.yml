@@ -10,11 +10,11 @@ steps:
     versionSpec: '18.x'
   displayName: 'Install Node.js'
 
-- script: npm install -g rimraf gulp-cli tslint
+- script: npm install -g rimraf gulp-cli
   displayName: 'Global dependencies'
 
 - script: |
-    npm ci
+    npm ci --force
     npm run build
   displayName: 'Dependencies & Build'
 
