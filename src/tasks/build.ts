@@ -195,15 +195,17 @@ export class BuildTasks {
         const { name, ext } = path.parse(sourceMapPath);
         const sourceMapFile = `${name}${ext}`;
         const result = await build.buildCustomCssFromScss({ file: srcPath, sourceMap: sourceMapFile, sourceMapContents: true });
-        mkdirp.sync(path.dirname(distPath));
-        const re = new RegExp(`(sourceMappingURL=)(.*?)(${sourceMapFile})`, 'g');
-        fs.writeFileSync(
-          distPath,
-          result.css.toString().replace(re, '$1$3'),
-          { encoding: 'utf-8' }
-        );
-        if (result?.map) {
-          fs.writeFileSync(sourceMapPath, result.map.toString(), { encoding: 'utf-8' });
+        if (result) {
+          mkdirp.sync(path.dirname(distPath));
+          const re = new RegExp(`(sourceMappingURL=)(.*?)(${sourceMapFile})`, 'g');
+          fs.writeFileSync(
+            distPath,
+            result.css.toString().replace(re, '$1$3'),
+            { encoding: 'utf-8' }
+          );
+          if (result.map) {
+            fs.writeFileSync(sourceMapPath, result.map.toString(), { encoding: 'utf-8' });
+          }
         }
       }
     }

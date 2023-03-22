@@ -125,7 +125,7 @@ export default class Build {
     return compiledCss;
   }
 
-  public buildCustomCssFromScss(params: IBuildCustomCssFromScss = {}): Promise<sass.Result> {
+  public buildCustomCssFromScss(params: IBuildCustomCssFromScss = {}): Promise<sass.LegacyResult | undefined> {
     return new Promise((resolve, reject) => {
       const { file, outFile, sourceMap, sourceMapContents } = params;
       const data: any = params.data || file ? fs.readFileSync(file as string, this.settings.fileEncoding).toString() : null;
