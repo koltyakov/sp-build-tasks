@@ -44,7 +44,7 @@
     "es6-set": "^0.1.6",
     "es6-weak-map": "^2.0.3",
     "fork-ts-checker-webpack-plugin": "^5.2.1",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.0",
     "gulp-load-plugins": "^2.0.6",
     "gulp-spsave": "^4.0.0",
     "gulp-watch": "^5.0.1",
