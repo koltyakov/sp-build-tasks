@@ -44,7 +44,7 @@
     "es6-set": "^0.1.6",
     "es6-weak-map": "^2.0.3",
     "fork-ts-checker-webpack-plugin": "^5.2.1",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.0",
     "gulp-load-plugins": "^2.0.6",
     "gulp-spsave": "^4.0.0",
     "gulp-watch": "^5.0.1",
@@ -55,7 +55,7 @@
     "node-sp-auth": "^3.0.7",
     "node-sp-auth-config": "^3.0.5",
     "promise": "^8.1.0",
-    "resolve-url-loader": "^3.1.2",
+    "resolve-url-loader": "^5.0.0",
     "sass": "^1.32.5",
     "sass-loader": "^10.1.1",
     "source-map-explorer": "^2.5.2",
@@ -76,7 +76,7 @@
     "uglify-js": "^3.12.5",
     "webpack": "^4.46.0",
     "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.2",
+    "webpack-dev-server": "^4.7.3",
     "whatwg-fetch": "^3.5.0"
   },
   "devDependencies": {
